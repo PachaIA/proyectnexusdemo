@@ -273,7 +273,7 @@ var kpis_ventas_default = defineTool6({
 });
 
 // src/lib/mcp/index.ts
-var projectRef = "skupelrvihfgyylfklmk";
+var projectRef = "mojjwrwzowpflmhqfhsh";
 var mcp_default = defineMcp({
   name: "proyecto-nexus",
   title: "Proyecto Nexus",
