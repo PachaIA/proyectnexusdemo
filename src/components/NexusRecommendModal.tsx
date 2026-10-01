@@ -1,3 +1,4 @@
+import { getEffectiveUser } from '@/lib/openUser';
 import { useState, useMemo } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -60,7 +61,7 @@ export const NexusRecommendModal = ({ open, onClose, onCompanySelect }: Props) =
     if (!current) return;
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await getEffectiveUser();
       if (!user) throw new Error('No auth');
 
       const today = new Date().toISOString().split('T')[0];

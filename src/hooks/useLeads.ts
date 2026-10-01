@@ -1,3 +1,4 @@
+import { getEffectiveUser } from '@/lib/openUser';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
@@ -73,7 +74,7 @@ export const useLeads = () => {
       detectedNeedsRaw?: string[];
       recommendedProductsRaw?: string[];
     }) => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await getEffectiveUser();
       if (!user) throw new Error('No autenticado');
 
       // Check for duplicate (same user + same company)

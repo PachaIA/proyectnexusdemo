@@ -1,3 +1,4 @@
+import { getEffectiveUser } from '@/lib/openUser';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -58,7 +59,7 @@ export const useCompanyActivities = (companyId?: string) => {
 
   const createActivity = useMutation({
     mutationFn: async (input: ActivityInput) => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await getEffectiveUser();
       if (!user) throw new Error('No autenticado');
       const { error } = await (supabase as any)
         .from('company_activities')
