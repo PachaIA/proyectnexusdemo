@@ -1,73 +1,109 @@
-# Welcome to your Lovable project
+# Proyecto Nexus - Demo
 
-## Project info
+Actúa como un arquitecto de software experto en IA, mapas y aplicaciones comerciales B2B.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+Quiero que crees una aplicación web profesional orientada a la prospección comercial para una empresa de telecomunicaciones (Grupo Enertel, partner Vodafone España).
 
-## How can I edit this code?
+OBJETIVO PRINCIPAL
+Crear una web que identifique, analice y priorice empresas de Málaga (Andalucía, España) con más de 50 empleados para generar oportunidades comerciales en telecomunicaciones y servicios digitales.
 
-There are several ways of editing your application.
+FUNCIONALIDAD CLAVE
+1. MAPA INTERACTIVO
+- Mapa centrado en Málaga y su área metropolitana
+- Uso de servicios tipo Google Maps / OpenStreetMap
+- Marcadores de empresas relevantes
+- Filtros por:
+  - Número de empleados (+50, +100, +250)
+  - Sector (industria, logística, turismo, tecnología, retail, salud, educación)
+  - Ubicación (polígono industrial, centro urbano, costa, parque tecnológico)
 
-**Use Lovable**
+2. IDENTIFICACIÓN INTELIGENTE DE EMPRESAS
+La aplicación debe simular la recopilación de datos desde:
+- Web corporativa
+- LinkedIn (tamaño empresa, actividad)
+- Noticias públicas
+- Presencia digital
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Cada empresa mostrará:
+- Nombre
+- Sector
+- Número estimado de empleados
+- Dirección
+- Web
+- Nivel de digitalización (bajo / medio / alto)
+- Nivel de oportunidad comercial (score 1–100)
 
-Changes made via Lovable will be committed automatically to this repo.
+3. MOTOR DE OPORTUNIDADES COMERCIALES (IA)
+Para cada empresa, la IA debe:
+- Analizar su perfil
+- Detectar necesidades probables:
+  - Fibra corporativa
+  - Backup de conectividad
+  - SD-WAN / seguridad de red
+  - Centralita virtual
+  - Movilidad corporativa
+- Asignar un “Opportunity Score”
+- Indicar productos recomendados Vodafone
 
-**Use your preferred IDE**
+4. FICHA DE EMPRESA
+Al hacer clic en una empresa:
+- Vista detallada
+- Resumen ejecutivo comercial
+- Problemas detectados
+- Soluciones recomendadas
+- Argumentario comercial breve
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+5. GENERADOR DE PROPUESTA AUTOMÁTICA
+Botón “Generar propuesta”
+- Crea una propuesta visual
+- Adaptada al tipo de empresa
+- Con lenguaje claro, orientado a negocio
+- Enfocada en:
+  - Ahorro de costes
+  - Seguridad
+  - Escalabilidad
+  - Simplicidad operativa
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+6. INTERFAZ
+- Estilo moderno, limpio y profesional
+- Enfoque comercial (no técnico)
+- Colores sobrios corporativos
+- UX clara, rápida y usable
 
-Follow these steps:
+7. PERFIL DEL USUARIO FINAL
+- Comercial de telecomunicaciones
+- Necesita detectar oportunidades rápido
+- Preparar visitas comerciales
+- Priorizar clientes con mayor potencial
+
+RESULTADO FINAL
+Una web funcional y visual que permita:
+- Ver empresas relevantes en Málaga
+- Filtrar oportunidades reales
+- Analizar cada cliente potencial
+- Generar propuestas comerciales automáticamente
+
+La aplicación debe parecer realista, usable y lista para una demo comercial.
+
+This project was built with [Lovable](https://lovable.dev).
+
+**Live app**: https://proyectnexusdemo.lovable.app
+
+## Build with Lovable
+
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/ec3ff153-0615-4bb2-a878-922f197df397).
+
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+
+## Development
+
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+git clone <this-repository-url>
+cd <repository-name>
 npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
