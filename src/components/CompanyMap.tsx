@@ -106,8 +106,9 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
   const defaultCenter: [number, number] = [36.7213, -4.4214];
   const tileLayerRef = useRef<L.TileLayer | null>(null);
 
-  const LIGHT_TILES = 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-  const DARK_TILES = 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
+  // CARTO ahora exige API key → usamos teselas Esri gratuitas sin clave.
+  const LIGHT_TILES = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
+  const DARK_TILES = 'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}';
 
   const isDark = () => document.documentElement.classList.contains('dark');
 
@@ -158,7 +159,8 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
     mapRef.current = L.map(mapContainerRef.current, { zoomControl: false }).setView(defaultCenter, 11);
 
     tileLayerRef.current = L.tileLayer(isDark() ? DARK_TILES : LIGHT_TILES, {
-      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      attribution: 'Tiles &copy; Esri',
+      maxZoom: 16,
     }).addTo(mapRef.current);
 
     L.control.zoom({ position: 'bottomright' }).addTo(mapRef.current);
