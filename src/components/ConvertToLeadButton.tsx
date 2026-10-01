@@ -1,3 +1,4 @@
+import { getEffectiveUser } from '@/lib/openUser';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { UserPlus, Check, Loader2 } from 'lucide-react';
@@ -23,7 +24,7 @@ const ConvertToLeadButton = ({ company, isLead, onConverted }: ConvertToLeadButt
     setLoading(true);
     
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await getEffectiveUser();
       if (!user) throw new Error('No autenticado');
 
       // Check for duplicate

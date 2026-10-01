@@ -1,3 +1,4 @@
+import { getEffectiveUser } from '@/lib/openUser';
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from "react-router-dom";
 import { Company, DecisionMaker } from "@/data/companies";
@@ -350,7 +351,7 @@ function InteractionRegistry({
     update({ estado });
     // Sync estado to Supabase leads table
     try {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await getEffectiveUser();
       if (!user) return;
       // Check if lead exists
       const { data: existing } = await supabase
@@ -1293,7 +1294,7 @@ function DetailPanel({
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10, paddingTop: 4 }}>
           <button className="nexus-action-btn" onClick={async () => {
             try {
-              const { data: { user } } = await supabase.auth.getUser();
+              const { data: { user } } = await getEffectiveUser();
               if (!user) return;
               const today = new Date().toISOString().split('T')[0];
               const { data: existing } = await supabase.from('leads').select('id').eq('user_id', user.id).eq('company_id', selected.id).maybeSingle();
@@ -1315,7 +1316,7 @@ function DetailPanel({
           }}>📞 LLAMAR</button>
           <button className="nexus-action-btn" onClick={async () => {
             try {
-              const { data: { user } } = await supabase.auth.getUser();
+              const { data: { user } } = await getEffectiveUser();
               if (!user) return;
               const today = new Date().toISOString().split('T')[0];
               const { data: existing } = await supabase.from('leads').select('id').eq('user_id', user.id).eq('company_id', selected.id).maybeSingle();

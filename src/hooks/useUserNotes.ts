@@ -1,3 +1,4 @@
+import { getEffectiveUser } from '@/lib/openUser';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -17,7 +18,7 @@ export const useUserNotes = () => {
   const { data: notes = [], isLoading } = useQuery({
     queryKey: ['user-notes'],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await getEffectiveUser();
       if (!user) return [];
       const { data, error } = await (supabase as any)
         .from('user_notes')
@@ -32,7 +33,7 @@ export const useUserNotes = () => {
 
   const createNote = useMutation({
     mutationFn: async (note: { title: string; content?: string }) => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await getEffectiveUser();
       if (!user) throw new Error('Not authenticated');
       const { data, error } = await (supabase as any)
         .from('user_notes')

@@ -1,3 +1,4 @@
+import { getEffectiveUser } from '@/lib/openUser';
 import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
@@ -89,7 +90,7 @@ export function AgendaTab({ onCompanySelect }: AgendaTabProps) {
   const { data: allActivities = [] } = useQuery({
     queryKey: ['informes-activities'],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await getEffectiveUser();
       if (!user) return [];
       const { data, error } = await (supabase as any)
         .from('company_activities')

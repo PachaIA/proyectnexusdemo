@@ -1,3 +1,4 @@
+import { getEffectiveUser } from '@/lib/openUser';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { getVodafoneFiscalQuarterLabel } from '@/lib/vodafoneFiscalQuarter';
@@ -56,7 +57,7 @@ export const useQuarterlyKpis = () => {
   const { data: kpi, isLoading } = useQuery({
     queryKey: ['quarterly_kpis', quarter],
     queryFn: async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+      const { data: { user } } = await getEffectiveUser();
       if (!user) return null;
 
       const { data, error } = await (supabase as any)
