@@ -1,8 +1,9 @@
 # Roadmap
 
-- [x] Remove login requirement (app opens directly, no /auth gate)
-- [x] Secrets: already set in project, no update needed unless user wants new values
-- [ ] Clear copied Drizzle migrations, rescaffold empty migration set
-- [ ] Fix map not working (no login)
-- [ ] Create sample clients fully filled across all pipeline states
-- [ ] Give user project URL for OpenClaw
+- [x] Remove login requirement (app opens directly) — TEMPORARY, re-close later
+- [x] Secrets already set; no update needed
+- [x] Drizzle migrations empty (fresh journal)
+- [x] Fix map (tiles + data access)
+- [x] 14 sample clients across all 7 pipeline stages
+- [x] Project URL for OpenClaw
+- [ ] Re-enable login and remove open access (when user decides)
