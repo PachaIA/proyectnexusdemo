@@ -21,44 +21,9 @@ import { FloatingChatWidget } from "./components/FloatingChatWidget";
 
 const queryClient = new QueryClient();
 
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!isMounted) return;
-      setUser(session?.user ?? null);
-      if (event !== 'INITIAL_SESSION') {
-        setIsLoading(false);
-      }
-    });
-
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!isMounted) return;
-      setUser(session?.user ?? null);
-      setIsLoading(false);
-    });
-
-    return () => {
-      isMounted = false;
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-muted/30">
-        <div className="text-muted-foreground">Cargando...</div>
-      </div>
-    );
-  }
-
-  if (!user) return <Navigate to="/auth" replace />;
-  return <>{children}</>;
-};
+// Auth desactivada temporalmente: la app abre directo sin login.
+// Para reactivarla, volver a envolver las rutas con un guard de sesión.
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => <>{children}</>;
 
 const AppRoutes = () => {
   const [user, setUser] = useState<any>(null);
