@@ -51,8 +51,8 @@ const AppRoutes = () => {
         <Route path="/nexus" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      {user && <MobileBottomNav />}
-      {user && <FloatingChatWidget />}
+      <MobileBottomNav />
+      <FloatingChatWidget />
     </>
   );
 };
