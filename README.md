@@ -2,7 +2,7 @@
 
 Actúa como un arquitecto de software experto en IA, mapas y aplicaciones comerciales B2B.
 
-Quiero que crees una aplicación web profesional orientada a la prospección comercial para una empresa de telecomunicaciones (Grupo Enertel, partner Vodafone España).
+Quiero que crees una aplicación web profesional orientada a la prospección comercial para una empresa de telecomunicaciones .
 
 OBJETIVO PRINCIPAL
 Crear una web que identifique, analice y priorice empresas de Málaga (Andalucía, España) con más de 50 empleados para generar oportunidades comerciales en telecomunicaciones y servicios digitales.
