@@ -665,19 +665,27 @@ export default function NexusDashboard() {
     if (NEXUS_VIEW_PATHS[v] !== location.pathname) navigate(NEXUS_VIEW_PATHS[v]);
   }, [navigate, location.pathname]);
 
-  // Handle incoming navigation from Pipeline
+  // Ficha abierta = /briefing?company=<id>. Sobrevive a F5 y al botón atrás.
+  // Compatibilidad: navegación antigua con state { companyId } (p. ej. desde Pipeline).
   useEffect(() => {
-    const state = location.state as { companyId?: string; tab?: string } | null;
+    const state = location.state as { companyId?: string } | null;
     if (state?.companyId) {
-      const comp = companies.find(c => c.id === state.companyId);
-      if (comp) {
-        setSelected(comp);
-        setNexusView('briefing');
-      }
-      // Clear location state to avoid re-triggering
-      window.history.replaceState({}, document.title);
+      navigate(`${NEXUS_VIEW_PATHS.briefing}?company=${encodeURIComponent(state.companyId)}`, { replace: true });
     }
-  }, [location.state, companies]);
+  }, [location.state, navigate]);
+
+  const urlCompanyId = new URLSearchParams(location.search).get('company');
+  useEffect(() => {
+    if (nexusView !== 'briefing' || !urlCompanyId) return;
+    if (selected?.id === urlCompanyId) return;
+    const comp = companies.find(c => c.id === urlCompanyId);
+    if (comp) setSelected(comp);
+  }, [nexusView, urlCompanyId, companies, selected?.id]);
+
+  const openBriefing = useCallback((c: Company) => {
+    setSelected(c);
+    navigate(`${NEXUS_VIEW_PATHS.briefing}?company=${encodeURIComponent(c.id)}`);
+  }, [navigate]);
 
   // Sync `selected` with refreshed companies (after edits trigger refetch)
   useEffect(() => {
@@ -686,20 +694,6 @@ export default function NexusDashboard() {
     if (fresh && fresh !== selected) setSelected(fresh);
   }, [companies, selected]);
 
-  useEffect(() => {
-    const handleSelectCompany = (e: Event) => {
-      const detail = (e as CustomEvent<{ companyId: string }>).detail;
-      const comp = companies.find(c => c.id === detail.companyId);
-      if (comp) {
-        setSelected(comp);
-        setNexusView('briefing');
-      }
-    };
-    window.addEventListener('select-company', handleSelectCompany);
-    return () => {
-                  window.removeEventListener('select-company', handleSelectCompany);
-    };
-  }, [companies]);
 
 
   const handleInteractionUpdate = useCallback((newMap: InteractionsMap) => {
@@ -735,23 +729,23 @@ export default function NexusDashboard() {
 
         {nexusView === 'hoy' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <HoyTab onCompanySelect={(c) => { setSelected(c); setNexusView('briefing'); }} />
+            <HoyTab onCompanySelect={openBriefing} />
           </div>
         ) : nexusView === 'clientes' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <ClientesTab onCompanySelect={(c) => { setSelected(c); setNexusView('briefing'); }} />
+            <ClientesTab onCompanySelect={openBriefing} />
           </div>
         ) : nexusView === 'archivo' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <ArchivoTab onCompanySelect={(c) => { setSelected(c); setNexusView('briefing'); }} />
+            <ArchivoTab onCompanySelect={openBriefing} />
           </div>
         ) : nexusView === 'informes' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <InformesTab onCompanySelect={(c) => { setSelected(c); setNexusView('briefing'); }} />
+            <InformesTab onCompanySelect={openBriefing} />
           </div>
         ) : nexusView === 'agenda' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <AgendaTab onCompanySelect={(c) => { setSelected(c); setNexusView('briefing'); }} />
+            <AgendaTab onCompanySelect={openBriefing} />
           </div>
         ) : (
 

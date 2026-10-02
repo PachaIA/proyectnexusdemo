@@ -126,12 +126,6 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
   }, []);
 
 
-  // Reset dashboard view when leaving the dashboard page
-  useEffect(() => {
-    if (location.pathname !== '/') {
-      setDashboardView('hoy');
-    }
-  }, [location.pathname]);
 
   // Close "More" dropdown on outside click
   useEffect(() => {
@@ -154,12 +148,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
     setSearchOpen(false);
     setActiveSearch('');
     // Navigate to dashboard with company detail open
-    if (location.pathname !== '/') {
-      navigate('/', { state: { companyId, tab: 'briefing' } });
-    } else {
-      // Already on dashboard, dispatch event to open detail
-      window.dispatchEvent(new CustomEvent('select-company', { detail: { companyId } }));
-    }
+    navigate(`${NEXUS_VIEW_PATHS.briefing}?company=${encodeURIComponent(companyId)}`);
     onCompanyNavigate?.(companyId);
   };
 
@@ -170,8 +159,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
       onAddCompany();
     } else {
       // Navigate to map and trigger add
-      if (location.pathname !== '/map') navigate('/map');
-      setTimeout(() => window.dispatchEvent(new CustomEvent('open-add-company')), 100);
+      navigate('/map', { state: { openAddCompany: true } });
     }
   };
 

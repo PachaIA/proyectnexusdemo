@@ -1,7 +1,8 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { QueryClientProvider } from "@tanstack/react-query";
+import { queryClient } from "@/lib/queryClient";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
@@ -17,8 +18,6 @@ import OAuthConsent from "./pages/OAuthConsent";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import { FloatingChatWidget } from "./components/FloatingChatWidget";
 
-const queryClient = new QueryClient();
-
 // Auth desactivada temporalmente: la app abre directo sin login.
 // Para reactivarla, volver a envolver las rutas con un guard de sesión.
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => <>{children}</>;
@@ -31,6 +30,11 @@ const AppRoutes = () => {
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/.lovable/oauth/consent" element={<OAuthConsent />} />
         <Route path="/" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
+        <Route path="/clientes" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
+        <Route path="/informes" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
+        <Route path="/agenda" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
+        <Route path="/briefing" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
+        <Route path="/archivo" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
         <Route path="/map" element={<ProtectedRoute><Index /></ProtectedRoute>} />
         <Route path="/my-leads" element={<ProtectedRoute><MyLeads /></ProtectedRoute>} />
         <Route path="/simulador" element={<ProtectedRoute><Simulador /></ProtectedRoute>} />
