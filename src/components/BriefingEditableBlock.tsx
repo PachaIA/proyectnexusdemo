@@ -1,3 +1,4 @@
+import { refreshCompanies } from '@/lib/queryClient';
 import { useState, useEffect, useMemo, memo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useQueryClient } from '@tanstack/react-query';
@@ -174,7 +175,7 @@ export const BriefingEditableBlock = ({ company }: Props) => {
       const { error } = await (supabase as any).from('companies').update(patch).eq('id', company.id);
       if (error) throw error;
       toast.success('Guardado');
-      window.dispatchEvent(new CustomEvent('companies-updated'));
+      refreshCompanies();
       setEditField(null);
     } catch (e: any) {
       toast.error(e.message || 'Error al guardar');
@@ -209,7 +210,7 @@ export const BriefingEditableBlock = ({ company }: Props) => {
       }
       toast.success('Venta guardada · KPIs actualizados');
       qc.invalidateQueries({ queryKey: ['sales'] });
-      window.dispatchEvent(new CustomEvent('companies-updated'));
+      refreshCompanies();
       setEditField(null);
     } catch (e: any) {
       toast.error(e.message || 'Error al guardar venta');

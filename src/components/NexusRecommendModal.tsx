@@ -1,3 +1,4 @@
+import { refreshCompanies, refreshLeads } from '@/lib/queryClient';
 import { getEffectiveUser } from '@/lib/openUser';
 import { useState, useMemo } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
@@ -95,7 +96,7 @@ export const NexusRecommendModal = ({ open, onClose, onCompanySelect }: Props) =
         });
       }
 
-      window.dispatchEvent(new CustomEvent('leads-updated'));
+      refreshLeads();
       toast.success(`Lead "${current.name}" creado — estado: Contactado`);
       onClose();
       onCompanySelect(current);
@@ -114,7 +115,7 @@ export const NexusRecommendModal = ({ open, onClose, onCompanySelect }: Props) =
         .from('companies')
         .update({ is_hot: true })
         .eq('id', current.id);
-      window.dispatchEvent(new CustomEvent('companies-updated'));
+      refreshCompanies();
       toast.success(`${current.name} marcada como 🔥 caliente`);
       // Skip to next
       setSkippedIds(prev => new Set([...prev, current.id]));

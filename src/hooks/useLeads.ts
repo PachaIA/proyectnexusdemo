@@ -170,12 +170,6 @@ export const useLeads = () => {
     return stats;
   };
 
-  // Listen for external lead updates (from InteractionRegistry estado changes)
-  useEffect(() => {
-    const handler = () => queryClient.invalidateQueries({ queryKey: ['leads'] });
-    window.addEventListener('leads-updated', handler);
-    return () => window.removeEventListener('leads-updated', handler);
-  }, [queryClient]);
 
   return {
     leads,

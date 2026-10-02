@@ -1,3 +1,4 @@
+import { refreshCompanies } from '@/lib/queryClient';
 import { useState } from 'react';
 import { User, Plus, Trash2, Save, X, Linkedin, Phone, Mail, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -93,7 +94,7 @@ const EditableContacts = ({ companyId, contacts, onUpdate, localStorageKey }: Ed
       setDraft(cleaned);
       setEditing(false);
       toast.success('Contactos guardados');
-      window.dispatchEvent(new CustomEvent('companies-updated'));
+      refreshCompanies();
     } catch (err) {
       console.error('Error saving contacts:', err);
       toast.error('Error al guardar contactos');
@@ -118,7 +119,7 @@ const EditableContacts = ({ companyId, contacts, onUpdate, localStorageKey }: Ed
       onUpdate(next);
       setDraft(next);
       toast.success('Contacto principal actualizado');
-      window.dispatchEvent(new CustomEvent('companies-updated'));
+      refreshCompanies();
     } catch (err: any) {
       console.error(err);
       toast.error('Error al marcar principal');

@@ -1,3 +1,4 @@
+import { refreshCompanies, refreshLeads } from '@/lib/queryClient';
 import { useState, useMemo } from 'react';
 import { useLeads } from '@/hooks/useLeads';
 import { useCompanies } from '@/hooks/useCompanies';
@@ -273,7 +274,7 @@ export const HoyTab = ({ onCompanySelect }: HoyTabProps) => {
                     const tomorrow = new Date();
                     tomorrow.setDate(tomorrow.getDate() + 7);
                     await (supabase as any).from('leads').update({ next_action_date: tomorrow.toISOString().split('T')[0], next_action: 'seguimiento' }).eq('id', lead.id);
-                    window.dispatchEvent(new CustomEvent('leads-updated'));
+                    refreshLeads();
                     toast.success(`"${lead.empresa}" aplazada 7 días`);
                   }}
                   className="shrink-0 w-7 h-7 rounded-md hover:bg-green-500/20 text-muted-foreground hover:text-green-400 transition-colors flex items-center justify-center"
@@ -321,7 +322,7 @@ export const HoyTab = ({ onCompanySelect }: HoyTabProps) => {
                       const tomorrow = new Date();
                       tomorrow.setDate(tomorrow.getDate() + 1);
                       await (supabase as any).from('leads').update({ next_action_date: tomorrow.toISOString().split('T')[0] }).eq('id', lead.id);
-                      window.dispatchEvent(new CustomEvent('leads-updated'));
+                      refreshLeads();
                       toast.success(`"${lead.empresa}" — llamada hecha ✓`);
                     }}
                     className="shrink-0 w-7 h-7 rounded-md hover:bg-green-500/20 text-muted-foreground hover:text-green-400 transition-colors flex items-center justify-center"
@@ -367,7 +368,7 @@ export const HoyTab = ({ onCompanySelect }: HoyTabProps) => {
                     onClick={async (e) => {
                       e.stopPropagation();
                       await (supabase as any).from('companies').update({ is_hot: false }).eq('id', company.id);
-                      window.dispatchEvent(new CustomEvent('companies-updated'));
+                      refreshCompanies();
                       toast.success(`"${company.name}" ya no es caliente`);
                     }}
                     className="shrink-0 w-7 h-7 rounded-md hover:bg-red-500/20 text-muted-foreground hover:text-red-400 transition-colors flex items-center justify-center"

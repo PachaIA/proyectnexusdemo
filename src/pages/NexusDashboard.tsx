@@ -1,3 +1,4 @@
+import { refreshCompanies, refreshLeads } from '@/lib/queryClient';
 import { getEffectiveUser } from '@/lib/openUser';
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -380,7 +381,7 @@ function InteractionRegistry({
         });
       }
       // Invalidate leads query
-      window.dispatchEvent(new CustomEvent('leads-updated'));
+      refreshLeads();
     } catch (e) {
       console.error('Error syncing estado to leads:', e);
     }
@@ -935,7 +936,7 @@ function DetailPanel({
       const { error } = await supabase.from('companies').update({ [field]: value }).eq('id', selected.id);
       if (error) throw error;
       toast.success("Actualizado en base de datos");
-      window.dispatchEvent(new CustomEvent('companies-updated'));
+      refreshCompanies();
     } catch (e: any) {
       console.error("Update error:", e);
       toast.error("Error al guardar");
@@ -1295,7 +1296,7 @@ function DetailPanel({
                   estado: 'contactado', next_action: 'call', next_action_date: today, user_id: user.id,
                 });
               }
-              window.dispatchEvent(new CustomEvent('leads-updated'));
+              refreshLeads();
               toast.success('Marcado para llamar hoy');
             } catch (e) { console.error(e); toast.error('Error al marcar llamada'); }
           }} style={{
@@ -1317,7 +1318,7 @@ function DetailPanel({
                   estado: 'contactado', next_action: 'visit', next_action_date: today, user_id: user.id,
                 });
               }
-              window.dispatchEvent(new CustomEvent('leads-updated'));
+              refreshLeads();
               toast.success('Marcado para visitar hoy');
             } catch (e) { console.error(e); toast.error('Error al marcar visita'); }
           }} style={{
