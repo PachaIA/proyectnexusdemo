@@ -88,7 +88,7 @@ export function AgendaTab({ onCompanySelect }: AgendaTabProps) {
 
   // Todas las actividades del usuario (solo lectura)
   const { data: allActivities = [] } = useQuery({
-    queryKey: ['informes-activities'],
+    queryKey: ['agenda-activities'],
     queryFn: async () => {
       const { data: { user } } = await getEffectiveUser();
       if (!user) return [];
@@ -561,7 +561,7 @@ export function AgendaTab({ onCompanySelect }: AgendaTabProps) {
           onSaved={async () => {
             setActivityCompany(null);
             // Refresca la agenda sin recargar
-            await qc.invalidateQueries({ queryKey: ['informes-activities'] });
+            await qc.invalidateQueries({ queryKey: ['agenda-activities'] });
             await qc.invalidateQueries({ queryKey: ['company-activities'] });
           }}
         />

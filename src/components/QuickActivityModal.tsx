@@ -69,6 +69,7 @@ export function QuickActivityModal({ company, onClose, onSaved }: Props) {
       await createActivity.mutateAsync(payload);
       // Refresca el panel Informes (contadores y listas)
       await qc.invalidateQueries({ queryKey: ['informes-activities'] });
+      await qc.invalidateQueries({ queryKey: ['agenda-activities'] });
       toast.success('Actividad registrada');
       onSaved?.(payload.next_action_date || null);
       onClose();
