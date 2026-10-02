@@ -5,6 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { NEXUS_VIEW_PATHS, nexusViewFromPath } from '@/lib/nexusViews';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useCompanies } from '@/hooks/useCompanies';
@@ -59,6 +60,7 @@ interface HeaderProps {
 export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, onAddCompany, onCompanyNavigate }: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const dashboardView = nexusViewFromPath(location.pathname);
   const [localSearch, setLocalSearch] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains('dark'));
@@ -66,7 +68,6 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const moreRef = useRef<HTMLDivElement>(null);
-  const [dashboardView, setDashboardView] = useState<'hoy' | 'clientes' | 'briefing' | 'archivo' | 'informes' | 'agenda'>('hoy');
   const [moreOpen, setMoreOpen] = useState(false);
 
   const { companies } = useCompanies();
@@ -124,25 +125,6 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
     }
   }, []);
 
-  // Track dashboard sub-view for active state in nav
-  useEffect(() => {
-    const handlers: Record<string, () => void> = {
-      'nexus-view-hoy': () => setDashboardView('hoy'),
-      'nexus-view-clientes': () => setDashboardView('clientes'),
-      'nexus-view-briefing': () => setDashboardView('briefing'),
-      'nexus-view-archivo': () => setDashboardView('archivo'),
-      'nexus-view-informes': () => setDashboardView('informes'),
-      'nexus-view-agenda': () => setDashboardView('agenda'),
-    };
-    Object.entries(handlers).forEach(([event, handler]) => {
-      window.addEventListener(event, handler);
-    });
-    return () => {
-      Object.entries(handlers).forEach(([event, handler]) => {
-        window.removeEventListener(event, handler);
-      });
-    };
-  }, []);
 
   // Reset dashboard view when leaving the dashboard page
   useEffect(() => {
@@ -215,10 +197,10 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
       <div className="flex-1 flex items-center gap-4 max-w-2xl">
         <nav className="hidden md:flex items-center gap-1 bg-muted/50 rounded-full p-1 border border-border shrink-0">
           <button
-            onClick={() => { navigate('/'); setDashboardView('hoy'); window.dispatchEvent(new CustomEvent('nexus-view-hoy')); }}
+            onClick={() => navigate(NEXUS_VIEW_PATHS.hoy)}
             className={cn(
               'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
-              location.pathname === '/' && dashboardView === 'hoy'
+              dashboardView === 'hoy'
                 ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
                 : 'text-muted-foreground hover:text-foreground'
             )}
@@ -226,10 +208,10 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             📋 Hoy
           </button>
           <button
-            onClick={() => { navigate('/'); setDashboardView('clientes'); window.dispatchEvent(new CustomEvent('nexus-view-clientes')); }}
+            onClick={() => navigate(NEXUS_VIEW_PATHS.clientes)}
             className={cn(
               'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
-              location.pathname === '/' && dashboardView === 'clientes'
+              dashboardView === 'clientes'
                 ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
                 : 'text-muted-foreground hover:text-foreground'
             )}
@@ -259,10 +241,10 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             📊 Pipeline
           </button>
           <button
-            onClick={() => { navigate('/'); setDashboardView('informes'); window.dispatchEvent(new CustomEvent('nexus-view-informes')); }}
+            onClick={() => navigate(NEXUS_VIEW_PATHS.informes)}
             className={cn(
               'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
-              location.pathname === '/' && dashboardView === 'informes'
+              dashboardView === 'informes'
                 ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
                 : 'text-muted-foreground hover:text-foreground'
             )}
@@ -270,10 +252,10 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             📑 Informes
           </button>
           <button
-            onClick={() => { navigate('/'); setDashboardView('agenda'); window.dispatchEvent(new CustomEvent('nexus-view-agenda')); }}
+            onClick={() => navigate(NEXUS_VIEW_PATHS.agenda)}
             className={cn(
               'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
-              location.pathname === '/' && dashboardView === 'agenda'
+              dashboardView === 'agenda'
                 ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
                 : 'text-muted-foreground hover:text-foreground'
             )}
@@ -289,7 +271,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
                   location.pathname === '/leads' ||
                   location.pathname.startsWith('/triaje') ||
                   location.pathname === '/simulador' ||
-                  (location.pathname === '/' && ['briefing', 'archivo'].includes(dashboardView))
+                  (dashboardView === 'briefing' || dashboardView === 'archivo')
                 )
                   ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
                   : 'text-muted-foreground hover:text-foreground'
@@ -300,10 +282,10 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             {moreOpen && (
               <div className="absolute top-full right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-50 py-1 min-w-[180px]">
                 <button
-                  onClick={() => { setMoreOpen(false); navigate('/'); setDashboardView('briefing'); setTimeout(() => window.dispatchEvent(new CustomEvent('nexus-view-briefing')), 50); }}
+                  onClick={() => { setMoreOpen(false); navigate(NEXUS_VIEW_PATHS.briefing); }}
                   className={cn(
                     'w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2',
-                    dashboardView === 'briefing' && location.pathname === '/'
+                    dashboardView === 'briefing'
                       ? 'text-primary bg-primary/10'
                       : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                   )}
@@ -344,10 +326,10 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
                   🧮 Simulador
                 </button>
                 <button
-                  onClick={() => { setMoreOpen(false); navigate('/'); setDashboardView('archivo'); setTimeout(() => window.dispatchEvent(new CustomEvent('nexus-view-archivo')), 50); }}
+                  onClick={() => { setMoreOpen(false); navigate(NEXUS_VIEW_PATHS.archivo); }}
                   className={cn(
                     'w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2',
-                    dashboardView === 'archivo' && location.pathname === '/'
+                    dashboardView === 'archivo'
                       ? 'text-primary bg-primary/10'
                       : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
                   )}

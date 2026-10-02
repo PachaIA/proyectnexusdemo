@@ -1,6 +1,7 @@
 import { getEffectiveUser } from '@/lib/openUser';
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { NEXUS_VIEW_PATHS, nexusViewFromPath, NexusView } from "@/lib/nexusViews";
 import { Company, DecisionMaker } from "@/data/companies";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
@@ -656,7 +657,12 @@ export default function NexusDashboard() {
   const [selected, setSelected] = useState<Company | null>(null);
   const [showAI, setShowAI] = useState(false);
   const [interactions, setInteractions] = useState<InteractionsMap>(loadInteractions);
-  const [nexusView, setNexusView] = useState<'hoy' | 'clientes' | 'briefing' | 'archivo' | 'informes' | 'agenda'>('hoy');
+  const navigate = useNavigate();
+  // La vista activa sale de la URL (/clientes, /informes, /agenda…), no de eventos globales.
+  const nexusView: NexusView = nexusViewFromPath(location.pathname) ?? 'hoy';
+  const setNexusView = useCallback((v: NexusView) => {
+    if (NEXUS_VIEW_PATHS[v] !== location.pathname) navigate(NEXUS_VIEW_PATHS[v]);
+  }, [navigate, location.pathname]);
 
   // Handle incoming navigation from Pipeline
   useEffect(() => {
@@ -680,12 +686,6 @@ export default function NexusDashboard() {
   }, [companies, selected]);
 
   useEffect(() => {
-    const handleHoy = () => setNexusView('hoy');
-    const handleClientes = () => setNexusView('clientes');
-    const handleArchivo = () => setNexusView('archivo');
-    const handleBriefing = () => setNexusView('briefing');
-    const handleInformes = () => setNexusView('informes');
-    const handleAgenda = () => setNexusView('agenda');
     const handleSelectCompany = (e: Event) => {
       const detail = (e as CustomEvent<{ companyId: string }>).detail;
       const comp = companies.find(c => c.id === detail.companyId);
@@ -694,21 +694,9 @@ export default function NexusDashboard() {
         setNexusView('briefing');
       }
     };
-    window.addEventListener('nexus-view-hoy', handleHoy);
-    window.addEventListener('nexus-view-clientes', handleClientes);
-    window.addEventListener('nexus-view-archivo', handleArchivo);
-    window.addEventListener('nexus-view-briefing', handleBriefing);
-    window.addEventListener('nexus-view-informes', handleInformes);
-    window.addEventListener('nexus-view-agenda', handleAgenda);
     window.addEventListener('select-company', handleSelectCompany);
     return () => {
-      window.removeEventListener('nexus-view-hoy', handleHoy);
-      window.removeEventListener('nexus-view-clientes', handleClientes);
-      window.removeEventListener('nexus-view-archivo', handleArchivo);
-      window.removeEventListener('nexus-view-briefing', handleBriefing);
-      window.removeEventListener('nexus-view-informes', handleInformes);
-      window.removeEventListener('nexus-view-agenda', handleAgenda);
-      window.removeEventListener('select-company', handleSelectCompany);
+                  window.removeEventListener('select-company', handleSelectCompany);
     };
   }, [companies]);
 
