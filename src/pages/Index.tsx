@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { CompanyDetailPanel } from '@/components/layout/CompanyDetailPanel';
 import { CompanyMap } from '@/components/CompanyMap';
@@ -46,19 +46,15 @@ const Index = () => {
   const { data: csvCompanies = [] } = useCsvCompanies();
   const [searchParams] = useSearchParams();
 
+  // Abrir "Nueva Empresa" al llegar desde el buscador global (state del router).
+  const location = useLocation();
+  const navigate = useNavigate();
   useEffect(() => {
-    const handleSelectCompany = (e: CustomEvent<{ companyId: string }>) => {
-      const company = companies.find(c => c.id === e.detail.companyId);
-      if (company) handleCompanySelect(company);
-    };
-    const handleOpenAdd = () => setShowAddCompany(true);
-    window.addEventListener('select-company', handleSelectCompany as EventListener);
-    window.addEventListener('open-add-company', handleOpenAdd);
-    return () => {
-      window.removeEventListener('select-company', handleSelectCompany as EventListener);
-      window.removeEventListener('open-add-company', handleOpenAdd);
-    };
-  }, [companies]);
+    if ((location.state as { openAddCompany?: boolean } | null)?.openAddCompany) {
+      setShowAddCompany(true);
+      navigate(location.pathname + location.search, { replace: true, state: null });
+    }
+  }, [location.state]);
 
   // Deep-link desde /leads → ?company=<id> abre el detalle y centra el mapa
   useEffect(() => {

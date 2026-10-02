@@ -1,3 +1,4 @@
+import { refreshCompanies } from '@/lib/queryClient';
 import { useEffect, useState, useCallback, memo } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
@@ -111,7 +112,7 @@ export function CompanyFichaExtra({ companyId, initial }: Props) {
       const { error } = await supabase.from('companies' as any).update(updates).eq('id', companyId);
       if (error) throw error;
       toast.success('Datos guardados');
-      window.dispatchEvent(new CustomEvent('companies-updated'));
+      refreshCompanies();
     } catch (e: any) {
       console.error(e);
       toast.error('Error al guardar');

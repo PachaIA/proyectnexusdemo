@@ -1,6 +1,8 @@
+import { refreshCompanies, refreshLeads } from '@/lib/queryClient';
 import { getEffectiveUser } from '@/lib/openUser';
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { NEXUS_VIEW_PATHS, nexusViewFromPath, NexusView } from "@/lib/nexusViews";
 import { Company, DecisionMaker } from "@/data/companies";
 import { supabase } from "@/integrations/supabase/client";
 import { Header } from "@/components/Header";
@@ -379,7 +381,7 @@ function InteractionRegistry({
         });
       }
       // Invalidate leads query
-      window.dispatchEvent(new CustomEvent('leads-updated'));
+      refreshLeads();
     } catch (e) {
       console.error('Error syncing estado to leads:', e);
     }
@@ -656,21 +658,34 @@ export default function NexusDashboard() {
   const [selected, setSelected] = useState<Company | null>(null);
   const [showAI, setShowAI] = useState(false);
   const [interactions, setInteractions] = useState<InteractionsMap>(loadInteractions);
-  const [nexusView, setNexusView] = useState<'hoy' | 'clientes' | 'briefing' | 'archivo' | 'informes' | 'agenda'>('hoy');
+  const navigate = useNavigate();
+  // La vista activa sale de la URL (/clientes, /informes, /agenda…), no de eventos globales.
+  const nexusView: NexusView = nexusViewFromPath(location.pathname) ?? 'hoy';
+  const setNexusView = useCallback((v: NexusView) => {
+    if (NEXUS_VIEW_PATHS[v] !== location.pathname) navigate(NEXUS_VIEW_PATHS[v]);
+  }, [navigate, location.pathname]);
 
-  // Handle incoming navigation from Pipeline
+  // Ficha abierta = /briefing?company=<id>. Sobrevive a F5 y al botón atrás.
+  // Compatibilidad: navegación antigua con state { companyId } (p. ej. desde Pipeline).
   useEffect(() => {
-    const state = location.state as { companyId?: string; tab?: string } | null;
+    const state = location.state as { companyId?: string } | null;
     if (state?.companyId) {
-      const comp = companies.find(c => c.id === state.companyId);
-      if (comp) {
-        setSelected(comp);
-        setNexusView('briefing');
-      }
-      // Clear location state to avoid re-triggering
-      window.history.replaceState({}, document.title);
+      navigate(`${NEXUS_VIEW_PATHS.briefing}?company=${encodeURIComponent(state.companyId)}`, { replace: true });
     }
-  }, [location.state, companies]);
+  }, [location.state, navigate]);
+
+  const urlCompanyId = new URLSearchParams(location.search).get('company');
+  useEffect(() => {
+    if (nexusView !== 'briefing' || !urlCompanyId) return;
+    if (selected?.id === urlCompanyId) return;
+    const comp = companies.find(c => c.id === urlCompanyId);
+    if (comp) setSelected(comp);
+  }, [nexusView, urlCompanyId, companies, selected?.id]);
+
+  const openBriefing = useCallback((c: Company) => {
+    setSelected(c);
+    navigate(`${NEXUS_VIEW_PATHS.briefing}?company=${encodeURIComponent(c.id)}`);
+  }, [navigate]);
 
   // Sync `selected` with refreshed companies (after edits trigger refetch)
   useEffect(() => {
@@ -679,38 +694,6 @@ export default function NexusDashboard() {
     if (fresh && fresh !== selected) setSelected(fresh);
   }, [companies, selected]);
 
-  useEffect(() => {
-    const handleHoy = () => setNexusView('hoy');
-    const handleClientes = () => setNexusView('clientes');
-    const handleArchivo = () => setNexusView('archivo');
-    const handleBriefing = () => setNexusView('briefing');
-    const handleInformes = () => setNexusView('informes');
-    const handleAgenda = () => setNexusView('agenda');
-    const handleSelectCompany = (e: Event) => {
-      const detail = (e as CustomEvent<{ companyId: string }>).detail;
-      const comp = companies.find(c => c.id === detail.companyId);
-      if (comp) {
-        setSelected(comp);
-        setNexusView('briefing');
-      }
-    };
-    window.addEventListener('nexus-view-hoy', handleHoy);
-    window.addEventListener('nexus-view-clientes', handleClientes);
-    window.addEventListener('nexus-view-archivo', handleArchivo);
-    window.addEventListener('nexus-view-briefing', handleBriefing);
-    window.addEventListener('nexus-view-informes', handleInformes);
-    window.addEventListener('nexus-view-agenda', handleAgenda);
-    window.addEventListener('select-company', handleSelectCompany);
-    return () => {
-      window.removeEventListener('nexus-view-hoy', handleHoy);
-      window.removeEventListener('nexus-view-clientes', handleClientes);
-      window.removeEventListener('nexus-view-archivo', handleArchivo);
-      window.removeEventListener('nexus-view-briefing', handleBriefing);
-      window.removeEventListener('nexus-view-informes', handleInformes);
-      window.removeEventListener('nexus-view-agenda', handleAgenda);
-      window.removeEventListener('select-company', handleSelectCompany);
-    };
-  }, [companies]);
 
 
   const handleInteractionUpdate = useCallback((newMap: InteractionsMap) => {
@@ -746,23 +729,23 @@ export default function NexusDashboard() {
 
         {nexusView === 'hoy' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <HoyTab onCompanySelect={(c) => { setSelected(c); setNexusView('briefing'); }} />
+            <HoyTab onCompanySelect={openBriefing} />
           </div>
         ) : nexusView === 'clientes' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <ClientesTab onCompanySelect={(c) => { setSelected(c); setNexusView('briefing'); }} />
+            <ClientesTab onCompanySelect={openBriefing} />
           </div>
         ) : nexusView === 'archivo' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <ArchivoTab onCompanySelect={(c) => { setSelected(c); setNexusView('briefing'); }} />
+            <ArchivoTab onCompanySelect={openBriefing} />
           </div>
         ) : nexusView === 'informes' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <InformesTab onCompanySelect={(c) => { setSelected(c); setNexusView('briefing'); }} />
+            <InformesTab onCompanySelect={openBriefing} />
           </div>
         ) : nexusView === 'agenda' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <AgendaTab onCompanySelect={(c) => { setSelected(c); setNexusView('briefing'); }} />
+            <AgendaTab onCompanySelect={openBriefing} />
           </div>
         ) : (
 
@@ -947,7 +930,7 @@ function DetailPanel({
       const { error } = await supabase.from('companies').update({ [field]: value }).eq('id', selected.id);
       if (error) throw error;
       toast.success("Actualizado en base de datos");
-      window.dispatchEvent(new CustomEvent('companies-updated'));
+      refreshCompanies();
     } catch (e: any) {
       console.error("Update error:", e);
       toast.error("Error al guardar");
@@ -1307,7 +1290,7 @@ function DetailPanel({
                   estado: 'contactado', next_action: 'call', next_action_date: today, user_id: user.id,
                 });
               }
-              window.dispatchEvent(new CustomEvent('leads-updated'));
+              refreshLeads();
               toast.success('Marcado para llamar hoy');
             } catch (e) { console.error(e); toast.error('Error al marcar llamada'); }
           }} style={{
@@ -1329,7 +1312,7 @@ function DetailPanel({
                   estado: 'contactado', next_action: 'visit', next_action_date: today, user_id: user.id,
                 });
               }
-              window.dispatchEvent(new CustomEvent('leads-updated'));
+              refreshLeads();
               toast.success('Marcado para visitar hoy');
             } catch (e) { console.error(e); toast.error('Error al marcar visita'); }
           }} style={{

@@ -1,3 +1,4 @@
+import { refreshCompanies } from '@/lib/queryClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Building2, MapPin, Globe, Users, Target, Zap, 
@@ -295,7 +296,7 @@ export const CompanyDetailPanel = ({
                 principal: !!dm.principal,
               }))}
               onUpdate={() => {
-                window.dispatchEvent(new CustomEvent('companies-updated'));
+                refreshCompanies();
               }}
             />
           </section>

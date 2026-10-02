@@ -1,3 +1,4 @@
+import { refreshCompanies } from '@/lib/queryClient';
 import { useState, useEffect, memo, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
@@ -51,7 +52,7 @@ export const CompanyAddressEditor = ({ companyId, initialAddress }: CompanyAddre
       setAddress(next);
       setEditing(false);
       toast.success('Dirección actualizada');
-      window.dispatchEvent(new CustomEvent('companies-updated'));
+      refreshCompanies();
     } catch (e: any) {
       toast.error(e.message || 'Error al guardar');
     } finally {

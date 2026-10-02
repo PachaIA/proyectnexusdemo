@@ -1,3 +1,4 @@
+import { refreshCompanies } from '@/lib/queryClient';
 import { useState } from 'react';
 import { MapPin, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
@@ -23,7 +24,7 @@ export const GeocodePendingButton = () => {
         await new Promise((r) => setTimeout(r, 300));
       }
       toast.success(`Geocodificación completada: ${totalActualizados} actualizados`);
-      window.dispatchEvent(new Event('companies-updated'));
+      refreshCompanies();
     } catch (e: any) {
       console.error(e);
       toast.error('Error geocodificando: ' + (e?.message ?? ''));

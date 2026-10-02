@@ -1,5 +1,4 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Company } from '@/data/companies';
 
@@ -119,12 +118,6 @@ export const useCompanies = () => {
     staleTime: 5 * 60 * 1000,
   });
 
-  // Listen for contact updates from EditableContacts
-  useEffect(() => {
-    const handler = () => queryClient.invalidateQueries({ queryKey: ['companies'] });
-    window.addEventListener('companies-updated', handler);
-    return () => window.removeEventListener('companies-updated', handler);
-  }, [queryClient]);
 
   return { companies, isLoading, error, totalCompanies: companies.length, refetch };
 };
