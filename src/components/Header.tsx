@@ -12,6 +12,7 @@ import { useCompanies } from '@/hooks/useCompanies';
 import { useLeads } from '@/hooks/useLeads';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { NotesDrawer } from '@/components/NotesDrawer';
+import { OfflineIndicator } from '@/components/OfflineIndicator';
 
 const NexusLogo = () => (
   <div className="flex items-center gap-2.5 mr-4">
@@ -407,6 +408,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
 
       {/* Right Section */}
       <div className="flex items-center gap-2">
+        <OfflineIndicator />
         {/* Mobile Search */}
         <Button variant="ghost" size="icon" className="md:hidden h-9 w-9">
           <Search className="w-4 h-4" />
