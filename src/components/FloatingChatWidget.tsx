@@ -1,3 +1,4 @@
+import { useLocation } from 'react-router-dom';
 import { useState, useRef, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Bot, X, RotateCcw, Send, User, Loader2, MessageCircle } from "lucide-react";
@@ -92,6 +93,8 @@ const suggestions = [
 ];
 
 export const FloatingChatWidget = () => {
+  const { pathname } = useLocation();
+  if (pathname.startsWith('/llamada')) return null;
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");

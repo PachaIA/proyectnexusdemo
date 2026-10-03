@@ -7,3 +7,4 @@
 - [x] 14 sample clients across all 7 pipeline stages
 - [x] Project URL for OpenClaw
 - [ ] Re-enable login and remove open access (when user decides)
+- [x] Modo Llamada (/llamada/:companyId): pantalla a pantalla completa, resultados con fecha, encadenado de llamadas, sin barras de navegación
