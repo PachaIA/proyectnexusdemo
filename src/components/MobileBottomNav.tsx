@@ -17,6 +17,7 @@ const tabs = [
 export const MobileBottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  if (location.pathname.startsWith('/llamada')) return null;
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[9999] bg-card border-t border-border flex items-stretch safe-area-bottom">
