@@ -10,6 +10,7 @@ import { scoreNcs, pitchFor, recommendProducts, LeadInput, Sector, OperadorActua
 import { Company } from '@/data/companies';
 import { Phone, ArrowLeft, PhoneOutgoing, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
+import { enqueue, isNetworkError } from '@/lib/offlineQueue';
 
 // ─── Mapeo empresa → entrada del simulador NCS (reutiliza su lógica) ────────
 const toLeadInput = (c: Company): LeadInput => {
@@ -105,27 +106,48 @@ const CallMode = () => {
   const recordOutcome = async (o: (typeof OUTCOMES)[number]) => {
     if (!company || saving) return;
     setSaving(o.id);
+    const { data: { user } } = await getEffectiveUser();
+    const activity = {
+      company_id: company.id,
+      user_id: user.id,
+      activity_type: 'llamada',
+      summary: `Resultado de llamada: ${o.label}`,
+      outcome: o.label,
+      next_step: o.nextDays > 0 ? `Volver a llamar en ${o.nextDays} día(s)` : null,
+      next_action_date: o.nextDays > 0 ? addDays(o.nextDays) : null,
+      created_at: new Date().toISOString(),
+    };
+    const upd: Record<string, unknown> = { next_action: 'call', next_action_date: o.nextDays > 0 ? addDays(o.nextDays) : null };
+    if (o.estado) upd.estado = o.estado;
+
+    const queueLocally = () => {
+      enqueue({ kind: 'insert', table: 'company_activities', values: activity });
+      if (lead) enqueue({ kind: 'update', table: 'leads', values: upd, id: lead.id });
+      toast.success(`${company.name} — ${o.label}`, { description: 'Sin conexión: se sincronizará al recuperar la red' });
+    };
+
     try {
-      const { data: { user } } = await getEffectiveUser();
-      await (supabase as any).from('company_activities').insert({
-        company_id: company.id,
-        user_id: user.id,
-        activity_type: 'llamada',
-        summary: `Resultado de llamada: ${o.label}`,
-        outcome: o.label,
-        next_step: o.nextDays > 0 ? `Volver a llamar en ${o.nextDays} día(s)` : null,
-        next_action_date: o.nextDays > 0 ? addDays(o.nextDays) : null,
-      });
-      if (lead) {
-        const upd: Record<string, unknown> = { next_action: 'call', next_action_date: o.nextDays > 0 ? addDays(o.nextDays) : null };
-        if (o.estado) upd.estado = o.estado;
-        await (supabase as any).from('leads').update(upd).eq('id', lead.id);
+      if (!navigator.onLine) {
+        queueLocally();
+      } else {
+        const { error } = await (supabase as any).from('company_activities').insert(activity);
+        if (error) {
+          if (!isNetworkError(error)) throw error;
+          queueLocally();
+        } else {
+          if (lead) await (supabase as any).from('leads').update(upd).eq('id', lead.id);
+          refreshLeads();
+          toast.success(`${company.name} — ${o.label}`);
+        }
       }
-      refreshLeads();
-      toast.success(`${company.name} — ${o.label}`);
       if (nextCall) navigate(`/llamada/${nextCall.company_id}`, { replace: true });
       else navigate('/', { replace: true });
-    } catch {
+    } catch (e) {
+      if (isNetworkError(e)) {
+        queueLocally();
+        navigate(nextCall ? `/llamada/${nextCall.company_id}` : '/', { replace: true });
+        return;
+      }
       toast.error('No se pudo guardar el resultado');
       setSaving(null);
     }
