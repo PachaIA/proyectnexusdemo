@@ -9,6 +9,7 @@ import { computeQuarterKpis, rentLabel } from '@/lib/salesKpis';
 import { Company } from '@/data/companies';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
+import { useNavigate } from 'react-router-dom';
 import { Phone, Target, TrendingUp, Zap, FileText, PhoneCall, Flame, Calendar, Edit2, Check, X, Compass } from 'lucide-react';
 import { NexusRecommendModal } from '@/components/NexusRecommendModal';
 import { toast } from 'sonner';
@@ -34,6 +35,7 @@ const snavColor = (v: number) => {
 };
 
 export const HoyTab = ({ onCompanySelect }: HoyTabProps) => {
+  const navigate = useNavigate();
   const { leads } = useLeads();
   const { companies } = useCompanies();
   const { sales } = useSales();
@@ -315,6 +317,13 @@ export const HoyTab = ({ onCompanySelect }: HoyTabProps) => {
                       )}
                       <span className="text-[10px] text-muted-foreground">{lead.next_action || 'Llamar'}</span>
                     </div>
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); if (company) navigate(`/llamada/${company.id}`); }}
+                    className="shrink-0 w-7 h-7 rounded-md hover:bg-primary/20 text-muted-foreground hover:text-primary transition-colors flex items-center justify-center"
+                    title="Modo llamada"
+                  >
+                    <PhoneCall className="w-3.5 h-3.5" />
                   </button>
                   <button
                     onClick={async (e) => {

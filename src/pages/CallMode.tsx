@@ -100,7 +100,7 @@ const CallMode = () => {
   const hook = input && ncs ? pitchFor(input, ncs) : '';
   const products = input && ncs ? recommendProducts(input, ncs).slice(0, 4) : [];
 
-  const phone = company ? ((company.contactInfo as any)?.telefono || company.contactInfo?.phone || company.telefonoSecundario || '') : '';
+  const phone = company ? ((company.contactInfo as any)?.telefono || company.contactInfo?.phone || '') : '';
 
   const recordOutcome = async (o: (typeof OUTCOMES)[number]) => {
     if (!company || saving) return;

@@ -6,6 +6,7 @@ import {
   ChevronRight, ExternalLink, Star, AlertCircle, Mic, Send,
   Search, MonitorCheck, MessageCircle, AtSign, Archive
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { getEmailMailtoUrl } from '@/lib/emailTemplates';
 import { Company, sectors, locationTypes, DecisionMaker } from '@/data/companies';
 import { Button } from '@/components/ui/button';
@@ -60,6 +61,7 @@ export const CompanyDetailPanel = ({
   onArchive,
   variant = 'side',
 }: CompanyDetailPanelProps) => {
+  const navigate = useNavigate();
   const isMobile = useIsMobile();
 
   if (!company) return null;
@@ -174,6 +176,12 @@ export const CompanyDetailPanel = ({
             >
               <Phone className="w-5 h-5" /> LLAMAR — {contactPhone}
             </a>
+            <button
+              onClick={() => navigate(`/llamada/${company.id}`)}
+              className="mt-2 w-full py-2.5 rounded-xl border border-primary/40 text-primary text-sm font-semibold active:opacity-80"
+            >
+              Modo llamada
+            </button>
           </div>
         )}
       </div>
