@@ -11,6 +11,7 @@ import MyLeads from "./pages/MyLeads";
 import NexusDashboard from "./pages/NexusDashboard";
 import Simulador from "./pages/Simulador";
 import CallMode from "./pages/CallMode";
+import ObjetivoTrimestre from "./pages/ObjetivoTrimestre";
 import LeadsTable from "./pages/LeadsTable";
 import Triaje from "./pages/Triaje";
 import TriajeCola from "./pages/TriajeCola";
@@ -40,6 +41,7 @@ const AppRoutes = () => {
         <Route path="/my-leads" element={<ProtectedRoute><MyLeads /></ProtectedRoute>} />
         <Route path="/llamada/:companyId" element={<CallMode />} />
         <Route path="/simulador" element={<ProtectedRoute><Simulador /></ProtectedRoute>} />
+        <Route path="/objetivo" element={<ProtectedRoute><ObjetivoTrimestre /></ProtectedRoute>} />
         <Route path="/leads" element={<ProtectedRoute><LeadsTable /></ProtectedRoute>} />
         <Route path="/triaje" element={<ProtectedRoute><Triaje /></ProtectedRoute>} />
         <Route path="/triaje/cola" element={<ProtectedRoute><TriajeCola /></ProtectedRoute>} />

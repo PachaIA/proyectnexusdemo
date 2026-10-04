@@ -16,7 +16,11 @@ const write = (ops: QueuedOp[]) => localStorage.setItem(KEY, JSON.stringify(ops)
 
 export const pendingCount = () => read().length;
 
-export const enqueue = (op: Omit<QueuedOp, 'at'>) => {
+type QueueInput =
+  | { kind: 'insert'; table: string; values: Record<string, unknown> }
+  | { kind: 'update'; table: string; values: Record<string, unknown>; id: string };
+
+export const enqueue = (op: QueueInput) => {
   write([...read(), { ...op, at: new Date().toISOString() } as QueuedOp]);
 };
 

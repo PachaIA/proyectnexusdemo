@@ -8,3 +8,5 @@
 - [x] Project URL for OpenClaw
 - [ ] Re-enable login and remove open access (when user decides)
 - [x] Modo Llamada (/llamada/:companyId): pantalla a pantalla completa, resultados con fecha, encadenado de llamadas, sin barras de navegación
+- [x] PWA instalable y offline: SW, caché de datos SWR, indicador offline, cola de escrituras, manifest iOS
+- [x] Cierre de trimestre (/objetivo): estado actual, qué falta, simulador de escenarios con pipeline
