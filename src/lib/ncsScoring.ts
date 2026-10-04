@@ -284,3 +284,67 @@ export function rowToLeadInput(row: SheetRow): LeadInput {
     reviewCount: toNum(row.review_count),
   };
 }
+
+// ---------------------------------------------------------------------------
+// Desglose explicable del score. Replica EXACTAMENTE la aritmética de scoreNcs
+// (sin modificarla) para exponer cuánto aporta cada factor.
+// La suma de contribuciones + base + engagement = score bruto.
+// ---------------------------------------------------------------------------
+export interface NcsFactor {
+  key: 'sector' | 'empleados' | 'antiguedad' | 'presencia' | 'crecimiento' | 'operador' | 'engagement' | 'base';
+  label: string;
+  detail: string;       // valor de entrada legible
+  points: number;       // aportación real al score (puede ser negativa)
+  maxPoints: number;    // escala para la barra (máximo absoluto posible)
+  weight: string;       // peso del factor en la fórmula
+}
+
+export function explainNcs(lead: LeadInput): { factors: NcsFactor[]; raw: number; score: number } {
+  const sectorCfg = SECTOR_CONFIG[lead.sector] ?? SECTOR_CONFIG.otro;
+  const emp = lead.empleados ?? 25;
+  let sizeScore: number;
+  if (emp < 20) sizeScore = (emp - 5) * 1.6;
+  else if (emp > 60) sizeScore = 28 - (emp - 60) * 0.25;
+  else sizeScore = 28;
+  sizeScore = Math.max(0, sizeScore);
+
+  const yrs = lead.antiguedadAnios ?? 10;
+  let ageScore: number;
+  if (yrs < 3) ageScore = yrs * 3;
+  else if (yrs >= 5 && yrs <= 15) ageScore = 15;
+  else ageScore = Math.max(0, 15 - Math.abs(yrs - 10) * 0.6);
+
+  const pd = lead.presenciaDigital ?? 'basic';
+  const webScore = pd === 'none' ? 3 : pd === 'basic' ? 11 : 18;
+  const g = lead.crecimiento ?? 'stable';
+  const growthScore = g === 'declining' ? 0 : g === 'stable' ? 9 : g === 'growing' ? 17 : 24;
+  const op = lead.operadorActual ?? 'unknown';
+  const opMult = OPERADOR_MULT[op];
+  let engagementBonus = 0;
+  if (lead.reviewCount != null) {
+    if (lead.reviewCount > 50) engagementBonus = 6;
+    else if (lead.reviewCount > 20) engagementBonus = 3;
+    else if (lead.reviewCount < 5) engagementBonus = -3;
+  }
+
+  const S = sizeScore + ageScore + webScore + growthScore; // máx 85
+  const sm = sectorCfg.multiplier;
+  const sectorPts = S * (sm - 1);
+  const opPts = S * sm * (opMult - 1);
+  const raw = S * sm * opMult + engagementBonus + 6;
+
+  const factors: NcsFactor[] = [
+    { key: 'sector', label: 'Sector', detail: SECTOR_LABELS[lead.sector], points: sectorPts, maxPoints: 16, weight: `×${sm.toFixed(2)} sobre la base` },
+    { key: 'empleados', label: 'Empleados', detail: `${emp}${lead.empleados == null ? ' (asumido)' : ''}`, points: sizeScore, maxPoints: 28, weight: 'hasta 28 pts' },
+    { key: 'antiguedad', label: 'Antigüedad', detail: `${yrs} años${lead.antiguedadAnios == null ? ' (asumido)' : ''}`, points: ageScore, maxPoints: 28, weight: 'hasta 15 pts' },
+    { key: 'presencia', label: 'Presencia digital', detail: pd === 'none' ? 'Ninguna' : pd === 'basic' ? 'Básica' : 'Avanzada', points: webScore, maxPoints: 28, weight: 'hasta 18 pts' },
+    { key: 'crecimiento', label: 'Señal de crecimiento', detail: { declining: 'En declive', stable: 'Estable', growing: 'En crecimiento', fast: 'Rápido' }[g], points: growthScore, maxPoints: 28, weight: 'hasta 24 pts' },
+    { key: 'operador', label: 'Operador actual', detail: { movistar: 'Movistar', orange: 'Orange/MásMóvil', digi: 'Digi/OMV', none: 'Sin contrato B2B', unknown: 'Desconocido' }[op], points: opPts, maxPoints: 28, weight: `×${opMult.toFixed(2)} sobre la base` },
+  ];
+  if (lead.reviewCount != null) {
+    factors.push({ key: 'engagement', label: 'Reseñas Google', detail: `${lead.reviewCount}`, points: engagementBonus, maxPoints: 28, weight: '−3 a +6 pts' });
+  }
+  factors.push({ key: 'base', label: 'Base de salida', detail: 'Fija', points: 6, maxPoints: 28, weight: '6 pts' });
+
+  return { factors, raw, score: Math.round(Math.max(0, Math.min(100, raw))) };
+}
