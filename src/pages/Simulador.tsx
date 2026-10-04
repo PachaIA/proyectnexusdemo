@@ -1,5 +1,8 @@
-import { useMemo, useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { ChevronDown, Copy, Mail, Save, RotateCcw, Trash2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { toast } from 'sonner';
 import { Header } from '@/components/Header';
 import { Card } from '@/components/ui/card';
 import { Label } from '@/components/ui/label';
@@ -20,6 +23,7 @@ import {
   scoreNcs,
   recommendProducts,
   pitchFor,
+  explainNcs,
   BUCKET_STYLE,
   SECTOR_LABELS,
   type Sector,
@@ -58,6 +62,69 @@ const SECTOR_ORDER: Sector[] = [
   'construccion',
 ];
 
+const SAVED_KEY = 'nexus_simulaciones';
+
+interface SavedSim {
+  id: string;
+  name: string;
+  savedAt: string;
+  lead: Required<Pick<LeadInput, 'sector' | 'empleados' | 'antiguedadAnios' | 'presenciaDigital' | 'crecimiento' | 'operadorActual'>>;
+  score: number;
+}
+
+function loadSaved(): SavedSim[] {
+  try {
+    return JSON.parse(localStorage.getItem(SAVED_KEY) || '[]');
+  } catch {
+    return [];
+  }
+}
+
+const fmtPts = (n: number) => `${n > 0 ? '+' : n < 0 ? '−' : ''}${Math.abs(n).toFixed(1).replace('.', ',')}`;
+
+function lowerFirst(s: string) {
+  return s.charAt(0).toLowerCase() + s.slice(1);
+}
+
+function buildExportText(
+  lead: LeadInput,
+  pitch: string,
+  products: { title: string; rationale: string }[],
+  factors: ReturnType<typeof explainNcs>['factors'],
+): string {
+  const sectorLabel = SECTOR_LABELS[lead.sector];
+  const top = factors
+    .filter((f) => f.key !== 'base' && f.points > 0)
+    .sort((a, b) => b.points - a.points)
+    .slice(0, 3);
+  const argText: Record<string, string> = {
+    sector: `el sector de ${lowerFirst(sectorLabel)} tiene una necesidad real de conectividad fiable y ciberseguridad`,
+    empleados: `con ${lead.empleados} empleados, la empresa tiene el tamaño en el que consolidar proveedor genera un ahorro operativo tangible`,
+    antiguedad: `sus ${lead.antiguedadAnios} años de trayectoria indican una estructura asentada y lista para renovar su infraestructura`,
+    presencia: 'su presencia digital revela una empresa que depende de estar conectada y protegida',
+    crecimiento: 'las señales de crecimiento anticipan más puestos, más líneas y necesidad de escalar sin fricción',
+    operador: 'su situación con el operador actual abre una ventana clara para mejorar condiciones y servicio',
+    engagement: 'su actividad en Google muestra un negocio con clientes activos que no puede permitirse cortes',
+  };
+  const ordinals = ['En primer lugar', 'En segundo lugar', 'Por último'];
+  const args = top.map((f, i) => `${ordinals[i]}, ${argText[f.key]}.`).join(' ');
+  const mix = products.map((p) => p.title);
+  const mixText = mix.length > 1 ? `${mix.slice(0, -1).join(', ')} y ${mix[mix.length - 1]}` : mix[0];
+
+  return [
+    `Planteamiento comercial — ${sectorLabel}, ${lead.empleados} empleados`,
+    '',
+    pitch,
+    '',
+    `Propuesta recomendada: una solución integrada que combina ${mixText}. ${products[0]?.rationale ?? ''}`,
+    '',
+    `Por qué ahora: ${args || 'el perfil encaja con nuestra propuesta de valor estándar.'}`,
+    '',
+    'Alejandro González',
+    'Consultor Estratégico Senior · Grupo Enertel',
+  ].join('\n');
+}
+
 export default function Simulador() {
   const [sector, setSector] = useState<Sector>('servicios');
   const [empleados, setEmpleados] = useState(28);
@@ -66,6 +133,12 @@ export default function Simulador() {
   const [crecimiento, setCrecimiento] = useState<Crecimiento>('stable');
   const [operadorActual, setOperadorActual] = useState<OperadorActual>('orange');
   const [reasonsOpen, setReasonsOpen] = useState(false);
+  const [simName, setSimName] = useState('');
+  const [saved, setSaved] = useState<SavedSim[]>(() => loadSaved());
+
+  useEffect(() => {
+    localStorage.setItem(SAVED_KEY, JSON.stringify(saved));
+  }, [saved]);
 
   const lead: LeadInput = useMemo(
     () => ({
@@ -83,6 +156,50 @@ export default function Simulador() {
   const products = useMemo(() => recommendProducts(lead, result), [lead, result]);
   const pitch = useMemo(() => pitchFor(lead, result), [lead, result]);
   const bucketStyle = BUCKET_STYLE[result.bucket];
+  const breakdown = useMemo(() => explainNcs(lead), [lead]);
+  const exportText = useMemo(
+    () => buildExportText(lead, pitch, products, breakdown.factors),
+    [lead, pitch, products, breakdown],
+  );
+  const mailSubject = `Propuesta de conectividad y seguridad para su empresa (${SECTOR_LABELS[sector]})`;
+  const mailHref = `mailto:?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(exportText)}`;
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(exportText);
+      toast.success('Texto copiado al portapapeles');
+    } catch {
+      toast.error('No se pudo copiar el texto');
+    }
+  };
+
+  const handleSave = () => {
+    const now = new Date();
+    const name =
+      simName.trim() ||
+      `${SECTOR_LABELS[sector]} · ${empleados} emp. · ${now.toLocaleDateString('es-ES')}`;
+    const sim: SavedSim = {
+      id: crypto.randomUUID(),
+      name,
+      savedAt: now.toISOString(),
+      lead: { sector, empleados, antiguedadAnios: antiguedad, presenciaDigital, crecimiento, operadorActual },
+      score: result.score,
+    };
+    setSaved((prev) => [sim, ...prev]);
+    setSimName('');
+    toast.success(`Simulación «${name}» guardada`);
+  };
+
+  const handleRestore = (sim: SavedSim) => {
+    setSector(sim.lead.sector);
+    setEmpleados(sim.lead.empleados);
+    setAntiguedad(sim.lead.antiguedadAnios);
+    setPresenciaDigital(sim.lead.presenciaDigital);
+    setCrecimiento(sim.lead.crecimiento);
+    setOperadorActual(sim.lead.operadorActual);
+    toast.success(`Simulación «${sim.name}» restaurada`);
+    window.scrollTo({ top: 0 });
+  };
 
   return (
     <div className="h-screen flex flex-col overflow-hidden bg-muted/30">
@@ -250,6 +367,16 @@ export default function Simulador() {
             <div className="bg-secondary text-secondary-foreground rounded-md p-5 text-sm leading-relaxed">
               {pitch}
             </div>
+            <div className="flex flex-wrap gap-2 mt-3">
+              <Button variant="outline" size="sm" onClick={handleCopy}>
+                <Copy className="w-4 h-4 mr-2" /> Copiar
+              </Button>
+              <Button variant="outline" size="sm" asChild>
+                <a href={mailHref}>
+                  <Mail className="w-4 h-4 mr-2" /> Abrir en email
+                </a>
+              </Button>
+            </div>
           </section>
 
           {/* Reasons */}
@@ -264,19 +391,97 @@ export default function Simulador() {
                 />
               </CollapsibleTrigger>
               <CollapsibleContent className="mt-3">
-                {result.reasons.length > 0 ? (
-                  <ul className="list-disc list-inside space-y-1 text-sm text-muted-foreground bg-card border border-border rounded-md p-4">
-                    {result.reasons.map((r, i) => (
-                      <li key={i}>{r}</li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-sm text-muted-foreground italic">
-                    Sin razones destacadas — perfil estándar.
-                  </p>
-                )}
+                <div className="bg-card border border-border rounded-md p-4 space-y-3">
+                  {breakdown.factors.map((f) => {
+                    const pct = Math.min(100, (Math.abs(f.points) / 28) * 50);
+                    const positive = f.points >= 0;
+                    return (
+                      <div key={f.key} className="grid grid-cols-12 items-center gap-2 text-sm">
+                        <div className="col-span-12 sm:col-span-4">
+                          <p className="font-medium text-foreground">{f.label}</p>
+                          <p className="text-xs text-muted-foreground">
+                            {f.detail} · peso {f.weight}
+                          </p>
+                        </div>
+                        <div className="col-span-9 sm:col-span-6 relative h-3 bg-muted rounded">
+                          <div className="absolute left-1/2 top-0 bottom-0 w-px bg-border" />
+                          <div
+                            className={`absolute top-0 bottom-0 rounded ${positive ? 'bg-primary' : 'bg-destructive'}`}
+                            style={positive ? { left: '50%', width: `${pct}%` } : { right: '50%', width: `${pct}%` }}
+                          />
+                        </div>
+                        <div
+                          className={`col-span-3 sm:col-span-2 text-right tabular-nums font-semibold ${
+                            positive ? 'text-foreground' : 'text-destructive'
+                          }`}
+                        >
+                          {fmtPts(f.points)} pts
+                        </div>
+                      </div>
+                    );
+                  })}
+                  <div className="flex justify-between border-t border-border pt-3 text-sm">
+                    <span className="text-muted-foreground">
+                      Total {breakdown.raw.toFixed(1).replace('.', ',')} → score {breakdown.score} (limitado a 0–100)
+                    </span>
+                  </div>
+                  {result.reasons.length > 0 && (
+                    <ul className="list-disc list-inside space-y-1 text-xs text-muted-foreground">
+                      {result.reasons.map((r, i) => (
+                        <li key={i}>{r}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
               </CollapsibleContent>
             </Collapsible>
+          </section>
+
+          {/* Saved simulations */}
+          <section className="mt-8">
+            <h2 className="text-sm font-semibold text-foreground uppercase tracking-wider mb-3">
+              Simulaciones guardadas
+            </h2>
+            <div className="flex gap-2 mb-3">
+              <Input
+                value={simName}
+                onChange={(e) => setSimName(e.target.value)}
+                placeholder="Nombre (p. ej. Clínica Dental Teatinos)"
+                onKeyDown={(e) => e.key === 'Enter' && handleSave()}
+              />
+              <Button onClick={handleSave}>
+                <Save className="w-4 h-4 mr-2" /> Guardar simulación
+              </Button>
+            </div>
+            {saved.length === 0 ? (
+              <p className="text-sm text-muted-foreground italic">Aún no hay simulaciones guardadas.</p>
+            ) : (
+              <ul className="divide-y divide-border border border-border rounded-md bg-card">
+                {saved.map((sim) => (
+                  <li key={sim.id} className="flex items-center gap-3 px-3 py-2 text-sm">
+                    <span className="font-semibold tabular-nums text-primary w-8">{sim.score}</span>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-foreground truncate">{sim.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {new Date(sim.savedAt).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })} ·{' '}
+                        {SECTOR_LABELS[sim.lead.sector]} · {sim.lead.empleados} emp.
+                      </p>
+                    </div>
+                    <Button size="sm" variant="outline" onClick={() => handleRestore(sim)}>
+                      <RotateCcw className="w-4 h-4 mr-1" /> Restaurar
+                    </Button>
+                    <Button
+                      size="icon"
+                      variant="ghost"
+                      aria-label="Eliminar simulación"
+                      onClick={() => setSaved((prev) => prev.filter((x) => x.id !== sim.id))}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
         </div>
       </div>
