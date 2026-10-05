@@ -169,7 +169,17 @@ export default function Simulador() {
       await navigator.clipboard.writeText(exportText);
       toast.success('Texto copiado al portapapeles');
     } catch {
-      toast.error('No se pudo copiar el texto');
+      // Reserva para navegadores sin permiso de portapapeles
+      const ta = document.createElement('textarea');
+      ta.value = exportText;
+      ta.style.position = 'fixed';
+      ta.style.opacity = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      const ok = document.execCommand('copy');
+      document.body.removeChild(ta);
+      if (ok) toast.success('Texto copiado al portapapeles');
+      else toast.error('No se pudo copiar el texto');
     }
   };
 
