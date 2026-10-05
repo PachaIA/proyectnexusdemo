@@ -10,3 +10,5 @@
 - [x] Modo Llamada (/llamada/:companyId): pantalla a pantalla completa, resultados con fecha, encadenado de llamadas, sin barras de navegación
 - [x] PWA instalable y offline: SW, caché de datos SWR, indicador offline, cola de escrituras, manifest iOS
 - [x] Cierre de trimestre (/objetivo): estado actual, qué falta, simulador de escenarios con pipeline
+- [x] Simulador: desglose del score, guardar simulaciones, exportar gancho
+- [x] Auditoría general: 9 rutas OK, sin errores ni fallos de red; aviso cosmético forwardRef (solo dev)
