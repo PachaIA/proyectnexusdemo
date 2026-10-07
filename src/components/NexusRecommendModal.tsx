@@ -27,7 +27,7 @@ export const NexusRecommendModal = ({ open, onClose, onCompanySelect }: Props) =
   const candidates = useMemo(() => {
     const closedLeadCompanyIds = new Set(
       leads
-        .filter(l => !l.archived_at && (l.estado === 'ganado' || l.estado === 'perdido' || l.estado === 'propuesta'))
+        .filter(l => !l.archived_at && (l.estado === 'ganada' || l.estado === 'perdida' || l.estado === 'propuesta'))
         .map(l => l.company_id)
     );
 
@@ -82,7 +82,9 @@ export const NexusRecommendModal = ({ open, onClose, onCompanySelect }: Props) =
           next_action_date: today,
         }).eq('id', existing.id);
       } else {
-        await (supabase as any).from('leads').insert({
+        const fields = await requestOpportunityFields({ companyId: current.id, lockClient: true });
+        if (!fields) return;
+        const { error } = await (supabase as any).from('leads').insert({
           user_id: user.id,
           company_id: current.id,
           empresa: current.name,
@@ -93,7 +95,9 @@ export const NexusRecommendModal = ({ open, onClose, onCompanySelect }: Props) =
           estado: 'contactado',
           next_action: 'call',
           next_action_date: today,
+          ...fields,
         });
+        if (error) throw error;
       }
 
       refreshLeads();

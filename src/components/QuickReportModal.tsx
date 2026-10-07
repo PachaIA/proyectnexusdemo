@@ -156,7 +156,7 @@ export function QuickReportModal({
     L.push(`- Empresa: ${company.name}`);
     L.push(`- CIF: ${company.cif || '—'}`);
     L.push(`- Ubicación: ${direccion || company.location || '—'}`);
-    L.push(`- Estado: ${estado || lead?.estado || 'sin_empezar'}`);
+    L.push(`- Estado: ${estado || lead?.estado || 'lead'}`);
     L.push(`- Score: ${company.opportunityScore}`);
     L.push(`- Digitalización: ${company.digitalizationLevel || '—'}`);
     L.push(`- Empleados: ${company.employees}`);
@@ -224,7 +224,7 @@ export function QuickReportModal({
     L.push(`- **Empresa:** ${company.name}`);
     L.push(`- **CIF:** ${company.cif || '—'}`);
     L.push(`- **Ubicación:** ${direccion || company.location || '—'}`);
-    L.push(`- **Estado:** ${estado || lead?.estado || 'sin_empezar'}`);
+    L.push(`- **Estado:** ${estado || lead?.estado || 'lead'}`);
     L.push(`- **Score:** ${company.opportunityScore}`);
     L.push(`- **Digitalización:** ${company.digitalizationLevel || '—'}`);
     L.push(`- **Empleados:** ${company.employees}`);
@@ -302,7 +302,7 @@ export function QuickReportModal({
 ${row('Empresa', company.name)}
 ${row('CIF', company.cif)}
 ${row('Ubicación', direccion || company.location)}
-${row('Estado', (estado || lead?.estado || 'sin_empezar').toUpperCase())}
+${row('Estado', (estado || lead?.estado || 'lead').toUpperCase())}
 ${row('Score', String(company.opportunityScore))}
 ${row('Digitalización', company.digitalizationLevel)}
 ${row('Empleados', String(company.employees))}
@@ -452,7 +452,7 @@ ${pendientes.length
             <Row label="EMPRESA" value={company.name} />
             <Row label="CIF" value={company.cif} />
             <Row label="UBICACIÓN" value={direccion || company.location} />
-            <Row label="ESTADO" value={(estado || lead?.estado || 'sin_empezar').toUpperCase()} />
+            <Row label="ESTADO" value={(estado || lead?.estado || 'lead').toUpperCase()} />
             <Row label="SCORE" value={String(company.opportunityScore)} />
             <Row label="DIGITALIZACIÓN" value={company.digitalizationLevel} />
             <Row label="EMPLEADOS" value={String(company.employees)} />

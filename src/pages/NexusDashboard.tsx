@@ -68,13 +68,12 @@ function getSafePriority(nextBestAction: Company["nextBestAction"]): keyof typeo
 }
 
 const ESTADOS = [
-  { id: "sin_empezar", label: "⚪ SIN EMPEZAR", color: "#6b7280" },
+  { id: "lead", label: "⚪ LEAD", color: "#6b7280" },
   { id: "contactado", label: "🔵 CONTACTADO", color: "#3b82f6" },
-  { id: "cualificado", label: "🟢 CUALIFICADO", color: "#22c55e" },
   { id: "propuesta", label: "🟠 PROPUESTA", color: "#f97316" },
   { id: "negociacion", label: "🟡 NEGOCIACIÓN", color: "#eab308" },
-  { id: "ganado", label: "🟣 GANADO", color: "#8b5cf6" },
-  { id: "perdido", label: "🔴 PERDIDO", color: "#ef4444" },
+  { id: "ganada", label: "🟣 GANADA", color: "#8b5cf6" },
+  { id: "perdida", label: "🔴 PERDIDA", color: "#ef4444" },
 ];
 
 interface Nota { fecha: string; texto: string; }
@@ -97,7 +96,7 @@ function saveInteractions(data: InteractionsMap) {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 function getInteraction(map: InteractionsMap, id: string): InteractionData {
-  return map[id] || { estado: "sin_empezar", notas: [], ultimoContacto: null, proximoContacto: null, contactadoHoy: false };
+  return map[id] || { estado: "lead", notas: [], ultimoContacto: null, proximoContacto: null, contactadoHoy: false };
 }
 function getEstadoColor(estado: string): string {
   return ESTADOS.find(e => e.id === estado)?.color || "#3b82f6";
@@ -393,7 +392,7 @@ function InteractionRegistry({
       contactadoHoy: true,
       ultimoContacto: now,
     };
-    if (data.estado === "sin_empezar") patch.estado = "contactado";
+    if (data.estado === "lead") patch.estado = "contactado";
     update(patch);
   };
 

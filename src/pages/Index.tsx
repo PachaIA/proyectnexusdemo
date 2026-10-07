@@ -190,7 +190,7 @@ const Index = () => {
         tamano: selectedCompany.employees, opportunity_score: selectedCompany.opportunityScore,
         arpu_estimado: selectedCompany.estimatedARPU, necesidades_detectadas: selectedCompany.detectedNeeds,
         servicios_recomendados: selectedCompany.recommendedProducts, decision_makers: selectedCompany.decisionMakers,
-        next_action: selectedCompany.nextBestAction.type, next_action_date: null, notas: null, estado: 'sin_empezar',
+        next_action: selectedCompany.nextBestAction.type, next_action_date: null, notas: null, estado: 'lead',
         digitalizationLevel: selectedCompany.digitalizationLevel, companyName: selectedCompany.name,
         detectedNeedsRaw: selectedCompany.detectedNeeds, recommendedProductsRaw: selectedCompany.recommendedProducts,
       });
@@ -339,7 +339,7 @@ const Index = () => {
               company_id: uc.id, empresa: uc.name, cif: null, sector: uc.sector || 'Otros',
               tamano: 0, opportunity_score: uc.score || 50, arpu_estimado: null,
               necesidades_detectadas: [], servicios_recomendados: [], decision_makers: [],
-              next_action: 'call', next_action_date: null, notas: null, estado: 'sin_empezar',
+              next_action: 'call', next_action_date: null, notas: null, estado: 'lead',
             });
             toast.success(`${uc.name} añadida al pipeline`);
           } catch (error: any) {

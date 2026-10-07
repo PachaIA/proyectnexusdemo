@@ -3,20 +3,19 @@ import { z } from "zod";
 import { supabaseForUser, notAuthenticated } from "../supabase";
 
 export const ESTADOS = [
-  "sin_empezar",
+  "lead",
   "contactado",
-  "cualificado",
   "propuesta",
   "negociacion",
-  "ganado",
-  "perdido",
+  "ganada",
+  "perdida",
 ] as const;
 
 export default defineTool({
   name: "listar_pipeline",
   title: "Listar pipeline",
   description:
-    "Lista los leads del pipeline comercial del usuario, opcionalmente filtrados por estado (sin_empezar, contactado, cualificado, propuesta, negociacion, ganado, perdido).",
+    "Lista los leads del pipeline comercial del usuario, opcionalmente filtrados por estado (lead, contactado, propuesta, negociacion, ganada, perdida).",
   inputSchema: {
     estado: z.enum(ESTADOS).optional().describe("Estado del pipeline por el que filtrar."),
     limit: z.number().int().min(1).max(100).default(50).describe("Máximo de leads a devolver."),

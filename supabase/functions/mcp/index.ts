@@ -119,18 +119,17 @@ var ficha_empresa_default = defineTool2({
 import { defineTool as defineTool3 } from "npm:@lovable.dev/mcp-js@0.25.0";
 import { z as z3 } from "npm:zod@^4.4.3";
 var ESTADOS = [
-  "sin_empezar",
+  "lead",
   "contactado",
-  "cualificado",
   "propuesta",
   "negociacion",
-  "ganado",
-  "perdido"
+  "ganada",
+  "perdida"
 ];
 var listar_pipeline_default = defineTool3({
   name: "listar_pipeline",
   title: "Listar pipeline",
-  description: "Lista los leads del pipeline comercial del usuario, opcionalmente filtrados por estado (sin_empezar, contactado, cualificado, propuesta, negociacion, ganado, perdido).",
+  description: "Lista los leads del pipeline comercial del usuario, opcionalmente filtrados por estado (lead, contactado, propuesta, negociacion, ganada, perdida).",
   inputSchema: {
     estado: z3.enum(ESTADOS).optional().describe("Estado del pipeline por el que filtrar."),
     limit: z3.number().int().min(1).max(100).default(50).describe("M\xE1ximo de leads a devolver.")
@@ -278,7 +277,7 @@ var mcp_default = defineMcp({
   name: "proyecto-nexus",
   title: "Proyecto Nexus",
   version: "0.1.0",
-  instructions: "Herramientas del CRM comercial B2B telco Nexus (Grupo Enertel). Busca empresas del radar, consulta su ficha completa (sedes, contactos, ventas), gestiona el pipeline en espa\xF1ol (sin_empezar, contactado, cualificado, propuesta, negociacion, ganado, perdido), registra ventas cerradas y consulta KPIs del periodo. Todas las operaciones act\xFAan como el usuario autenticado.",
+  instructions: "Herramientas del CRM comercial B2B telco Nexus (Grupo Enertel). Busca empresas del radar, consulta su ficha completa (sedes, contactos, ventas), gestiona el pipeline en espa\xF1ol (lead, contactado, propuesta, negociacion, ganada, perdida), registra ventas cerradas y consulta KPIs del periodo. Todas las operaciones act\xFAan como el usuario autenticado.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated"

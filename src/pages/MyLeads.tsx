@@ -39,25 +39,24 @@ const T = {
 
 // Merged: Contactado + Cualificado into one column
 const PIPELINE_COLUMNS = [
-  { keys: ['sin_empezar'], label: 'Sin empezar', color: '#6b7280', icon: '⚪' },
-  { keys: ['contactado', 'cualificado'], label: 'Contactado / Cualificado', color: '#3b82f6', icon: '📞' },
+  { keys: ['lead'], label: 'Lead', color: '#6b7280', icon: '⚪' },
+  { keys: ['contactado'], label: 'Contactado', color: '#3b82f6', icon: '📞' },
   { keys: ['propuesta'], label: 'Propuesta', color: '#f97316', icon: '📋' },
   { keys: ['negociacion'], label: 'Negociación', color: '#eab308', icon: '🤝' },
-  { keys: ['ganado'], label: 'Ganado', color: '#8b5cf6', icon: '🏆' },
-  { keys: ['perdido'], label: 'Perdido', color: '#ef4444', icon: '❌' },
+  { keys: ['ganada'], label: 'Ganada', color: '#8b5cf6', icon: '🏆' },
+  { keys: ['perdida'], label: 'Perdida', color: '#ef4444', icon: '❌' },
 ];
 
 const ALL_STATES = [
-  { key: 'sin_empezar', label: 'Sin empezar', color: '#6b7280', icon: '⚪' },
+  { key: 'lead', label: 'Lead', color: '#6b7280', icon: '⚪' },
   { key: 'contactado', label: 'Contactado', color: '#3b82f6', icon: '📞' },
-  { key: 'cualificado', label: 'Cualificado', color: '#22c55e', icon: '✅' },
   { key: 'propuesta', label: 'Propuesta', color: '#f97316', icon: '📋' },
   { key: 'negociacion', label: 'Negociación', color: '#eab308', icon: '🤝' },
-  { key: 'ganado', label: 'Ganado', color: '#8b5cf6', icon: '🏆' },
-  { key: 'perdido', label: 'Perdido', color: '#ef4444', icon: '❌' },
+  { key: 'ganada', label: 'Ganada', color: '#8b5cf6', icon: '🏆' },
+  { key: 'perdida', label: 'Perdida', color: '#ef4444', icon: '❌' },
 ];
 
-const statusFlow = ['sin_empezar', 'contactado', 'cualificado', 'propuesta', 'negociacion', 'ganado'];
+const statusFlow = ['lead', 'contactado', 'propuesta', 'negociacion', 'ganada'];
 
 const SECTOR_COLORS: Record<string, string> = {
   salud: '#ef4444', industria: '#f59e0b', logistica: '#3b82f6',
@@ -89,7 +88,7 @@ function saveInteractions(data: Record<string, InteractionData>) {
   localStorage.setItem(INTERACTIONS_KEY, JSON.stringify(data));
 }
 function getInteraction(map: Record<string, InteractionData>, id: string): InteractionData {
-  return map[id] || { estado: 'sin_empezar', notas: [], proximoContacto: '', ultimoContacto: '', contactadoHoy: false };
+  return map[id] || { estado: 'lead', notas: [], proximoContacto: '', ultimoContacto: '', contactadoHoy: false };
 }
 
 // ─── KPI Card ───────────────────────────────────────────────────────────
@@ -120,9 +119,9 @@ function KanbanCard({ lead, onAdvance, onWin, onLose, onArchive, onOpenDetail, o
 }) {
   const [showStatusMenu, setShowStatusMenu] = useState(false);
   const scoreColor = lead.opportunity_score >= 80 ? '#ef4444' : lead.opportunity_score >= 60 ? '#f59e0b' : '#6b7280';
-  const canAdvance = statusFlow.indexOf(lead.estado || 'sin_empezar') < statusFlow.length - 1 && lead.estado !== 'perdido';
+  const canAdvance = statusFlow.indexOf(lead.estado || 'lead') < statusFlow.length - 1 && lead.estado !== 'perdida';
   const stageColor = ALL_STATES.find(s => s.key === lead.estado)?.color || '#6b7280';
-  const subState = lead.estado === 'cualificado' ? { label: 'Cualificado', color: '#22c55e' } : null;
+  const subState = null as { label: string; color: string } | null;
 
   return (
     <div
@@ -207,14 +206,14 @@ function KanbanCard({ lead, onAdvance, onWin, onLose, onArchive, onOpenDetail, o
             </div>
           )}
         </div>
-        {lead.estado !== 'ganado' && lead.estado !== 'perdido' && (
-          <button onClick={onWin} title="Ganado" style={{
+        {lead.estado !== 'ganada' && lead.estado !== 'perdida' && (
+          <button onClick={onWin} title="Ganada" style={{
             background: '#8b5cf618', border: '1px solid #8b5cf644', borderRadius: 5,
             padding: '3px 7px', cursor: 'pointer', color: '#8b5cf6', fontSize: 11,
           }}>🏆</button>
         )}
-        {lead.estado !== 'perdido' && lead.estado !== 'ganado' && (
-          <button onClick={onLose} title="Perdido" style={{
+        {lead.estado !== 'perdida' && lead.estado !== 'ganada' && (
+          <button onClick={onLose} title="Perdida" style={{
             background: '#ef444418', border: '1px solid #ef444444', borderRadius: 5,
             padding: '3px 7px', cursor: 'pointer', color: '#ef4444', fontSize: 11,
           }}>✕</button>
@@ -302,7 +301,7 @@ const MyLeads = () => {
 
   // KPI calculations
   const pipelineTotal = useMemo(() =>
-    activeLeads.filter(l => !['ganado', 'perdido'].includes(l.estado || '')).reduce((s, l) => s + (l.arpu_estimado || 0), 0) * 12,
+    activeLeads.filter(l => !['ganada', 'perdida'].includes(l.estado || '')).reduce((s, l) => s + (l.arpu_estimado || 0), 0) * 12,
     [activeLeads]
   );
   const thisMonth = useMemo(() => {
@@ -314,7 +313,7 @@ const MyLeads = () => {
   }, [activeLeads]);
   const conversionRate = useMemo(() => {
     const total = activeLeads.length;
-    const won = activeLeads.filter(l => l.estado === 'ganado').length;
+    const won = activeLeads.filter(l => l.estado === 'ganada').length;
     return total > 0 ? Math.round((won / total) * 100) : 0;
   }, [activeLeads]);
   const ticketMedio = useMemo(() => {
@@ -336,7 +335,7 @@ const MyLeads = () => {
 
   // Funnel data
   const funnelData = useMemo(() => {
-    return ALL_STATES.filter(s => s.key !== 'perdido').map(stage => ({
+    return ALL_STATES.filter(s => s.key !== 'perdida').map(stage => ({
       name: stage.label,
       count: activeLeads.filter(l => l.estado === stage.key).length,
       color: stage.color,
@@ -348,7 +347,7 @@ const MyLeads = () => {
   };
 
   const handleNextStatus = (lead: Lead) => {
-    const currentIdx = statusFlow.indexOf(lead.estado || 'sin_empezar');
+    const currentIdx = statusFlow.indexOf(lead.estado || 'lead');
     if (currentIdx < statusFlow.length - 1) {
       handleStatusChange(lead.id, statusFlow[currentIdx + 1]);
     }
@@ -368,7 +367,7 @@ const MyLeads = () => {
     const lead = activeLeads.find(l => l.id === leadId);
     if (!lead) return;
     // If lead already in this merged column, do nothing
-    if (targetCol.keys.includes(lead.estado || 'sin_empezar')) return;
+    if (targetCol.keys.includes(lead.estado || 'lead')) return;
     handleStatusChange(leadId, targetCol.keys[0]);
   };
 
@@ -382,9 +381,9 @@ const MyLeads = () => {
   const handleExportPDF = () => {
     const now = new Date();
     const monthName = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
-    const wonLeads = activeLeads.filter(l => l.estado === 'ganado');
-    const lostLeads = activeLeads.filter(l => l.estado === 'perdido');
-    const inPipeline = activeLeads.filter(l => !['ganado', 'perdido'].includes(l.estado || ''));
+    const wonLeads = activeLeads.filter(l => l.estado === 'ganada');
+    const lostLeads = activeLeads.filter(l => l.estado === 'perdida');
+    const inPipeline = activeLeads.filter(l => !['ganada', 'perdida'].includes(l.estado || ''));
     const top5 = [...activeLeads].sort((a, b) => b.opportunity_score - a.opportunity_score).slice(0, 5);
 
     const lines = [
@@ -477,7 +476,7 @@ const MyLeads = () => {
             marginBottom: 20, minHeight: 300,
           }}>
             {PIPELINE_COLUMNS.map(col => {
-              const stageLeads = activeLeads.filter(l => col.keys.includes(l.estado || 'sin_empezar'));
+              const stageLeads = activeLeads.filter(l => col.keys.includes(l.estado || 'lead'));
               const colId = col.keys.join('-');
               return (
                 <DroppableColumn key={colId} id={colId} enabled={!isMobile}>
@@ -513,8 +512,8 @@ const MyLeads = () => {
                               <KanbanCard
                                 lead={lead}
                                 onAdvance={() => handleNextStatus(lead)}
-                                onWin={() => handleStatusChange(lead.id, 'ganado')}
-                                onLose={() => handleStatusChange(lead.id, 'perdido')}
+                                onWin={() => handleStatusChange(lead.id, 'ganada')}
+                                onLose={() => handleStatusChange(lead.id, 'perdida')}
                                 onArchive={() => setArchiveTarget(lead.id)}
                                 onOpenDetail={() => handleOpenDetail(lead)}
                                 onChangeStatus={(newStatus) => handleStatusChange(lead.id, newStatus)}

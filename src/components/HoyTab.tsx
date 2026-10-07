@@ -82,9 +82,9 @@ export const HoyTab = ({ onCompanySelect }: HoyTabProps) => {
     const weekStr = startOfWeek.toISOString();
 
     return {
-      contactados: activeLeads.filter(l => l.updated_at && l.updated_at >= weekStr && l.estado !== 'sin_empezar').length,
+      contactados: activeLeads.filter(l => l.updated_at && l.updated_at >= weekStr && l.estado !== 'lead').length,
       propuestas: activeLeads.filter(l => l.updated_at && l.updated_at >= weekStr && (l.estado === 'propuesta' || l.estado === 'negociacion')).length,
-      cerrados: activeLeads.filter(l => l.updated_at && l.updated_at >= weekStr && l.estado === 'ganado').length,
+      cerrados: activeLeads.filter(l => l.updated_at && l.updated_at >= weekStr && l.estado === 'ganada').length,
     };
   }, [activeLeads]);
 

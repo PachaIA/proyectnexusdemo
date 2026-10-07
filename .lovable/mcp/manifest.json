@@ -76,7 +76,7 @@
       {
         "name": "listar_pipeline",
         "title": "Listar pipeline",
-        "description": "Lista los leads del pipeline comercial del usuario, opcionalmente filtrados por estado (sin_empezar, contactado, cualificado, propuesta, negociacion, ganado, perdido).",
+        "description": "Lista los leads del pipeline comercial del usuario, opcionalmente filtrados por estado (lead, contactado, propuesta, negociacion, ganada, perdida).",
         "annotations": {
           "readOnlyHint": true,
           "idempotentHint": true,
@@ -90,13 +90,12 @@
               "description": "Estado del pipeline por el que filtrar.",
               "type": "string",
               "enum": [
-                "sin_empezar",
+                "lead",
                 "contactado",
-                "cualificado",
                 "propuesta",
                 "negociacion",
-                "ganado",
-                "perdido"
+                "ganada",
+                "perdida"
               ]
             },
             "limit": {
@@ -133,13 +132,12 @@
               "description": "Nuevo estado del pipeline.",
               "type": "string",
               "enum": [
-                "sin_empezar",
+                "lead",
                 "contactado",
-                "cualificado",
                 "propuesta",
                 "negociacion",
-                "ganado",
-                "perdido"
+                "ganada",
+                "perdida"
               ]
             },
             "next_action": {

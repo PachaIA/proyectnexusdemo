@@ -238,8 +238,11 @@ export type Database = {
           created_at: string | null
           decision_makers: Json | null
           empresa: string
-          estado: string | null
+          estado: Database["public"]["Enums"]["opportunity_stage"]
+          fecha_cierre_prevista: string | null
           id: string
+          importe_mensual_eur: number | null
+          margen_estimado_eur: number | null
           necesidades_detectadas: string[] | null
           next_action: string | null
           next_action_date: string | null
@@ -262,8 +265,11 @@ export type Database = {
           created_at?: string | null
           decision_makers?: Json | null
           empresa: string
-          estado?: string | null
+          estado?: Database["public"]["Enums"]["opportunity_stage"]
+          fecha_cierre_prevista?: string | null
           id?: string
+          importe_mensual_eur?: number | null
+          margen_estimado_eur?: number | null
           necesidades_detectadas?: string[] | null
           next_action?: string | null
           next_action_date?: string | null
@@ -286,8 +292,11 @@ export type Database = {
           created_at?: string | null
           decision_makers?: Json | null
           empresa?: string
-          estado?: string | null
+          estado?: Database["public"]["Enums"]["opportunity_stage"]
+          fecha_cierre_prevista?: string | null
           id?: string
+          importe_mensual_eur?: number | null
+          margen_estimado_eur?: number | null
           necesidades_detectadas?: string[] | null
           next_action?: string | null
           next_action_date?: string | null
@@ -302,7 +311,15 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "leads_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       quarterly_kpis: {
         Row: {
@@ -478,7 +495,13 @@ export type Database = {
       unaccent: { Args: { "": string }; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      opportunity_stage:
+        | "lead"
+        | "contactado"
+        | "propuesta"
+        | "negociacion"
+        | "ganada"
+        | "perdida"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -605,6 +628,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      opportunity_stage: [
+        "lead",
+        "contactado",
+        "propuesta",
+        "negociacion",
+        "ganada",
+        "perdida",
+      ],
+    },
   },
 } as const

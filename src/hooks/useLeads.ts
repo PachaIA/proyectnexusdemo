@@ -1,4 +1,5 @@
 import { getEffectiveUser } from '@/lib/openUser';
+import { requestOpportunityFields } from '@/lib/opportunity';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -88,6 +89,9 @@ export const useLeads = () => {
         throw new Error('DUPLICATE');
       }
 
+      const fields = await requestOpportunityFields({ companyId: leadData.company_id, lockClient: true });
+      if (!fields) throw new Error('CANCELLED');
+
       // Generate Sales Playbook ONCE at creation
       const playbook = generateSalesPlaybook({
         opportunityScore: leadData.opportunity_score,
@@ -104,7 +108,7 @@ export const useLeads = () => {
       
       const { data, error } = await supabase
         .from('leads')
-        .insert({ ...dbData, user_id: user.id, sales_playbook: playbook })
+        .insert({ ...dbData, ...fields, user_id: user.id, sales_playbook: playbook } as any)
         .select()
         .single();
       
@@ -153,18 +157,17 @@ export const useLeads = () => {
     const active = leads.filter(l => !l.archived_at);
     const stats = {
       total: leads.length,
-      sin_empezar: active.filter(l => l.estado === 'sin_empezar').length,
+      lead: active.filter(l => l.estado === 'lead').length,
       contactado: active.filter(l => l.estado === 'contactado').length,
-      cualificado: active.filter(l => l.estado === 'cualificado').length,
       propuesta: active.filter(l => l.estado === 'propuesta').length,
       negociacion: active.filter(l => l.estado === 'negociacion').length,
-      ganado: active.filter(l => l.estado === 'ganado').length,
-      perdido: active.filter(l => l.estado === 'perdido').length,
+      ganada: active.filter(l => l.estado === 'ganada').length,
+      perdida: active.filter(l => l.estado === 'perdida').length,
       totalARPU: active.reduce((sum, l) => sum + (l.arpu_estimado || 0), 0),
       avgScore: active.length > 0 
         ? Math.round(active.reduce((sum, l) => sum + l.opportunity_score, 0) / active.length)
         : 0,
-      pipelineValue: active.filter(l => !['ganado', 'perdido'].includes(l.estado || '')).length * 25000,
+      pipelineValue: active.filter(l => !['ganada', 'perdida'].includes(l.estado || '')).length * 25000,
     };
     return stats;
   };
