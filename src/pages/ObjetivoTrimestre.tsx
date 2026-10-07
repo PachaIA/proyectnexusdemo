@@ -60,7 +60,7 @@ export default function ObjetivoTrimestre() {
   // Oportunidades abiertas del pipeline, ordenadas por probabilidad (NCS score)
   const opps = useMemo<Opp[]>(() =>
     leads
-      .filter((l) => !l.archived_at && !['ganado', 'perdido'].includes(l.estado))
+      .filter((l) => !l.archived_at && !['ganada', 'perdida'].includes(l.estado))
       .map((l) => {
         const altas = Math.max(1, Math.round((l.tamano || 5) * 0.6));
         const margen = (l.arpu_estimado || 25) * altas;

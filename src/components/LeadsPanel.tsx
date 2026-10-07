@@ -23,13 +23,13 @@ import {
 import { Badge } from './ui/badge';
 
 const estadoConfig: Record<string, { label: string; color: string; bg: string }> = {
-  sin_empezar: { label: 'Sin empezar', color: 'text-gray-400', bg: 'bg-gray-500/20' },
+  lead: { label: 'Lead', color: 'text-gray-400', bg: 'bg-gray-500/20' },
   contactado: { label: 'Contactado', color: 'text-blue-400', bg: 'bg-blue-500/20' },
   cualificado: { label: 'Cualificado', color: 'text-green-400', bg: 'bg-green-500/20' },
   propuesta: { label: 'Propuesta', color: 'text-orange-400', bg: 'bg-orange-500/20' },
   negociacion: { label: 'Negociación', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
-  ganado: { label: 'Ganado', color: 'text-purple-400', bg: 'bg-purple-500/20' },
-  perdido: { label: 'Perdido', color: 'text-red-400', bg: 'bg-red-500/20' },
+  ganada: { label: 'Ganada', color: 'text-purple-400', bg: 'bg-purple-500/20' },
+  perdida: { label: 'Perdida', color: 'text-red-400', bg: 'bg-red-500/20' },
 };
 
 const actionConfig: Record<string, { icon: any; label: string }> = {
@@ -92,7 +92,7 @@ const LeadsPanel = () => {
               <CheckCircle className="w-5 h-5 text-green-400" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats.ganado}</p>
+              <p className="text-2xl font-bold text-white">{stats.ganada}</p>
               <p className="text-xs text-slate-400">Ganados</p>
             </div>
           </div>
@@ -193,7 +193,7 @@ const LeadsPanel = () => {
               <tbody className="divide-y divide-slate-700/50">
                 <AnimatePresence>
                   {filteredLeads.map((lead, index) => {
-                    const estado = estadoConfig[lead.estado] || estadoConfig.sin_empezar;
+                    const estado = estadoConfig[lead.estado] || estadoConfig.lead;
                     const action = lead.next_action ? actionConfig[lead.next_action] : null;
                     
                     return (

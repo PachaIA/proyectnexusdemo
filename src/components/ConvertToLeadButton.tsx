@@ -50,7 +50,7 @@ const ConvertToLeadButton = ({ company, isLead, onConverted }: ConvertToLeadButt
         opportunity_score: company.opportunityScore,
         servicios_recomendados: company.recommendedProducts,
         necesidades_detectadas: company.detectedNeeds,
-        estado: 'sin_empezar',
+        estado: 'lead',
         decision_makers: JSON.parse(JSON.stringify(company.decisionMakers || [])),
         arpu_estimado: company.estimatedARPU,
         next_action: company.nextBestAction?.type || 'call',

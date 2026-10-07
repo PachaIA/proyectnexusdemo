@@ -27,7 +27,7 @@ export const NexusRecommendModal = ({ open, onClose, onCompanySelect }: Props) =
   const candidates = useMemo(() => {
     const closedLeadCompanyIds = new Set(
       leads
-        .filter(l => !l.archived_at && (l.estado === 'ganado' || l.estado === 'perdido' || l.estado === 'propuesta'))
+        .filter(l => !l.archived_at && (l.estado === 'ganada' || l.estado === 'perdida' || l.estado === 'propuesta'))
         .map(l => l.company_id)
     );
 

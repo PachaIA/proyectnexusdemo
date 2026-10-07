@@ -43,7 +43,7 @@ const OUTCOMES: { id: OutcomeId; label: string; nextDays: number; estado?: strin
   { id: 'no_contesta', label: 'No contesta', nextDays: 1 },
   { id: 'interesado', label: 'Interesado', nextDays: 2, estado: 'cualificado' },
   { id: 'propuesta', label: 'Enviar propuesta', nextDays: 7, estado: 'propuesta' },
-  { id: 'no_encaja', label: 'No le encaja', nextDays: 0, estado: 'perdido' },
+  { id: 'no_encaja', label: 'No le encaja', nextDays: 0, estado: 'perdida' },
   { id: 'volver', label: 'Volver a llamar', nextDays: 3 },
 ];
 

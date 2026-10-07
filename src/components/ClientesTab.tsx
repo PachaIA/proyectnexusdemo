@@ -10,13 +10,13 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { MobileClientCard } from "@/components/MobileClientCard";
 
 const ESTADOS_LABELS: Record<string, { label: string; color: string }> = {
-  sin_empezar: { label: "Sin empezar", color: "#6b7280" },
+  lead: { label: "Lead", color: "#6b7280" },
   contactado: { label: "Contactado", color: "#3b82f6" },
   cualificado: { label: "Cualificado", color: "#22c55e" },
   propuesta: { label: "Propuesta", color: "#f97316" },
   negociacion: { label: "Negociación", color: "#eab308" },
-  ganado: { label: "Ganado", color: "#8b5cf6" },
-  perdido: { label: "Perdido", color: "#ef4444" },
+  ganada: { label: "Ganada", color: "#8b5cf6" },
+  perdida: { label: "Perdida", color: "#ef4444" },
 };
 
 const OPERATORS = ["Orange", "Movistar", "Vodafone", "MásMóvil", "Otro", "Sin dato"];
@@ -45,7 +45,7 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
 
   const leadMap = useMemo(() => {
     const m: Record<string, string> = {};
-    leads?.forEach((l: any) => { if (!l.archived_at) m[l.company_id] = l.estado || "sin_empezar"; });
+    leads?.forEach((l: any) => { if (!l.archived_at) m[l.company_id] = l.estado || "lead"; });
     return m;
   }, [leads]);
 

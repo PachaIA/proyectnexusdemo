@@ -13,7 +13,7 @@ export default defineMcp({
   title: "Proyecto Nexus",
   version: "0.1.0",
   instructions:
-    "Herramientas del CRM comercial B2B telco Nexus (Grupo Enertel). Busca empresas del radar, consulta su ficha completa (sedes, contactos, ventas), gestiona el pipeline en español (sin_empezar, contactado, cualificado, propuesta, negociacion, ganado, perdido), registra ventas cerradas y consulta KPIs del periodo. Todas las operaciones actúan como el usuario autenticado.",
+    "Herramientas del CRM comercial B2B telco Nexus (Grupo Enertel). Busca empresas del radar, consulta su ficha completa (sedes, contactos, ventas), gestiona el pipeline en español (lead, contactado, cualificado, propuesta, negociacion, ganada, perdida), registra ventas cerradas y consulta KPIs del periodo. Todas las operaciones actúan como el usuario autenticado.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated",

@@ -26,13 +26,13 @@ const T = {
 const mono: React.CSSProperties = { fontFamily: "'Space Mono', monospace" };
 
 const ESTADOS = [
-  { id: 'sin_empezar', label: 'Sin empezar', color: '#6b7280' },
+  { id: 'lead', label: 'Lead', color: '#6b7280' },
   { id: 'contactado', label: 'Contactado', color: '#3b82f6' },
   { id: 'cualificado', label: 'Cualificado', color: '#22c55e' },
   { id: 'propuesta', label: 'Propuesta', color: '#f97316' },
   { id: 'negociacion', label: 'Negociación', color: '#eab308' },
-  { id: 'ganado', label: 'Ganado', color: '#8b5cf6' },
-  { id: 'perdido', label: 'Perdido', color: '#ef4444' },
+  { id: 'ganada', label: 'Ganada', color: '#8b5cf6' },
+  { id: 'perdida', label: 'Perdida', color: '#ef4444' },
 ];
 
 const ACTIVOS = ['contactado', 'cualificado', 'propuesta', 'negociacion'];
@@ -118,7 +118,7 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
       .map((c) => {
         const lead = (leads || []).find((l: any) => l.company_id === c.id);
         const inter = interactions[c.id] || {};
-        const estado = lead?.estado || inter.estado || 'sin_empezar';
+        const estado = lead?.estado || inter.estado || 'lead';
         const lastAct = lastActivityByCompany.get(c.id) || null;
         const proxima =
           lead?.next_action_date || inter.proximoContacto || nextActionByCompany.get(c.id) || null;
@@ -499,7 +499,7 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
           estado={
             (leads || []).find((l: any) => l.company_id === reportCompany.id)?.estado ||
             interactions[reportCompany.id]?.estado ||
-            'sin_empezar'
+            'lead'
           }
           proximoContacto={interactions[reportCompany.id]?.proximoContacto || null}
           ultimoContacto={interactions[reportCompany.id]?.ultimoContacto || null}
