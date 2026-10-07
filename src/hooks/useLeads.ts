@@ -1,4 +1,5 @@
 import { getEffectiveUser } from '@/lib/openUser';
+import { requestOpportunityFields } from '@/lib/opportunity';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { toast } from 'sonner';
@@ -88,6 +89,9 @@ export const useLeads = () => {
         throw new Error('DUPLICATE');
       }
 
+      const fields = await requestOpportunityFields({ companyId: leadData.company_id, lockClient: true });
+      if (!fields) throw new Error('CANCELLED');
+
       // Generate Sales Playbook ONCE at creation
       const playbook = generateSalesPlaybook({
         opportunityScore: leadData.opportunity_score,
@@ -104,7 +108,7 @@ export const useLeads = () => {
       
       const { data, error } = await supabase
         .from('leads')
-        .insert({ ...dbData, user_id: user.id, sales_playbook: playbook })
+        .insert({ ...dbData, ...fields, user_id: user.id, sales_playbook: playbook } as any)
         .select()
         .single();
       

@@ -41,6 +41,9 @@ const ConvertToLeadButton = ({ company, isLead, onConverted }: ConvertToLeadButt
         return;
       }
 
+      const fields = await requestOpportunityFields({ companyId: company.id, lockClient: true });
+      if (!fields) return;
+
       const { error } = await supabase.from('leads').insert([{
         company_id: company.id,
         empresa: company.name,
@@ -55,7 +58,8 @@ const ConvertToLeadButton = ({ company, isLead, onConverted }: ConvertToLeadButt
         arpu_estimado: company.estimatedARPU,
         next_action: company.nextBestAction?.type || 'call',
         user_id: user.id,
-      }]);
+        ...fields,
+      } as any]);
       
       if (error) throw error;
       
