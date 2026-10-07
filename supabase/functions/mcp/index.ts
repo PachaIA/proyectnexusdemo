@@ -121,7 +121,6 @@ import { z as z3 } from "npm:zod@^4.4.3";
 var ESTADOS = [
   "lead",
   "contactado",
-  "cualificado",
   "propuesta",
   "negociacion",
   "ganada",
@@ -130,7 +129,7 @@ var ESTADOS = [
 var listar_pipeline_default = defineTool3({
   name: "listar_pipeline",
   title: "Listar pipeline",
-  description: "Lista los leads del pipeline comercial del usuario, opcionalmente filtrados por estado (lead, contactado, cualificado, propuesta, negociacion, ganada, perdida).",
+  description: "Lista los leads del pipeline comercial del usuario, opcionalmente filtrados por estado (lead, contactado, propuesta, negociacion, ganada, perdida).",
   inputSchema: {
     estado: z3.enum(ESTADOS).optional().describe("Estado del pipeline por el que filtrar."),
     limit: z3.number().int().min(1).max(100).default(50).describe("M\xE1ximo de leads a devolver.")
@@ -278,7 +277,7 @@ var mcp_default = defineMcp({
   name: "proyecto-nexus",
   title: "Proyecto Nexus",
   version: "0.1.0",
-  instructions: "Herramientas del CRM comercial B2B telco Nexus (Grupo Enertel). Busca empresas del radar, consulta su ficha completa (sedes, contactos, ventas), gestiona el pipeline en espa\xF1ol (lead, contactado, cualificado, propuesta, negociacion, ganada, perdida), registra ventas cerradas y consulta KPIs del periodo. Todas las operaciones act\xFAan como el usuario autenticado.",
+  instructions: "Herramientas del CRM comercial B2B telco Nexus (Grupo Enertel). Busca empresas del radar, consulta su ficha completa (sedes, contactos, ventas), gestiona el pipeline en espa\xF1ol (lead, contactado, propuesta, negociacion, ganada, perdida), registra ventas cerradas y consulta KPIs del periodo. Todas las operaciones act\xFAan como el usuario autenticado.",
   auth: auth.oauth.issuer({
     issuer: `https://${projectRef}.supabase.co/auth/v1`,
     acceptedAudiences: "authenticated"

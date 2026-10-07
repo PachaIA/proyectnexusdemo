@@ -12,7 +12,6 @@ import { MobileClientCard } from "@/components/MobileClientCard";
 const ESTADOS_LABELS: Record<string, { label: string; color: string }> = {
   lead: { label: "Lead", color: "#6b7280" },
   contactado: { label: "Contactado", color: "#3b82f6" },
-  cualificado: { label: "Cualificado", color: "#22c55e" },
   propuesta: { label: "Propuesta", color: "#f97316" },
   negociacion: { label: "Negociación", color: "#eab308" },
   ganada: { label: "Ganada", color: "#8b5cf6" },

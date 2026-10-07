@@ -40,7 +40,7 @@ const T = {
 // Merged: Contactado + Cualificado into one column
 const PIPELINE_COLUMNS = [
   { keys: ['lead'], label: 'Lead', color: '#6b7280', icon: '⚪' },
-  { keys: ['contactado', 'cualificado'], label: 'Contactado / Cualificado', color: '#3b82f6', icon: '📞' },
+  { keys: ['contactado'], label: 'Contactado', color: '#3b82f6', icon: '📞' },
   { keys: ['propuesta'], label: 'Propuesta', color: '#f97316', icon: '📋' },
   { keys: ['negociacion'], label: 'Negociación', color: '#eab308', icon: '🤝' },
   { keys: ['ganada'], label: 'Ganada', color: '#8b5cf6', icon: '🏆' },
@@ -50,14 +50,13 @@ const PIPELINE_COLUMNS = [
 const ALL_STATES = [
   { key: 'lead', label: 'Lead', color: '#6b7280', icon: '⚪' },
   { key: 'contactado', label: 'Contactado', color: '#3b82f6', icon: '📞' },
-  { key: 'cualificado', label: 'Cualificado', color: '#22c55e', icon: '✅' },
   { key: 'propuesta', label: 'Propuesta', color: '#f97316', icon: '📋' },
   { key: 'negociacion', label: 'Negociación', color: '#eab308', icon: '🤝' },
   { key: 'ganada', label: 'Ganada', color: '#8b5cf6', icon: '🏆' },
   { key: 'perdida', label: 'Perdida', color: '#ef4444', icon: '❌' },
 ];
 
-const statusFlow = ['lead', 'contactado', 'cualificado', 'propuesta', 'negociacion', 'ganada'];
+const statusFlow = ['lead', 'contactado', 'propuesta', 'negociacion', 'ganada'];
 
 const SECTOR_COLORS: Record<string, string> = {
   salud: '#ef4444', industria: '#f59e0b', logistica: '#3b82f6',
@@ -122,7 +121,7 @@ function KanbanCard({ lead, onAdvance, onWin, onLose, onArchive, onOpenDetail, o
   const scoreColor = lead.opportunity_score >= 80 ? '#ef4444' : lead.opportunity_score >= 60 ? '#f59e0b' : '#6b7280';
   const canAdvance = statusFlow.indexOf(lead.estado || 'lead') < statusFlow.length - 1 && lead.estado !== 'perdida';
   const stageColor = ALL_STATES.find(s => s.key === lead.estado)?.color || '#6b7280';
-  const subState = lead.estado === 'cualificado' ? { label: 'Cualificado', color: '#22c55e' } : null;
+  const subState = null as { label: string; color: string } | null;
 
   return (
     <div

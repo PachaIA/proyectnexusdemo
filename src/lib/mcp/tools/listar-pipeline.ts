@@ -5,7 +5,6 @@ import { supabaseForUser, notAuthenticated } from "../supabase";
 export const ESTADOS = [
   "lead",
   "contactado",
-  "cualificado",
   "propuesta",
   "negociacion",
   "ganada",
@@ -16,7 +15,7 @@ export default defineTool({
   name: "listar_pipeline",
   title: "Listar pipeline",
   description:
-    "Lista los leads del pipeline comercial del usuario, opcionalmente filtrados por estado (lead, contactado, cualificado, propuesta, negociacion, ganada, perdida).",
+    "Lista los leads del pipeline comercial del usuario, opcionalmente filtrados por estado (lead, contactado, propuesta, negociacion, ganada, perdida).",
   inputSchema: {
     estado: z.enum(ESTADOS).optional().describe("Estado del pipeline por el que filtrar."),
     limit: z.number().int().min(1).max(100).default(50).describe("Máximo de leads a devolver."),

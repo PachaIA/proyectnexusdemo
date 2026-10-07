@@ -41,7 +41,7 @@ type OutcomeId = 'no_contesta' | 'interesado' | 'propuesta' | 'no_encaja' | 'vol
 
 const OUTCOMES: { id: OutcomeId; label: string; nextDays: number; estado?: string }[] = [
   { id: 'no_contesta', label: 'No contesta', nextDays: 1 },
-  { id: 'interesado', label: 'Interesado', nextDays: 2, estado: 'cualificado' },
+  { id: 'interesado', label: 'Interesado', nextDays: 2, estado: 'contactado' },
   { id: 'propuesta', label: 'Enviar propuesta', nextDays: 7, estado: 'propuesta' },
   { id: 'no_encaja', label: 'No le encaja', nextDays: 0, estado: 'perdida' },
   { id: 'volver', label: 'Volver a llamar', nextDays: 3 },

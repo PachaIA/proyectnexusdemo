@@ -192,7 +192,6 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
     const STATUS_LABELS: Record<string, string> = {
       lead: 'Lead',
       contactado: 'Contactado',
-      cualificado: 'Cualificado',
       propuesta: 'Propuesta',
       negociacion: 'Negociación',
       ganada: 'Ganada',
@@ -201,7 +200,6 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
     const STATUS_COLORS: Record<string, string> = {
       lead: '#6b7280',
       contactado: '#3b82f6',
-      cualificado: '#22c55e',
       propuesta: '#f59e0b',
       negociacion: '#eab308',
       ganada: '#8b5cf6',

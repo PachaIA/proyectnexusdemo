@@ -70,7 +70,6 @@ function getSafePriority(nextBestAction: Company["nextBestAction"]): keyof typeo
 const ESTADOS = [
   { id: "lead", label: "⚪ LEAD", color: "#6b7280" },
   { id: "contactado", label: "🔵 CONTACTADO", color: "#3b82f6" },
-  { id: "cualificado", label: "🟢 CUALIFICADO", color: "#22c55e" },
   { id: "propuesta", label: "🟠 PROPUESTA", color: "#f97316" },
   { id: "negociacion", label: "🟡 NEGOCIACIÓN", color: "#eab308" },
   { id: "ganada", label: "🟣 GANADA", color: "#8b5cf6" },

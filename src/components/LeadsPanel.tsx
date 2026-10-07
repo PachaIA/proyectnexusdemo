@@ -25,7 +25,6 @@ import { Badge } from './ui/badge';
 const estadoConfig: Record<string, { label: string; color: string; bg: string }> = {
   lead: { label: 'Lead', color: 'text-gray-400', bg: 'bg-gray-500/20' },
   contactado: { label: 'Contactado', color: 'text-blue-400', bg: 'bg-blue-500/20' },
-  cualificado: { label: 'Cualificado', color: 'text-green-400', bg: 'bg-green-500/20' },
   propuesta: { label: 'Propuesta', color: 'text-orange-400', bg: 'bg-orange-500/20' },
   negociacion: { label: 'Negociación', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
   ganada: { label: 'Ganada', color: 'text-purple-400', bg: 'bg-purple-500/20' },

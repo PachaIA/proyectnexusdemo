@@ -28,14 +28,13 @@ const mono: React.CSSProperties = { fontFamily: "'Space Mono', monospace" };
 const ESTADOS = [
   { id: 'lead', label: 'Lead', color: '#6b7280' },
   { id: 'contactado', label: 'Contactado', color: '#3b82f6' },
-  { id: 'cualificado', label: 'Cualificado', color: '#22c55e' },
   { id: 'propuesta', label: 'Propuesta', color: '#f97316' },
   { id: 'negociacion', label: 'Negociación', color: '#eab308' },
   { id: 'ganada', label: 'Ganada', color: '#8b5cf6' },
   { id: 'perdida', label: 'Perdida', color: '#ef4444' },
 ];
 
-const ACTIVOS = ['contactado', 'cualificado', 'propuesta', 'negociacion'];
+const ACTIVOS = ['contactado', 'propuesta', 'negociacion'];
 
 type MotivoId = 'sin_actividad' | 'sin_proxima' | 'propuesta_pendiente' | 'datos_incompletos';
 

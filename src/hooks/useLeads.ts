@@ -155,7 +155,6 @@ export const useLeads = () => {
       total: leads.length,
       lead: active.filter(l => l.estado === 'lead').length,
       contactado: active.filter(l => l.estado === 'contactado').length,
-      cualificado: active.filter(l => l.estado === 'cualificado').length,
       propuesta: active.filter(l => l.estado === 'propuesta').length,
       negociacion: active.filter(l => l.estado === 'negociacion').length,
       ganada: active.filter(l => l.estado === 'ganada').length,
