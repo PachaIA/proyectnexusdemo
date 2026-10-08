@@ -7,3 +7,4 @@
 - Opportunity stages live only in src/lib/opportunity.ts (STAGES, mirrors DB enum opportunity_stage); required opportunity fields are enforced both in OpportunityDialog and the leads_validate_required trigger. Why: one source of truth, no bypass.
 - Opportunity margin is computed on read from opportunity_lines (revenue - cost) via src/hooks/useOpportunityLines.ts; never store margin_eur/pct. Why: no duplicated derived data.
 - Follow-up bucketing (overdue/today/next 7 days, closed and archived excluded) lives only in src/lib/followUps.ts and is covered by src/test/followUps.test.ts. Why: page and nav badge must agree.
+- Dashboard summaries use opportunity_lines rollUp with estimated-margin fallback for pipeline, and sales.margen by sales.fecha for closed monthly totals; never infer actual closure from lead.updated_at. Why: real sales and estimated pipeline must not be mixed or double-counted.

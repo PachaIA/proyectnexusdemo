@@ -733,7 +733,7 @@ export default function NexusDashboard() {
 
         {nexusView === 'hoy' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <HoyTab onCompanySelect={openBriefing} />
+            <HoyTab />
           </div>
         ) : nexusView === 'clientes' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
