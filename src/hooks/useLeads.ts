@@ -25,6 +25,9 @@ export interface Lead {
   notion_synced: boolean | null;
   notion_sync_error: string | null;
   archived_at: string | null;
+  fecha_cierre_prevista?: string | null;
+  importe_mensual_eur?: number | null;
+  margen_estimado_eur?: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -49,7 +52,7 @@ export const useLeads = () => {
     mutationFn: async ({ id, updates }: { id: string; updates: Partial<Lead> }) => {
       const { data, error } = await supabase
         .from('leads')
-        .update(updates)
+        .update(updates as any)
         .eq('id', id)
         .select()
         .single();
