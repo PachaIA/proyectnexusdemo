@@ -33,6 +33,7 @@ export interface QuarterKpis {
   multiplicador: number;
   baseMultiplicador: number;
   acelerador: boolean;
+  acceleratorBonus: number;
   totalVentas: number;
 }
 
@@ -47,7 +48,8 @@ export const computeQuarterKpis = (sales: Sale[], scheme: CompScheme): QuarterKp
   const estrategicas = trimSales.filter(s => s.producto_estrategico).length;
   const activeAccelerators = scheme.config.accelerators.filter(a => snav >= a.min_snav && trimSales.length > 0 && (estrategicas / trimSales.length) >= a.min_strategic_share);
   const acelerador = activeAccelerators.length > 0;
-  const multiplicador = Math.min(scheme.config.multiplier_cap, base + activeAccelerators.reduce((sum, a) => sum + a.bonus, 0));
+  const acceleratorBonus = activeAccelerators.reduce((sum, a) => sum + a.bonus, 0);
+  const multiplicador = Math.min(scheme.config.multiplier_cap, base + acceleratorBonus);
   return {
     altas,
     snav,
@@ -55,6 +57,7 @@ export const computeQuarterKpis = (sales: Sale[], scheme: CompScheme): QuarterKp
     multiplicador: Math.round(multiplicador * 10) / 10,
     baseMultiplicador: base,
     acelerador,
+    acceleratorBonus,
     totalVentas: trimSales.length,
   };
 };

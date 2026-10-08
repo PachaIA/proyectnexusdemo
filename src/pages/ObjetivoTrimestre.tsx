@@ -109,7 +109,6 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
   const margenActual = actual.rentabilidadMedia * actual.altas;
   const colchonMargen = margenActual - margenSuelo;
   const rentaEnRiesgo = actual.altas > 0 && actual.rentabilidadMedia - bandFloor < config.rent_risk_buffer;
-  const acceleratorBonus = config.accelerators.filter(a => actual.snav >= a.min_snav && actual.totalVentas > 0 && sales.filter(s => s.fecha >= new Date(new Date().getFullYear(), Math.floor(new Date().getMonth() / 3) * 3, 1).toISOString().slice(0, 10) && s.producto_estrategico).length / actual.totalVentas >= a.min_strategic_share).reduce((sum, a) => sum + a.bonus, 0);
 
   if (loadingSales || loadingLeads) {
     return <div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
@@ -162,7 +161,7 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground"><Zap className="w-3.5 h-3.5" />Multiplicador</div>
               <div className={cn('text-xl font-bold', kpis.multiplicador >= config.multiplier_goal ? 'text-primary' : 'text-muted-foreground')}>×{kpis.multiplicador.toFixed(1)}</div>
               <Bar value={kpis.multiplicador} max={config.multiplier_cap} className={kpis.multiplicador >= config.multiplier_goal ? 'bg-primary' : 'bg-muted-foreground/40'} />
-              {kpis.acelerador && <div className="text-[10px] text-primary">Acelerador activo (+{acceleratorBonus.toLocaleString('es-ES')})</div>}
+              {kpis.acelerador && <div className="text-[10px] text-primary">Acelerador activo (+{kpis.acceleratorBonus.toLocaleString('es-ES')})</div>}
             </div>
           </div>
         </section>
