@@ -15,6 +15,7 @@ import ObjetivoTrimestre from "./pages/ObjetivoTrimestre";
 import LeadsTable from "./pages/LeadsTable";
 import Triaje from "./pages/Triaje";
 import TriajeCola from "./pages/TriajeCola";
+import Seguimiento from "./pages/Seguimiento";
 import NotFound from "./pages/NotFound";
 import OAuthConsent from "./pages/OAuthConsent";
 import { OpportunityDialog } from "./components/OpportunityDialog";
@@ -38,6 +39,7 @@ const AppRoutes = () => {
         <Route path="/agenda" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
         <Route path="/briefing" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
         <Route path="/archivo" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
+        <Route path="/hoy" element={<ProtectedRoute><Seguimiento /></ProtectedRoute>} />
         <Route path="/map" element={<ProtectedRoute><Index /></ProtectedRoute>} />
         <Route path="/my-leads" element={<ProtectedRoute><MyLeads /></ProtectedRoute>} />
         <Route path="/llamada/:companyId" element={<CallMode />} />

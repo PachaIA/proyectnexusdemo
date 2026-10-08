@@ -25,6 +25,8 @@ export interface OpportunityFields {
   fecha_cierre_prevista: string; // YYYY-MM-DD
   importe_mensual_eur: number;
   margen_estimado_eur: number;
+  next_action?: string | null;
+  next_action_date?: string | null;
 }
 
 export type OpportunityDraft = {
@@ -32,6 +34,8 @@ export type OpportunityDraft = {
   fecha_cierre_prevista: string;
   importe_mensual_eur: string;
   margen_estimado_eur: string;
+  next_action?: string;
+  next_action_date?: string;
 };
 
 export const validateOpportunity = (d: OpportunityDraft): Partial<Record<keyof OpportunityDraft, string>> => {
@@ -44,6 +48,7 @@ export const validateOpportunity = (d: OpportunityDraft): Partial<Record<keyof O
   else if (isNaN(Number(imp))) e.importe_mensual_eur = 'El importe mensual debe ser un número';
   else if (Number(imp) < 0) e.importe_mensual_eur = 'El importe mensual no puede ser negativo';
   const mar = d.margen_estimado_eur.trim().replace(',', '.');
+  if (d.next_action?.trim() && !d.next_action_date) e.next_action_date = 'Falta la fecha de la próxima acción';
   if (!mar) e.margen_estimado_eur = 'Falta el margen estimado';
   else if (isNaN(Number(mar))) e.margen_estimado_eur = 'El margen estimado debe ser un número';
   return e;
@@ -54,6 +59,8 @@ export const draftToFields = (d: OpportunityDraft): OpportunityFields => ({
   fecha_cierre_prevista: d.fecha_cierre_prevista,
   importe_mensual_eur: Number(d.importe_mensual_eur.trim().replace(',', '.')),
   margen_estimado_eur: Number(d.margen_estimado_eur.trim().replace(',', '.')),
+  ...(d.next_action?.trim() ? { next_action: d.next_action.trim().slice(0, 140) } : {}),
+  ...(d.next_action_date ? { next_action_date: d.next_action_date } : {}),
 });
 
 export const missingFields = (l: { company_id?: string | null; fecha_cierre_prevista?: string | null; importe_mensual_eur?: number | null; margen_estimado_eur?: number | null }) => {
@@ -88,7 +95,8 @@ export const requestOpportunityFields = (opts: { title?: string; companyId?: str
   });
 
 // Edición: abre el diálogo con los valores actuales y guarda.
-export const editOpportunity = async (lead: { id: string; company_id: string; fecha_cierre_prevista?: string | null; importe_mensual_eur?: number | null; margen_estimado_eur?: number | null }) => {
+export const editOpportunity = async (lead: { id: string; company_id: string; fecha_cierre_prevista?: string | null; importe_mensual_eur?: number | null; margen_estimado_eur?: number | null; next_action?: string | null; next_action_date?: string | null }) => {
+  const CODES: Record<string, string> = { call: 'Llamar', visit: 'Visitar', email: 'Enviar email', 'follow-up': 'Seguimiento', proposal: 'Enviar propuesta' };
   const f = await requestOpportunityFields({
     title: 'Editar oportunidad',
     initial: {
@@ -96,9 +104,13 @@ export const editOpportunity = async (lead: { id: string; company_id: string; fe
       fecha_cierre_prevista: lead.fecha_cierre_prevista || '',
       importe_mensual_eur: lead.importe_mensual_eur != null ? String(lead.importe_mensual_eur) : '',
       margen_estimado_eur: lead.margen_estimado_eur != null ? String(lead.margen_estimado_eur) : '',
+      next_action: lead.next_action ? CODES[lead.next_action] ?? lead.next_action : '',
+      next_action_date: lead.next_action_date || '',
     },
   });
   if (!f) return false;
+  if (!('next_action' in f)) f.next_action = null;
+  if (!('next_action_date' in f)) f.next_action_date = null;
   const { error } = await (supabase as any).from('leads').update(f).eq('id', lead.id);
   if (error) throw error;
   refreshLeads();
