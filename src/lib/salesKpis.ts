@@ -1,5 +1,6 @@
 import { getVodafoneFiscalQuarter } from '@/lib/vodafoneFiscalQuarter';
 import type { Sale } from '@/hooks/useSales';
+import { baseMultiplier, rentBracketIndex, type CompScheme } from '@/lib/compScheme';
 
 export interface QuarterRange {
   start: Date;
@@ -22,41 +23,8 @@ export const getCurrentFiscalQuarterRange = (date: Date = new Date()): QuarterRa
   return { start, end, startStr: fmt(start), endStr: fmt(end) };
 };
 
-// Matriz 6 (rentabilidad) x 4 (SNAV)
-// Cols: <1500, >=1500, >=3500, >=5000
-const MATRIX: number[][] = [
-  [0.0, 0.0, 0.3, 0.6], // <10
-  [0.2, 0.4, 0.6, 0.8], // 10-29
-  [0.4, 0.6, 0.8, 1.2], // 30-49
-  [0.6, 1.0, 1.2, 1.4], // 50-79
-  [0.8, 1.2, 1.4, 1.8], // 80-120
-  [1.0, 1.4, 1.6, 2.0], // >120
-];
-
-const snavCol = (snav: number) => {
-  if (snav < 1500) return 0;
-  if (snav < 3500) return 1;
-  if (snav < 5000) return 2;
-  return 3;
-};
-
-const rentRow = (rent: number) => {
-  if (rent < 10) return 0;
-  if (rent < 30) return 1;
-  if (rent < 50) return 2;
-  if (rent < 80) return 3;
-  if (rent <= 120) return 4;
-  return 5;
-};
-
-export const rentLabel = (r: number) => {
-  if (r < 10) return '<10€';
-  if (r < 30) return '10-29€';
-  if (r < 50) return '30-49€';
-  if (r < 80) return '50-79€';
-  if (r <= 120) return '80-120€';
-  return '>120€';
-};
+export const rentLabel = (r: number, scheme: CompScheme) =>
+  scheme.config.rent_brackets[rentBracketIndex(r, scheme.config.rent_brackets)].label;
 
 export interface QuarterKpis {
   altas: number;
@@ -68,17 +36,18 @@ export interface QuarterKpis {
   totalVentas: number;
 }
 
-export const computeQuarterKpis = (sales: Sale[]): QuarterKpis => {
+export const computeQuarterKpis = (sales: Sale[], scheme: CompScheme): QuarterKpis => {
   const { startStr, endStr } = getCurrentFiscalQuarterRange();
   const trimSales = sales.filter(s => s.fecha >= startStr && s.fecha < endStr);
   const altas = trimSales.reduce((a, s) => a + (s.lineas_movil || 0) + (s.lineas_fibra || 0), 0);
   const snav = trimSales.reduce((a, s) => a + Number(s.snav || 0), 0);
   const margen = trimSales.reduce((a, s) => a + Number(s.margen || 0), 0);
   const rentabilidadMedia = altas > 0 ? margen / altas : 0;
-  const base = MATRIX[rentRow(rentabilidadMedia)][snavCol(snav)];
+  const base = baseMultiplier(snav, rentabilidadMedia, scheme);
   const estrategicas = trimSales.filter(s => s.producto_estrategico).length;
-  const acelerador = snav >= 1800 && trimSales.length > 0 && (estrategicas / trimSales.length) >= 0.5;
-  const multiplicador = Math.min(2.0, base + (acelerador ? 0.2 : 0));
+  const activeAccelerators = scheme.config.accelerators.filter(a => snav >= a.min_snav && trimSales.length > 0 && (estrategicas / trimSales.length) >= a.min_strategic_share);
+  const acelerador = activeAccelerators.length > 0;
+  const multiplicador = Math.min(scheme.config.multiplier_cap, base + activeAccelerators.reduce((sum, a) => sum + a.bonus, 0));
   return {
     altas,
     snav,
