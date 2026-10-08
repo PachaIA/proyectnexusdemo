@@ -58,6 +58,7 @@ interface HeaderProps {
   onCompanyNavigate?: (companyId: string) => void;
 }
 
+import { useFollowUps } from '@/hooks/useFollowUps';
 export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, onAddCompany, onCompanyNavigate }: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -195,6 +196,20 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             )}
           >
             📋 Hoy
+          </button>
+          <button
+            onClick={() => navigate('/hoy')}
+            className={cn(
+              'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap inline-flex items-center gap-1.5',
+              location.pathname === '/hoy'
+                ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
+                : 'text-muted-foreground hover:text-foreground'
+            )}
+          >
+            🔔 Pendientes
+            {urgentCount > 0 && (
+              <span aria-label={`${urgentCount} pendientes`} className="min-w-4 h-4 px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold leading-4 text-center">{urgentCount}</span>
+            )}
           </button>
           <button
             onClick={() => navigate(NEXUS_VIEW_PATHS.clientes)}

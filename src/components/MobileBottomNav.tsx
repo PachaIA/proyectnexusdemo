@@ -1,11 +1,13 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Map, Kanban, Calculator, FileText, CalendarClock } from 'lucide-react';
+import { LayoutDashboard, Users, Map, Kanban, Calculator, FileText, CalendarClock, BellRing } from 'lucide-react';
+import { useFollowUps } from '@/hooks/useFollowUps';
 import { cn } from '@/lib/utils';
 import { NEXUS_VIEW_PATHS } from '@/lib/nexusViews';
 
 // Cada pestaña tiene su propia URL: el estado vive en el router (F5, atrás y enlaces directos funcionan).
 const tabs = [
   { path: NEXUS_VIEW_PATHS.hoy, icon: LayoutDashboard, label: 'Hoy' },
+  { path: '/hoy', icon: BellRing, label: 'Pendientes' },
   { path: NEXUS_VIEW_PATHS.clientes, icon: Users, label: 'Clientes' },
   { path: '/map', icon: Map, label: 'Mapa' },
   { path: '/my-leads', icon: Kanban, label: 'Pipeline' },
@@ -17,6 +19,7 @@ const tabs = [
 export const MobileBottomNav = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { urgentCount } = useFollowUps();
   if (location.pathname.startsWith('/llamada')) return null;
 
   return (
@@ -34,7 +37,12 @@ export const MobileBottomNav = () => {
               active ? 'text-primary' : 'text-muted-foreground'
             )}
           >
-            <Icon className="w-5 h-5" />
+            <span className="relative">
+              <Icon className="w-5 h-5" />
+              {tab.path === '/hoy' && urgentCount > 0 && (
+                <span aria-label={`${urgentCount} pendientes`} className="absolute -top-1.5 -right-2.5 min-w-4 h-4 px-1 rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold leading-4 text-center">{urgentCount}</span>
+              )}
+            </span>
             <span className="text-[10px] font-medium">{tab.label}</span>
           </button>
         );

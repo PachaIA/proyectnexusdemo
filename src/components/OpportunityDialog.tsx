@@ -9,7 +9,7 @@ import {
   type OpportunityRequest, type OpportunityDraft,
 } from '@/lib/opportunity';
 
-const EMPTY: OpportunityDraft = { company_id: '', fecha_cierre_prevista: '', importe_mensual_eur: '', margen_estimado_eur: '' };
+const EMPTY: OpportunityDraft = { company_id: '', fecha_cierre_prevista: '', importe_mensual_eur: '', margen_estimado_eur: '', next_action: '', next_action_date: '' };
 
 export const OpportunityDialog = () => {
   const [req, setReq] = useState<OpportunityRequest | null>(null);
@@ -29,7 +29,7 @@ export const OpportunityDialog = () => {
   const show = (k: keyof OpportunityDraft) => touched[k] && errors[k];
 
   const submit = () => {
-    setTouched({ company_id: true, fecha_cierre_prevista: true, importe_mensual_eur: true, margen_estimado_eur: true });
+    setTouched({ company_id: true, fecha_cierre_prevista: true, importe_mensual_eur: true, margen_estimado_eur: true, next_action_date: true });
     if (Object.keys(errors).length || !req) return;
     req.resolve(draftToFields(draft));
   };
@@ -69,6 +69,17 @@ export const OpportunityDialog = () => {
               <Label htmlFor="opp-margen">Margen estimado (€) *</Label>
               <Input id="opp-margen" inputMode="decimal" placeholder="0,00" value={draft.margen_estimado_eur} onChange={set('margen_estimado_eur')} onBlur={blur('margen_estimado_eur')} aria-invalid={!!show('margen_estimado_eur')} />
               {show('margen_estimado_eur') && <p className="text-xs text-destructive">{errors.margen_estimado_eur}</p>}
+            </div>
+          </div>
+          <div className="grid grid-cols-[1.6fr_1fr] gap-3 pt-1 border-t border-border">
+            <div className="space-y-1 pt-3">
+              <Label htmlFor="opp-next">Próxima acción</Label>
+              <Input id="opp-next" maxLength={140} placeholder="Llamar para cerrar oferta…" value={draft.next_action} onChange={set('next_action')} />
+            </div>
+            <div className="space-y-1 pt-3">
+              <Label htmlFor="opp-next-date">Fecha</Label>
+              <Input id="opp-next-date" type="date" value={draft.next_action_date} onChange={set('next_action_date')} onBlur={blur('next_action_date')} />
+              {show('next_action_date') && <p className="text-xs text-destructive">{errors.next_action_date}</p>}
             </div>
           </div>
         </div>

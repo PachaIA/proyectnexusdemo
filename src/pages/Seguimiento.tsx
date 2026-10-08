@@ -51,7 +51,7 @@ const Seguimiento = () => {
 
   return (
     <div className="min-h-screen bg-background pb-20">
-      <Header searchQuery="" onSearchChange={() => {}} />
+      <Header />
       <main className="max-w-5xl mx-auto px-4 py-5">
         <h1 className="text-lg font-semibold mb-4">Seguimiento</h1>
         {empty ? (
