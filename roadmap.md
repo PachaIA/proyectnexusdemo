@@ -14,3 +14,4 @@
 - [x] Auditoría general: 9 rutas OK, sin errores ni fallos de red; aviso cosmético forwardRef (solo dev)
 - [x] Modelo de oportunidad: etapas únicas, campos obligatorios (cliente, cierre previsto, importe mensual, margen), validación inline, informe de faltantes
 - [x] Margen por línea de oportunidad (ingreso/coste mensual, margen € y % calculados), totales por oportunidad, columnas ordenables Margen €/%
+- [x] Seguimiento /hoy: próximas acciones vencidas/hoy/7 días con margen, contador en la navegación
