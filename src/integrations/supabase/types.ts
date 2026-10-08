@@ -321,6 +321,47 @@ export type Database = {
           },
         ]
       }
+      opportunity_lines: {
+        Row: {
+          cantidad: number
+          created_at: string
+          id: string
+          lead_id: string
+          monthly_cost: number
+          monthly_revenue: number
+          producto: string
+          updated_at: string
+        }
+        Insert: {
+          cantidad?: number
+          created_at?: string
+          id?: string
+          lead_id: string
+          monthly_cost?: number
+          monthly_revenue?: number
+          producto?: string
+          updated_at?: string
+        }
+        Update: {
+          cantidad?: number
+          created_at?: string
+          id?: string
+          lead_id?: string
+          monthly_cost?: number
+          monthly_revenue?: number
+          producto?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunity_lines_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       quarterly_kpis: {
         Row: {
           altas_actual: number

@@ -1,5 +1,13 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1791437051441,
+      "tag": "0000_opportunity_lines",
+      "breakpoints": true
+    }
+  ]
 }
