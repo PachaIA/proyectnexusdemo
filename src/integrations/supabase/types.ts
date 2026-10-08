@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      comp_schemes: {
+        Row: {
+          active: boolean
+          config: Json
+          created_at: string
+          id: string
+          name: string
+          target_payout_eur: number
+          target_units: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          config: Json
+          created_at?: string
+          id?: string
+          name: string
+          target_payout_eur: number
+          target_units: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          config?: Json
+          created_at?: string
+          id?: string
+          name?: string
+          target_payout_eur?: number
+          target_units?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       companies: {
         Row: {
           address: string | null

@@ -2,6 +2,8 @@ import { getEffectiveUser } from '@/lib/openUser';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { getVodafoneFiscalQuarterLabel } from '@/lib/vodafoneFiscalQuarter';
+import { useCompScheme } from '@/hooks/useCompScheme';
+import { baseMultiplier, type CompScheme } from '@/lib/compScheme';
 
 export interface QuarterlyKpi {
   id: string;
@@ -21,42 +23,19 @@ const getCurrentQuarter = (): string => {
   return `Q${q}-${now.getFullYear()}`;
 };
 
-// Multiplicador lookup table
-const MULT_TABLE: number[][] = [
-  // Rent <9, 10-29, 30-49, 50-79, 80-120, >120
-  [0,   0.2, 0.4, 0.6, 0.8, 1.0],   // SNAV <1500
-  [0,   0.4, 0.6, 1.0, 1.2, 1.4],   // SNAV 1500-3499
-  [0.3, 0.6, 0.8, 1.2, 1.4, 1.6],   // SNAV 3500-4999
-  [0.6, 0.8, 1.2, 1.4, 1.8, 2.0],   // SNAV >=5000
-];
-
-const getSnavIndex = (snav: number): number => {
-  if (snav < 1500) return 0;
-  if (snav < 3500) return 1;
-  if (snav < 5000) return 2;
-  return 3;
-};
-
-const getRentIndex = (rent: number): number => {
-  if (rent < 9) return 0;
-  if (rent < 30) return 1;
-  if (rent < 50) return 2;
-  if (rent < 80) return 3;
-  if (rent <= 120) return 4;
-  return 5;
-};
-
-export const getMultiplicador = (snav: number, rent: number): number => {
-  return MULT_TABLE[getSnavIndex(snav)][getRentIndex(rent)];
-};
+// Preserve the historical lookup's distinct rent bracket and no accelerator.
+export const getMultiplicador = (snav: number, rent: number, scheme: CompScheme): number => baseMultiplier(snav, rent, scheme, true);
 
 export const useQuarterlyKpis = () => {
   const queryClient = useQueryClient();
   const quarter = getCurrentQuarter();
+  const { data: scheme, isLoading: loadingScheme, error: schemeError } = useCompScheme();
 
   const { data: kpi, isLoading } = useQuery({
     queryKey: ['quarterly_kpis', quarter],
+    enabled: !!scheme,
     queryFn: async () => {
+      if (!scheme) throw new Error('Falta el esquema de compensación activo.');
       const { data: { user } } = await getEffectiveUser();
       if (!user) return null;
 
@@ -73,7 +52,7 @@ export const useQuarterlyKpis = () => {
         // Create default record
         const { data: created, error: insertErr } = await (supabase as any)
           .from('quarterly_kpis')
-          .insert({ user_id: user.id, quarter, altas_target: 70, altas_actual: 0, snav_total: 0, rentabilidad_media: 0 })
+          .insert({ user_id: user.id, quarter, altas_target: scheme.target_units, altas_actual: 0, snav_total: 0, rentabilidad_media: 0 })
           .select()
           .single();
         if (insertErr) throw insertErr;
@@ -84,7 +63,7 @@ export const useQuarterlyKpis = () => {
   });
 
   const updateKpi = useMutation({
-    mutationFn: async (updates: Partial<Pick<QuarterlyKpi, 'altas_actual' | 'altas_target' | 'snav_total' | 'rentabilidad_media'>>) => {
+    mutationFn: async (updates: Partial<Pick<QuarterlyKpi, 'altas_actual' | 'snav_total' | 'rentabilidad_media'>>) => {
       if (!kpi) throw new Error('No KPI record');
       const { error } = await (supabase as any)
         .from('quarterly_kpis')
@@ -97,5 +76,8 @@ export const useQuarterlyKpis = () => {
     },
   });
 
-  return { kpi, isLoading, quarter, quarterLabel: getVodafoneFiscalQuarterLabel(), updateKpi: updateKpi.mutateAsync, getMultiplicador };
+  return { kpi: kpi && scheme ? { ...kpi, altas_target: scheme.target_units } : kpi, isLoading: isLoading || loadingScheme, error: schemeError, quarter, quarterLabel: getVodafoneFiscalQuarterLabel(), updateKpi: updateKpi.mutateAsync, getMultiplicador: (snav: number, rent: number) => {
+    if (!scheme) throw new Error('Falta el esquema de compensación activo.');
+    return getMultiplicador(snav, rent, scheme);
+  } };
 };

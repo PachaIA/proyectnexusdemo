@@ -1,6 +1,6 @@
 # Roadmap
 
-- [ ] Desacoplar compensación: esquema MR PRO en Cloud, cálculos desde esquema activo, pruebas de igualdad e informe de archivos/líneas
+- [x] Desacoplar compensación: esquema MR PRO en Cloud, cálculos desde esquema activo, pruebas de igualdad e informe de archivos/líneas
 
 - [x] Remove login requirement (app opens directly) — TEMPORARY, re-close later
 - [x] Secrets already set; no update needed

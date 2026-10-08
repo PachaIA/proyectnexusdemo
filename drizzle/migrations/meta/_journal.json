@@ -8,6 +8,13 @@
       "when": 1791437051441,
       "tag": "0000_opportunity_lines",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791497614470,
+      "tag": "0001_create_comp_schemes",
+      "breakpoints": true
     }
   ]
 }
