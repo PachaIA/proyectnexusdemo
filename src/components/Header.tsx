@@ -62,6 +62,7 @@ import { useFollowUps } from '@/hooks/useFollowUps';
 export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, onAddCompany, onCompanyNavigate }: HeaderProps) => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { urgentCount } = useFollowUps();
   const dashboardView = nexusViewFromPath(location.pathname);
   const [localSearch, setLocalSearch] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
