@@ -1,3 +1,4 @@
+import { requestOpportunityFields } from '@/lib/opportunity';
 import { refreshCompanies, refreshLeads } from '@/lib/queryClient';
 import { getEffectiveUser } from '@/lib/openUser';
 import { useState, useEffect, useRef, useCallback } from "react";
@@ -364,8 +365,11 @@ function InteractionRegistry({
       if (existing) {
         await supabase.from('leads').update({ estado }).eq('id', existing.id);
       } else {
-        // Create lead automatically
-        await supabase.from('leads').insert({
+        // Crear oportunidad: pedir datos obligatorios
+        const fields = await requestOpportunityFields({ companyId: company.id, lockClient: true });
+        if (!fields) return;
+        const { error: insErr } = await (supabase as any).from('leads').insert({
+          ...fields,
           company_id: company.id,
           empresa: company.name,
           cif: company.cif || null,
@@ -378,6 +382,7 @@ function InteractionRegistry({
           user_id: user.id,
           next_action: company.nextBestAction?.type || 'call',
         });
+        if (insErr) throw insErr;
       }
       // Invalidate leads query
       refreshLeads();
@@ -1283,11 +1288,14 @@ function DetailPanel({
               if (existing) {
                 await supabase.from('leads').update({ next_action: 'call', next_action_date: today }).eq('id', existing.id);
               } else {
-                await supabase.from('leads').insert({
-                  company_id: selected.id, empresa: selected.name, cif: selected.cif || null,
+                const fields = await requestOpportunityFields({ companyId: selected.id, lockClient: true });
+                if (!fields) return;
+                const { error: insErr } = await (supabase as any).from('leads').insert({
+                  empresa: selected.name, cif: selected.cif || null,
                   sector: selected.sector, tamano: selected.employees, opportunity_score: selected.opportunityScore,
-                  estado: 'contactado', next_action: 'call', next_action_date: today, user_id: user.id,
+                  estado: 'contactado', next_action: 'call', next_action_date: today, user_id: user.id, ...fields,
                 });
+                if (insErr) throw insErr;
               }
               refreshLeads();
               toast.success('Marcado para llamar hoy');
@@ -1305,11 +1313,14 @@ function DetailPanel({
               if (existing) {
                 await supabase.from('leads').update({ next_action: 'visit', next_action_date: today }).eq('id', existing.id);
               } else {
-                await supabase.from('leads').insert({
-                  company_id: selected.id, empresa: selected.name, cif: selected.cif || null,
+                const fields = await requestOpportunityFields({ companyId: selected.id, lockClient: true });
+                if (!fields) return;
+                const { error: insErr } = await (supabase as any).from('leads').insert({
+                  empresa: selected.name, cif: selected.cif || null,
                   sector: selected.sector, tamano: selected.employees, opportunity_score: selected.opportunityScore,
-                  estado: 'contactado', next_action: 'visit', next_action_date: today, user_id: user.id,
+                  estado: 'contactado', next_action: 'visit', next_action_date: today, user_id: user.id, ...fields,
                 });
+                if (insErr) throw insErr;
               }
               refreshLeads();
               toast.success('Marcado para visitar hoy');
