@@ -1,12 +1,13 @@
 import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, PhoneCall } from 'lucide-react';
+import { ArrowRight, PhoneCall, CalendarClock, Layers3, TrendingUp, Clock3, CheckCircle2, Circle, FileText, Handshake, XCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import { useLeads } from '@/hooks/useLeads';
 import { useSales } from '@/hooks/useSales';
 import { useOpportunityLines, fmtEur } from '@/hooks/useOpportunityLines';
-import { editOpportunity, STAGE_LABEL } from '@/lib/opportunity';
+import { editOpportunity, STAGE_LABEL, normalizeStage } from '@/lib/opportunity';
 import { localDateStr, nextActionLabel } from '@/lib/followUps';
 import { summarizePipeline, summarizeClosedMonths, pendingActions, opportunityMargin } from '@/lib/dashboardSummary';
 
@@ -19,26 +20,36 @@ export const HoyTab = () => {
   const pending = useMemo(() => pendingActions(leads), [leads]);
   const months = useMemo(() => summarizeClosedMonths(sales), [sales]);
   const today = localDateStr(new Date());
+  const overdueCount = pending.filter(lead => (lead.next_action_date ?? '') < today).length;
+  const todayCount = pending.filter(lead => lead.next_action_date === today).length;
+  const laterCount = pending.length - overdueCount - todayCount;
+  const stageIcons = { lead: Circle, contactado: PhoneCall, propuesta: FileText, negociacion: Handshake, ganada: CheckCircle2, perdida: XCircle };
+  const stageTones = { lead: 'text-muted-foreground bg-muted/40', contactado: 'text-info bg-info/10', propuesta: 'text-warning bg-warning/10', negociacion: 'text-primary bg-primary/10', ganada: 'text-success bg-success/10', perdida: 'text-destructive bg-destructive/10' };
+  const barTones = { lead: '[&>div]:bg-muted-foreground', contactado: '[&>div]:bg-info', propuesta: '[&>div]:bg-warning', negociacion: '[&>div]:bg-primary', ganada: '[&>div]:bg-success', perdida: '[&>div]:bg-destructive' };
+  const largestMonth = Math.max(Math.abs(months.current), Math.abs(months.previous), 1);
   const dateLabel = (date: string) => new Date(`${date}T00:00:00`).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const monthLabel = (date: Date) => date.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' });
 
   return (
-    <div className="space-y-7 text-foreground">
+    <div className="space-y-7 text-foreground motion-safe:animate-fade-in">
       <section aria-labelledby="dashboard-hoy">
         <div className="flex items-center justify-between gap-3 mb-3">
-          <h1 id="dashboard-hoy" className="text-lg font-semibold">Hoy <span className="text-sm text-muted-foreground font-normal">· Próximas acciones pendientes</span></h1>
+          <div className="flex items-center gap-3 min-w-0"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"><CalendarClock className="h-5 w-5" /></span><div><h1 id="dashboard-hoy" className="text-xl font-semibold">Hoy</h1><p className="text-xs text-muted-foreground">Próximas acciones pendientes</p></div></div>
           <Button asChild variant="ghost" size="sm"><Link to="/hoy">Seguimiento <ArrowRight /></Link></Button>
         </div>
+        <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4">
+          {[{ label: 'Vencidas', count: overdueCount, tone: 'text-destructive', icon: Clock3 }, { label: 'Hoy', count: todayCount, tone: 'text-primary', icon: CalendarClock }, { label: 'Próximas', count: laterCount, tone: 'text-info', icon: ArrowRight }].map(item => <div key={item.label} className="rounded-lg border border-border bg-card/60 p-3 sm:p-4"><div className={`flex items-center justify-between gap-2 ${item.tone}`}><span className="text-xs sm:text-sm font-medium">{item.label}</span><item.icon className="h-4 w-4 shrink-0" /></div><p className={`mt-2 text-3xl font-semibold tabular-nums ${item.tone}`}>{isLoading ? '—' : item.count}</p></div>)}
+        </div>
         {error ? <p role="alert" className="text-destructive">No se pudieron cargar las oportunidades.</p> : isLoading ? <p className="text-muted-foreground py-4">Cargando...</p> : pending.length === 0 ? <p className="text-muted-foreground py-6">Nada pendiente hoy</p> : (
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto border-y border-border">
             <table className="w-full text-sm">
               <thead className="text-xs text-muted-foreground border-b border-border"><tr><th className="text-left py-2 pr-3">Cliente / Oportunidad</th><th className="text-left px-3">Próxima acción</th><th className="text-left px-3">Fecha</th><th className="text-right px-3">Margen €</th><th><span className="sr-only">Llamar</span></th></tr></thead>
               <tbody>{pending.map(lead => {
                 const date = lead.next_action_date;
                 if (!date) return null;
                 const overdue = date < today;
-                return <tr key={lead.id} className="border-b border-border/60 hover:bg-muted/40">
-                  <td className="py-2 pr-3"><Button variant="link" className="h-auto p-0 whitespace-normal text-left justify-start" onClick={() => editOpportunity(lead).catch(e => toast.error(e?.message || 'No se pudo guardar'))}>{lead.empresa}</Button><div className="text-xs text-muted-foreground">{STAGE_LABEL[pipeline.find(s => s.leads.some(l => l.id === lead.id))?.stage ?? 'lead']}</div></td>
+                return <tr key={lead.id} className="border-b border-border/60 last:border-0 hover:bg-muted/40 even:bg-card/30">
+                  <td className="py-3 pr-3"><Button variant="link" className="h-auto p-0 whitespace-normal text-left justify-start text-foreground hover:text-primary" onClick={() => editOpportunity(lead).catch(e => toast.error(e?.message || 'No se pudo guardar'))}>{lead.empresa}</Button><div className="text-xs text-muted-foreground mt-1">{STAGE_LABEL[normalizeStage(lead.estado)]}</div></td>
                   <td className="px-3 py-2 min-w-40">{nextActionLabel(lead.next_action)}</td>
                   <td className={`px-3 py-2 whitespace-nowrap tabular-nums ${overdue ? 'text-destructive' : date === today ? 'text-primary' : 'text-muted-foreground'}`}>{dateLabel(date)}<div className="text-xs">{overdue ? 'Vencida' : date === today ? 'Hoy' : 'Próxima'}</div></td>
                   <td className="px-3 py-2 text-right whitespace-nowrap tabular-nums">{fmtEur(opportunityMargin(lead, lines))}</td>
@@ -51,18 +62,21 @@ export const HoyTab = () => {
       </section>
 
       <section aria-labelledby="dashboard-pipeline" className="border-t border-border pt-5">
-        <div className="flex justify-between items-center gap-3 mb-3"><h2 id="dashboard-pipeline" className="text-lg font-semibold">Pipeline por etapa</h2><Button asChild variant="ghost" size="sm"><Link to="/my-leads">Ver oportunidades <ArrowRight /></Link></Button></div>
-        {isLoading ? <p className="text-muted-foreground">Cargando...</p> : <div className="overflow-x-auto"><table className="w-full text-sm"><thead className="text-xs text-muted-foreground border-b border-border"><tr><th className="text-left py-2">Etapa</th><th className="text-right px-3">Oportunidades</th><th className="text-right">Margen €</th></tr></thead><tbody>{pipeline.map(s => <tr key={s.stage} className="border-b border-border/60"><td className="py-2 font-medium">{STAGE_LABEL[s.stage]}</td><td className="text-right px-3 tabular-nums">{s.leads.length}</td><td className="text-right py-2 tabular-nums">{fmtEur(s.margin)}{s.missing > 0 && <div className="text-xs text-muted-foreground">{s.missing} sin margen</div>}</td></tr>)}</tbody></table></div>}
+        <div className="flex justify-between items-center gap-3 mb-4"><div className="flex items-center gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-warning/10 text-warning"><Layers3 className="h-5 w-5" /></span><h2 id="dashboard-pipeline" className="text-lg font-semibold">Pipeline por etapa</h2></div><Button asChild variant="ghost" size="sm"><Link to="/my-leads">Ver oportunidades <ArrowRight /></Link></Button></div>
+        {isLoading ? <p className="text-muted-foreground">Cargando...</p> : <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">{pipeline.map(s => {
+          const Icon = stageIcons[s.stage];
+          return <div key={s.stage} className="rounded-lg border border-border bg-card/60 p-4 min-w-0"><div className="flex items-center gap-2"><span className={`flex h-7 w-7 items-center justify-center rounded-md shrink-0 ${stageTones[s.stage]}`}><Icon className="h-4 w-4" /></span><h3 className="text-sm font-medium">{STAGE_LABEL[s.stage]}</h3></div><p className="text-3xl font-semibold tabular-nums mt-4">{s.leads.length}</p><p className="text-xs text-muted-foreground mt-1">Oportunidades</p><Progress aria-label={`Proporción de oportunidades en ${STAGE_LABEL[s.stage]}`} value={s.leads.length / Math.max(pipeline.reduce((sum, stage) => sum + stage.leads.length, 0), 1) * 100} className={`h-1 mt-3 ${barTones[s.stage]}`} /><div className="border-t border-border mt-4 pt-3"><p className="text-xs text-muted-foreground">Margen €</p><p className="text-base font-semibold tabular-nums break-words mt-1">{fmtEur(s.margin)}</p><p className="text-xs text-muted-foreground mt-1 min-h-4">{s.missing > 0 ? `${s.missing} sin margen` : '\u00a0'}</p></div></div>;
+        })}</div>}
       </section>
 
       <section aria-labelledby="dashboard-margen" className="border-t border-border pt-5">
-        <h2 id="dashboard-margen" className="text-lg font-semibold mb-3">Margen cerrado · Este mes frente al mes pasado</h2>
+        <div className="flex items-center gap-3 mb-4"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-success/10 text-success"><TrendingUp className="h-5 w-5" /></span><div><h2 id="dashboard-margen" className="text-lg font-semibold">Margen cerrado</h2><p className="text-xs text-muted-foreground">Este mes frente al mes pasado</p></div></div>
         {salesLoading ? <p className="text-muted-foreground">Cargando...</p> : <>
-          <div className="grid grid-cols-2 gap-6">
-            <div><p className="text-sm text-muted-foreground capitalize">{monthLabel(months.currentStart)}</p><p className="text-2xl font-semibold tabular-nums mt-1">{fmtEur(months.current)}</p></div>
-            <div><p className="text-sm text-muted-foreground capitalize">{monthLabel(months.previousStart)}</p><p className="text-2xl font-semibold tabular-nums mt-1">{fmtEur(months.previous)}</p></div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <div className="border-l-2 border-success pl-4 py-2"><p className="text-sm text-muted-foreground capitalize">{monthLabel(months.currentStart)}</p><p className="text-3xl font-semibold tabular-nums mt-2 break-words">{fmtEur(months.current)}</p><Progress aria-label="Margen del mes actual respecto al mayor importe" value={Math.abs(months.current) / largestMonth * 100} className="h-2 mt-4 [&>div]:bg-success" /></div>
+            <div className="border-l-2 border-muted-foreground/40 pl-4 py-2"><p className="text-sm text-muted-foreground capitalize">{monthLabel(months.previousStart)}</p><p className="text-3xl font-semibold tabular-nums mt-2 break-words">{fmtEur(months.previous)}</p><Progress aria-label="Margen del mes pasado respecto al mayor importe" value={Math.abs(months.previous) / largestMonth * 100} className="h-2 mt-4 [&>div]:bg-muted-foreground" /></div>
           </div>
-          <p className={`text-sm mt-3 ${months.current < months.previous ? 'text-destructive' : 'text-foreground'}`}>Diferencia: {months.current > months.previous ? '+' : ''}{fmtEur(months.current - months.previous)}</p>
+          <p className={`text-sm font-medium mt-4 ${months.current < months.previous ? 'text-destructive' : months.current > months.previous ? 'text-success' : 'text-foreground'}`}>Diferencia: {months.current > months.previous ? '+' : ''}{fmtEur(months.current - months.previous)}</p>
           <p className="text-xs text-muted-foreground mt-2">Ventas registradas por fecha de venta · Mes actual hasta hoy.</p>
         </>}
       </section>
