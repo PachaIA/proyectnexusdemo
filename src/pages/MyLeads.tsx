@@ -16,6 +16,7 @@ import {
 } from '@dnd-kit/core';
 import { CompanyDetailPanel } from '@/components/layout/CompanyDetailPanel';
 import { ProposalModal } from '@/components/ProposalModal';
+import { OpportunityList } from '@/components/OpportunityList';
 import { SpeechModal } from '@/components/SpeechModal';
 
 // ─── Theme — CSS Variable Based ─────────────────────────────────────────
@@ -530,6 +531,8 @@ const MyLeads = () => {
             })}
           </div>
         </DndContext>
+
+        <OpportunityList leads={activeLeads as any} />
 
         {/* ROW 3: Charts */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>

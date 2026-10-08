@@ -196,6 +196,7 @@ const Index = () => {
       });
       toast.success(`Lead creado: ${selectedCompany.name}`);
     } catch (error: any) {
+      if (error?.message === 'CANCELLED') return;
       if (error?.message === 'DUPLICATE') toast.warning('Este lead ya existe');
       else toast.error('Error al crear el lead');
     }
@@ -343,7 +344,8 @@ const Index = () => {
             });
             toast.success(`${uc.name} añadida al pipeline`);
           } catch (error: any) {
-            if (error?.message === 'DUPLICATE') toast.warning('Lead ya existe');
+            if (error?.message === 'CANCELLED') return;
+      if (error?.message === 'DUPLICATE') toast.warning('Lead ya existe');
             else toast.error('Error al añadir');
           }
         }}

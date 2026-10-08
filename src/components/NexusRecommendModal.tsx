@@ -1,3 +1,4 @@
+import { requestOpportunityFields } from '@/lib/opportunity';
 import { refreshCompanies, refreshLeads } from '@/lib/queryClient';
 import { getEffectiveUser } from '@/lib/openUser';
 import { useState, useMemo } from 'react';

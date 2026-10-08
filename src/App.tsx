@@ -17,6 +17,7 @@ import Triaje from "./pages/Triaje";
 import TriajeCola from "./pages/TriajeCola";
 import NotFound from "./pages/NotFound";
 import OAuthConsent from "./pages/OAuthConsent";
+import { OpportunityDialog } from "./components/OpportunityDialog";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import { FloatingChatWidget } from "./components/FloatingChatWidget";
 
@@ -59,6 +60,7 @@ const App = () => (
   <PersistQueryClientProvider client={queryClient} persistOptions={{ persister, maxAge: 1000 * 60 * 60 * 24 * 7 }}>
     <TooltipProvider>
       <Toaster />
+      <OpportunityDialog />
       <Sonner />
       <BrowserRouter>
         <AppRoutes />

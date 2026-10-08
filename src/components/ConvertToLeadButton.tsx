@@ -1,3 +1,4 @@
+import { requestOpportunityFields } from '@/lib/opportunity';
 import { getEffectiveUser } from '@/lib/openUser';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
