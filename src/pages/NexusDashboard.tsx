@@ -363,7 +363,7 @@ function InteractionRegistry({
         .eq('company_id', company.id)
         .maybeSingle();
       if (existing) {
-        await supabase.from('leads').update({ estado }).eq('id', existing.id);
+        await supabase.from('leads').update({ estado: estado as any }).eq('id', existing.id);
       } else {
         // Crear oportunidad: pedir datos obligatorios
         const fields = await requestOpportunityFields({ companyId: company.id, lockClient: true });
