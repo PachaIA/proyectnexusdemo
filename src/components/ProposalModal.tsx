@@ -192,7 +192,7 @@ export const ProposalModal = ({ company, isOpen, onClose }: ProposalModalProps) 
               </h2>
               <div className="grid grid-cols-3 gap-4">
                 <div className="card-elevated p-5 text-center">
-                  <div className="text-3xl font-bold text-accent mb-1">€{estimatedSavings}</div>
+                   <div className="text-3xl font-bold text-accent mb-1"><Money>{fmtEur(estimatedSavings)}</Money></div>
                   <p className="text-sm text-muted-foreground">Ahorro mensual estimado</p>
                 </div>
                 <div className="card-elevated p-5 text-center">

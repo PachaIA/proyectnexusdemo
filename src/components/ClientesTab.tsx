@@ -234,7 +234,7 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
                       <td className={`${tdClass} text-center tabular-nums`}>{c.lineasMovil || 0}</td>
                       <td className={`${tdClass} text-center tabular-nums`}>{c.lineasFijo || 0}</td>
                       <td className={`${tdClass} text-center tabular-nums`}>{c.permanencia ? `${c.permanencia}m` : "—"}</td>
-                      <td className={`${tdClass} text-center tabular-nums`}>{c.penalizacion ? `${c.penalizacion.toLocaleString()}€` : "—"}</td>
+                      <td className={`${tdClass} text-center tabular-nums`}><Money>{c.penalizacion ? fmtEur(c.penalizacion) : "—"}</Money></td>
                       <td className={`${tdClass} text-center`}>{scoreBadge(c.opportunityScore)}</td>
                       <td className={tdClass}>
                         {estadoCfg

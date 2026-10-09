@@ -10,6 +10,8 @@ import { Company } from '@/data/companies';
 // CompanyAddressEditor is rendered by the parent (NexusDashboard header)
 import { SedesSection } from '@/components/SedesSection';
 import { getCurrentFiscalQuarterRange } from '@/lib/salesKpis';
+import { fmtEur } from '@/hooks/useOpportunityLines';
+import { Money } from '@/components/Money';
 
 // ─── Inputs definidos FUERA del render para no perder foco ──────────────
 const NumInput = memo(({ value, onChange, autoFocus }: { value: string; onChange: (v: string) => void; autoFocus?: boolean }) => (
@@ -359,7 +361,7 @@ export const BriefingEditableBlock = ({ company }: Props) => {
               onStartEdit={() => setEditField('snav')}
               onCancel={() => setEditField(null)}
               onSave={() => setEditField(null)}
-              display={<BigNumber value={snavNum.toLocaleString('es-ES')} suffix="€" />}
+              display={<Money><BigNumber value={fmtEur(snavNum)} /></Money>}
             >
               <NumInput value={snavStr} onChange={setSnavStr} autoFocus />
             </Tile>
@@ -389,7 +391,7 @@ export const BriefingEditableBlock = ({ company }: Props) => {
             <div className="flex items-baseline gap-1.5">
               <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Rentabilidad</span>
               <span className="text-lg font-semibold tabular-nums text-accent">
-                {altas > 0 ? `${rentEstim.toFixed(2)} €/alta` : '—'}
+                <Money>{altas > 0 ? `${fmtEur(rentEstim)}/alta` : '—'}</Money>
               </span>
             </div>
             <span className="text-[10px] text-muted-foreground ml-auto">Pulsa cualquier tarjeta para editar · Guarda con el botón</span>

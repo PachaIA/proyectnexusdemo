@@ -101,7 +101,7 @@ function KPICard({ label, value, icon, accent = T.accent }: { label: string; val
     }}>
       <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }} />
       <div style={{ fontSize: 22, marginBottom: 10 }}>{icon}</div>
-      <div style={{ ...mono, fontSize: 24, fontWeight: 800, color: accent, lineHeight: 1 }}>{value}</div>
+      <div className="nexus-kpi" style={{ ...mono, fontSize: 24, fontWeight: 800, color: accent, lineHeight: 1 }}>{value.includes('€') ? <Money>{value}</Money> : value}</div>
       <div style={{ ...mono, fontSize: 9, color: T.textLabel, letterSpacing: 2, marginTop: 6 }}>{label}</div>
     </div>
   );
@@ -464,10 +464,10 @@ const MyLeads = () => {
 
         {/* ROW 1: KPI Cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 20 }}>
-          <KPICard label="PIPELINE TOTAL" value={`€${(pipelineTotal / 1000).toFixed(0)}k`} icon="💶" accent="var(--success-text)" />
+          <KPICard label="PIPELINE TOTAL" value={fmtEur(pipelineTotal)} icon="💶" accent="var(--success-text)" />
           <KPICard label="LEADS ESTE MES" value={String(thisMonth)} icon="📊" accent="var(--interactive)" />
           <KPICard label="TASA CONVERSIÓN" value={`${conversionRate}%`} icon="🎯" accent="var(--warning-text)" />
-          <KPICard label="TICKET MEDIO" value={`€${ticketMedio.toLocaleString()}`} icon="💰" accent="var(--interactive)" />
+          <KPICard label="TICKET MEDIO" value={fmtEur(ticketMedio)} icon="💰" accent="var(--interactive)" />
         </div>
 
         {/* ROW 2: Kanban Pipeline — 6 columns (Contactado+Cualificado merged) */}
