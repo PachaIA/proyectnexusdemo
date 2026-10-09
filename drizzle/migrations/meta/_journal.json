@@ -15,6 +15,13 @@
       "when": 1791497614470,
       "tag": "0001_create_comp_schemes",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791560829935,
+      "tag": "0002_restore_authenticated_crm_access",
+      "breakpoints": true
     }
   ]
 }
