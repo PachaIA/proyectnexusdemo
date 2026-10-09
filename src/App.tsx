@@ -16,6 +16,7 @@ import NotFound from "./pages/NotFound";
 import OAuthConsent from "./pages/OAuthConsent";
 import ClientDetailPage from "./pages/ClientDetailPage";
 import { MobileBottomNav } from "./components/MobileBottomNav";
+import { OpportunityDialog } from './components/OpportunityDialog';
 import { FloatingChatWidget } from "./components/FloatingChatWidget";
 
 // Auth desactivada temporalmente: la app abre directo sin login.
@@ -61,6 +62,7 @@ const App = () => (
   <PersistQueryClientProvider client={queryClient} persistOptions={{ persister, maxAge: 1000 * 60 * 60 * 24 * 7 }}>
     <TooltipProvider>
       <Toaster />
+      <OpportunityDialog />
       <Sonner />
       <BrowserRouter>
         <AppRoutes />

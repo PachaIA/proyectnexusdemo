@@ -19,6 +19,7 @@ import { BriefingEditableBlock } from "@/components/BriefingEditableBlock";
 import { CompanyTopSummary } from "@/components/CompanyTopSummary";
 import { ActivitySection } from "@/components/ActivitySection";
 import { QuickReportModal } from "@/components/QuickReportModal";
+import { OpportunityLinesEditor } from '@/components/OpportunityLinesEditor';
 
 
 const BRIEFING_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nexus-briefing`;
@@ -829,7 +830,8 @@ export function DetailPanel({
   const [editingRent, setEditingRent] = useState(false);
   const [rentDraft, setRentDraft] = useState<string>(selected.rentabilidadLinea != null ? String(selected.rentabilidadLinea) : '');
   const [isHot, setIsHot] = useState(selected.isHot || false);
-  const [showReport, setShowReport] = useState(false);
+  const { leads } = useLeads();
+  const currentOpportunity = leads.filter(lead => lead.company_id === selected.id && !lead.archived_at).sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0];
   const selectedActionType = getSafeActionType(selected.nextBestAction);
   const selectedActionPriority = getSafePriority(selected.nextBestAction);
 
@@ -916,6 +918,7 @@ export function DetailPanel({
 
         {/* Bloque editable unificado: identidad, dirección, sedes, perfil y venta del trimestre */}
         <BriefingEditableBlock company={selected} />
+        {currentOpportunity && <OpportunityLinesEditor lead={currentOpportunity} />}
 
 
         {/* Decision makers — editable */}
@@ -1193,22 +1196,7 @@ export function DetailPanel({
             padding: "11px", borderRadius: 10, background: T.cardAlt, border: `1px solid ${T.border}`,
             color: T.textTertiary, cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: 9, letterSpacing: 1, transition: "all 0.2s",
           }}>✉️ EMAIL</button>
-          <button className="nexus-action-btn" onClick={() => setShowReport(true)} style={{
-            gridColumn: "1 / -1", padding: "12px", borderRadius: 10, background: T.cardAlt,
-            border: `1px solid color-mix(in srgb, ${T.accent} 40.0%, transparent)`, color: T.accent, cursor: "pointer",
-            fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, transition: "all 0.2s",
-          }}>📄 INFORME RÁPIDO</button>
         </div>
-
-        {showReport && (
-          <QuickReportModal
-            company={selected}
-            estado={getInteraction(interactions, selected.id).estado}
-            proximoContacto={getInteraction(interactions, selected.id).proximoContacto}
-            ultimoContacto={getInteraction(interactions, selected.id).ultimoContacto}
-            onClose={() => setShowReport(false)}
-          />
-        )}
 
         {/* Interaction Registry */}
         <InteractionRegistry company={selected} interactions={interactions} onUpdate={onUpdate} />
