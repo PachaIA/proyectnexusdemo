@@ -42,7 +42,7 @@ export const CompanyDetail = ({ company, onClose, onGenerateProposal }: CompanyD
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/50 z-[9999] flex justify-end"
+        className="fixed inset-0 bg-background/50 z-[9999] flex justify-end"
         onClick={onClose}
       >
         <motion.div
@@ -57,13 +57,13 @@ export const CompanyDetail = ({ company, onClose, onGenerateProposal }: CompanyD
           <div className="sticky top-0 bg-primary text-primary-foreground p-6 z-10">
             <button 
               onClick={onClose}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-card/10 flex items-center justify-center hover:bg-card/20 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
 
             <div className="flex items-start gap-4">
-              <div className="w-16 h-16 rounded-xl bg-white/10 flex items-center justify-center">
+              <div className="w-16 h-16 rounded-xl bg-card/10 flex items-center justify-center">
                 <Building2 className="w-8 h-8" />
               </div>
               <div className="flex-1">

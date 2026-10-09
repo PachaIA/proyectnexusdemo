@@ -96,7 +96,7 @@ export const MapFilterBar = ({ groups, onClearAll, hasActive, companyCount, tota
                         className={cn(
                           "px-2.5 py-1 rounded-full text-xs font-medium transition-all border",
                           isActive
-                            ? "text-white border-transparent shadow-sm"
+                            ? "text-primary-foreground border-transparent shadow-sm"
                             : "bg-muted/50 text-muted-foreground border-border hover:border-primary/40"
                         )}
                         style={isActive && chip.color ? { background: chip.color, borderColor: chip.color } : undefined}
@@ -146,7 +146,7 @@ export const MapFilterBar = ({ groups, onClearAll, hasActive, companyCount, tota
                 className={cn(
                   "px-2.5 py-1 rounded-full text-xs font-medium transition-all border",
                   isActive
-                    ? "text-white border-transparent shadow-sm"
+                    ? "text-primary-foreground border-transparent shadow-sm"
                     : "bg-muted/50 text-muted-foreground border-border hover:border-primary/40"
                 )}
                 style={isActive && chip.color ? { background: chip.color, borderColor: chip.color } : undefined}

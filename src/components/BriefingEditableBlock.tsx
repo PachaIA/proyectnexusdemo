@@ -10,6 +10,8 @@ import { Company } from '@/data/companies';
 // CompanyAddressEditor is rendered by the parent (NexusDashboard header)
 import { SedesSection } from '@/components/SedesSection';
 import { getCurrentFiscalQuarterRange } from '@/lib/salesKpis';
+import { fmtEur } from '@/hooks/useOpportunityLines';
+import { Money } from '@/components/Money';
 
 // ─── Inputs definidos FUERA del render para no perder foco ──────────────
 const NumInput = memo(({ value, onChange, autoFocus }: { value: string; onChange: (v: string) => void; autoFocus?: boolean }) => (
@@ -58,7 +60,7 @@ const Tile = ({ label, display, editing, onStartEdit, onCancel, onSave, saving, 
       'backdrop-blur-xl border',
       editing ? 'p-3' : 'p-2.5',
       accent
-        ? 'bg-gradient-to-br from-accent/10 via-accent/5 to-transparent border-accent/25 shadow-[0_0_18px_-10px_hsl(var(--accent)/0.5)]'
+        ? 'bg-gradient-to-br from-accent/10 via-accent/5 to-transparent border-accent/25'
         : 'bg-card/40 border-border/50 hover:border-border',
       editing ? 'ring-2 ring-primary/40 bg-card/70' : 'cursor-pointer hover:bg-card/60',
     ].join(' ')}
@@ -92,7 +94,7 @@ const BigNumber = ({ value, suffix }: { value: string | number; suffix?: string 
 const Pill = ({ children, tone = 'neutral' }: { children: React.ReactNode; tone?: 'neutral' | 'on' | 'off' }) => (
   <span className={[
     'inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold',
-    tone === 'on' ? 'bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/30' :
+    tone === 'on' ? 'bg-success/15 text-success ring-1 ring-success/30' :
     tone === 'off' ? 'bg-muted/50 text-muted-foreground ring-1 ring-border' :
     'bg-foreground/10 text-foreground ring-1 ring-border',
   ].join(' ')}>{children}</span>
@@ -284,7 +286,7 @@ export const BriefingEditableBlock = ({ company }: Props) => {
             display={<Pill tone={company.isMultiSite ? 'on' : 'off'}>{company.isMultiSite ? 'SÍ' : 'NO'}</Pill>}
           >
             <div className="flex gap-2 pt-1">
-              <button onClick={() => setMulti(true)} className={`flex-1 h-10 rounded-lg text-sm font-semibold transition-colors ${multi ? 'bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/40' : 'bg-muted/40 text-muted-foreground'}`}>SÍ</button>
+              <button onClick={() => setMulti(true)} className={`flex-1 h-10 rounded-lg text-sm font-semibold transition-colors ${multi ? 'bg-success/20 text-success ring-1 ring-success/40' : 'bg-muted/40 text-muted-foreground'}`}>SÍ</button>
               <button onClick={() => setMulti(false)} className={`flex-1 h-10 rounded-lg text-sm font-semibold transition-colors ${!multi ? 'bg-foreground/10 text-foreground ring-1 ring-border' : 'bg-muted/40 text-muted-foreground'}`}>NO</button>
             </div>
           </Tile>
@@ -295,7 +297,7 @@ export const BriefingEditableBlock = ({ company }: Props) => {
       <section className="relative">
         {/* halo glow */}
         <div aria-hidden className="pointer-events-none absolute -inset-2 rounded-3xl bg-accent/5 blur-2xl" />
-        <div className="relative rounded-3xl border border-accent/25 bg-gradient-to-br from-accent/[0.08] via-card/40 to-transparent backdrop-blur-xl p-5 shadow-[0_8px_32px_-12px_hsl(var(--accent)/0.35)]">
+        <div className="relative rounded-3xl border border-accent/25 bg-gradient-to-br from-accent/[0.08] via-card/40 to-transparent backdrop-blur-xl p-5">
           <header className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-accent" />
@@ -304,7 +306,7 @@ export const BriefingEditableBlock = ({ company }: Props) => {
                 <p className="text-[10px] uppercase tracking-[0.14em] text-accent/80">Trimestre actual · alimenta KPIs</p>
               </div>
             </div>
-            <Button size="sm" onClick={saveSale} disabled={savingField === 'sale'} className="h-8 px-3 text-xs bg-accent text-accent-foreground hover:bg-accent/90 shadow-[0_0_16px_-4px_hsl(var(--accent)/0.6)]">
+            <Button size="sm" onClick={saveSale} disabled={savingField === 'sale'} className="h-8 px-3 text-xs bg-accent text-accent-foreground hover:bg-accent/90">
               {savingField === 'sale' ? <Loader2 className="w-3 h-3 mr-1.5 animate-spin" /> : <Check className="w-3 h-3 mr-1.5" />}
               {existingSaleId ? 'Actualizar' : 'Guardar'}
             </Button>
@@ -359,7 +361,7 @@ export const BriefingEditableBlock = ({ company }: Props) => {
               onStartEdit={() => setEditField('snav')}
               onCancel={() => setEditField(null)}
               onSave={() => setEditField(null)}
-              display={<BigNumber value={snavNum.toLocaleString('es-ES')} suffix="€" />}
+              display={<span className="text-lg font-semibold tabular-nums"><Money>{fmtEur(snavNum)}</Money></span>}
             >
               <NumInput value={snavStr} onChange={setSnavStr} autoFocus />
             </Tile>
@@ -389,7 +391,7 @@ export const BriefingEditableBlock = ({ company }: Props) => {
             <div className="flex items-baseline gap-1.5">
               <span className="text-[10px] uppercase tracking-[0.14em] text-muted-foreground">Rentabilidad</span>
               <span className="text-lg font-semibold tabular-nums text-accent">
-                {altas > 0 ? `${rentEstim.toFixed(2)} €/alta` : '—'}
+                <Money>{altas > 0 ? `${fmtEur(rentEstim)}/alta` : '—'}</Money>
               </span>
             </div>
             <span className="text-[10px] text-muted-foreground ml-auto">Pulsa cualquier tarjeta para editar · Guarda con el botón</span>

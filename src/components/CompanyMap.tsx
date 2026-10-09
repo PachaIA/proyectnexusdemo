@@ -1,3 +1,4 @@
+import { fmtEur } from '@/hooks/useOpportunityLines';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -37,10 +38,10 @@ interface CompanyMapProps {
  */
 const getPinColor = (company: CompanyWithNcs): string => {
   if (company.ncs) return BUCKET_STYLE[company.ncs.bucket].marker;
-  if (company.opportunityScore >= 80) return '#ef4444';
-  if (company.opportunityScore >= 60) return '#f97316';
-  if (company.locationType === 'wasp') return '#3b82f6';
-  return '#22c55e';
+  if (company.opportunityScore >= 80) return 'var(--alert-text)';
+  if (company.opportunityScore >= 60) return 'var(--alert-text)';
+  if (company.locationType === 'wasp') return 'var(--interactive)';
+  return 'var(--success-text)';
 };
 
 const isWasp = (company: Company): boolean => company.locationType === 'wasp';
@@ -56,9 +57,9 @@ const createIcon = (score: number, color: string, isSelected: boolean = false) =
           width:${size}px;height:${size}px;border-radius:50%;
           background:${color};
           display:flex;align-items:center;justify-content:center;
-          color:white;font-weight:700;font-size:${isSelected ? 14 : 11}px;
+          color:hsl(var(--primary-foreground));font-weight:700;font-size:${isSelected ? 14 : 11}px;
           box-shadow:0 3px 12px rgba(0,0,0,0.35);
-          border:${borderWidth}px solid rgba(255,255,255,0.95);
+          border:${borderWidth}px solid var(--border);
           cursor:pointer;transition:transform 0.2s;
         " onmouseover="this.style.transform='scale(1.25)'" onmouseout="this.style.transform='scale(1)'">
           ${score}
@@ -72,7 +73,7 @@ const createIcon = (score: number, color: string, isSelected: boolean = false) =
 
 const createCsvIcon = (ncsScore: number) => {
   const size = 32;
-  const color = 'hsl(142, 55%, 42%)';
+  const color = 'var(--success-text)';
   return L.divIcon({
     className: 'custom-marker-icon',
     html: `
@@ -81,9 +82,9 @@ const createCsvIcon = (ncsScore: number) => {
           width:${size}px;height:${size}px;border-radius:50%;
           background:${color};
           display:flex;align-items:center;justify-content:center;
-          color:white;font-weight:700;font-size:11px;
+          color:hsl(var(--primary-foreground));font-weight:700;font-size:11px;
           box-shadow:0 3px 12px rgba(0,0,0,0.35);
-          border:2px solid rgba(255,255,255,0.95);
+          border:2px solid var(--border);
           cursor:pointer;transition:transform 0.2s;
         " onmouseover="this.style.transform='scale(1.25)'" onmouseout="this.style.transform='scale(1)'">
           ${ncsScore}
@@ -130,11 +131,11 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
     style.id = 'cluster-custom-css';
     style.textContent = `
       .marker-cluster-small, .marker-cluster-medium, .marker-cluster-large {
-        background: rgba(30, 58, 138, 0.15) !important;
+        background: var(--surface-2) !important;
       }
       .marker-cluster-small div, .marker-cluster-medium div, .marker-cluster-large div {
-        background: hsl(210, 70%, 50%) !important;
-        color: white !important;
+        background: var(--interactive) !important;
+        color: hsl(var(--primary-foreground)) !important;
         font-weight: 700 !important;
         font-size: 13px !important;
         width: 36px !important;
@@ -146,8 +147,8 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
         align-items: center !important;
         justify-content: center !important;
       }
-      .marker-cluster-medium div { background: hsl(38, 85%, 50%) !important; width: 40px !important; height: 40px !important; font-size: 14px !important; }
-      .marker-cluster-large div { background: hsl(0, 100%, 45%) !important; width: 44px !important; height: 44px !important; font-size: 15px !important; }
+      .marker-cluster-medium div { background: var(--warning-text) !important; width: 40px !important; height: 40px !important; font-size: 14px !important; }
+      .marker-cluster-large div { background: var(--alert-text) !important; width: 44px !important; height: 44px !important; font-size: 15px !important; }
     `;
     document.head.appendChild(style);
   }, []);
@@ -198,12 +199,12 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
       perdida: 'Perdida',
     };
     const STATUS_COLORS: Record<string, string> = {
-      lead: '#6b7280',
-      contactado: '#3b82f6',
-      propuesta: '#f59e0b',
-      negociacion: '#eab308',
-      ganada: '#8b5cf6',
-      perdida: '#ef4444',
+      lead: 'var(--muted-text-accessible)',
+      contactado: 'var(--interactive)',
+      propuesta: 'var(--warning-text)',
+      negociacion: 'var(--warning-text)',
+      ganada: 'var(--interactive)',
+      perdida: 'var(--alert-text)',
     };
 
     companies.forEach((company) => {
@@ -219,7 +220,7 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
 
       const lead = leads.find(l => l.company_id === company.id);
       const statusLabel = lead ? (STATUS_LABELS[lead.estado] || lead.estado) : null;
-      const statusColor = lead ? (STATUS_COLORS[lead.estado] || '#6b7280') : null;
+      const statusColor = lead ? (STATUS_COLORS[lead.estado] || 'var(--muted-text-accessible)') : null;
 
       // NCS pill (única fuente: BUCKET_STYLE en ncsScoring.ts)
       const ncsSection = company.ncs ? `
@@ -231,27 +232,27 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
 
       // Wasp competitive intelligence popup
       const waspSection = isWasp(company) ? `
-        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">
-          <div style="font-size:10px;color:#3b82f6;font-weight:700;text-transform:uppercase;margin-bottom:4px;">⚡ Intel Competitiva</div>
-          ${company.operadorActual ? `<div style="font-size:11px;color:#475569;">Operador: <strong>${company.operadorActual}</strong></div>` : ''}
-          ${company.lineasTotal > 0 ? `<div style="font-size:11px;color:#475569;">Líneas: <strong>${company.lineasTotal}</strong> (${company.lineasMovil}M + ${company.lineasFijo}F)</div>` : ''}
-          ${company.permanencia > 0 ? `<div style="font-size:11px;color:#475569;">Permanencia: <strong>${company.permanencia} meses</strong></div>` : ''}
-          ${company.penalizacion > 0 ? `<div style="font-size:11px;color:#ef4444;">Penalización: <strong>€${company.penalizacion.toLocaleString('es-ES')}</strong></div>` : ''}
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--muted-text-accessible);">
+          <div style="font-size:10px;color:var(--interactive);font-weight:700;text-transform:uppercase;margin-bottom:4px;">⚡ Intel Competitiva</div>
+          ${company.operadorActual ? `<div style="font-size:11px;color:var(--muted-text-accessible);">Operador: <strong>${company.operadorActual}</strong></div>` : ''}
+          ${company.lineasTotal > 0 ? `<div style="font-size:11px;color:var(--muted-text-accessible);">Líneas: <strong>${company.lineasTotal}</strong> (${company.lineasMovil}M + ${company.lineasFijo}F)</div>` : ''}
+          ${company.permanencia > 0 ? `<div style="font-size:11px;color:var(--muted-text-accessible);">Permanencia: <strong>${company.permanencia} meses</strong></div>` : ''}
+          ${company.penalizacion > 0 ? `<div style="font-size:11px;color:var(--alert-text);">Penalización: <strong class="nexus-money">${fmtEur(company.penalizacion)}</strong></div>` : ''}
         </div>` : '';
 
       const pipelineSection = lead ? `
-        <div style="margin-top:8px;padding-top:8px;border-top:1px solid #e2e8f0;">
-          <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:9999px;color:white;background:${statusColor};">${statusLabel}</span>
+        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--muted-text-accessible);">
+          <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:9999px;color:hsl(var(--primary-foreground));background:${statusColor};">${statusLabel}</span>
         </div>` : '';
 
       const popup = `
-        <div style="padding:10px;min-width:240px;font-family:'Inter',system-ui,sans-serif;background:#161622;color:#e0e0e0;">
-          <h3 style="font-weight:600;font-size:13px;margin-bottom:4px;color:#f0f0f0;">${company.name}${heritageBadgeHtml(company.origen)}</h3>
+        <div style="padding:10px;min-width:240px;font-family:'Inter',system-ui,sans-serif;background:var(--muted-text-accessible);color:var(--text);">
+          <h3 style="font-weight:600;font-size:13px;margin-bottom:4px;color:var(--muted-text-accessible);">${company.name}${heritageBadgeHtml(company.origen)}</h3>
           ${ncsSection}
-          <p style="font-size:11px;color:#8888a0;margin:6px 0;">${company.address}</p>
+          <p style="font-size:11px;color:var(--muted-text-accessible);margin:6px 0;">${company.address}</p>
           <div style="display:flex;align-items:center;justify-content:space-between;">
-            <span style="font-size:11px;color:#8888a0;">${company.employees} emp.</span>
-            <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:9999px;color:white;background:${color};">Score ${company.opportunityScore}</span>
+            <span style="font-size:11px;color:var(--muted-text-accessible);">${company.employees} emp.</span>
+            <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:9999px;color:hsl(var(--primary-foreground));background:${color};">Score ${company.opportunityScore}</span>
           </div>
           ${waspSection}
           ${pipelineSection}
@@ -317,9 +318,9 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
       });
       const popup = `
         <div style="padding:10px;min-width:200px;font-family:'Inter',system-ui,sans-serif;">
-          <h3 style="font-weight:600;font-size:13px;margin-bottom:4px;color:#1a1a2e;">${csv.name}</h3>
-          <p style="font-size:11px;color:#64748b;">${csv.sector}</p>
-          <p style="font-size:11px;color:#64748b;">${csv.address}</p>
+          <h3 style="font-weight:600;font-size:13px;margin-bottom:4px;color:var(--bg);">${csv.name}</h3>
+          <p style="font-size:11px;color:var(--muted-text-accessible);">${csv.sector}</p>
+          <p style="font-size:11px;color:var(--muted-text-accessible);">${csv.address}</p>
         </div>`;
       marker.bindPopup(popup, { className: 'custom-popup', closeButton: false });
       marker.on('click', () => onCsvCompanySelect?.(csv));
@@ -369,20 +370,20 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
         className="absolute bottom-2 left-1/2 -translate-x-1/2 z-[1000] bg-card/90 backdrop-blur-sm rounded-full px-4 py-1.5 flex items-center gap-3 text-[11px] text-muted-foreground shadow-lg border border-border"
       >
         <div className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#3b82f6' }} />
+          <span className="w-2 h-2 rounded-full inline-block" style={{ background: 'var(--interactive)' }} />
           Wasp
         </div>
         <div className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#22c55e' }} />
+          <span className="w-2 h-2 rounded-full inline-block" style={{ background: 'var(--success-text)' }} />
           Places
         </div>
         <span className="w-px h-3 bg-border inline-block" />
         <div className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#ef4444' }} />
+          <span className="w-2 h-2 rounded-full inline-block" style={{ background: 'var(--alert-text)' }} />
           Score alto
         </div>
         <div className="flex items-center gap-1">
-          <span className="w-2 h-2 rounded-full inline-block" style={{ background: '#f97316' }} />
+          <span className="w-2 h-2 rounded-full inline-block" style={{ background: 'var(--alert-text)' }} />
           Score medio
         </div>
       </div>

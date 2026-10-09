@@ -35,5 +35,5 @@ export const HeritageBadge = ({ origen, className }: HeritageBadgeProps) => {
 /** HTML estático para usar dentro del popup de Leaflet (no es React). */
 export const heritageBadgeHtml = (origen?: string | null): string => {
   if (origen !== 'wasp_tamara_activo' && origen !== 'wasp_tamara_asignado') return '';
-  return `<span title="Cartera heredada" style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:9999px;background:#3a3a4a;color:#9ca3af;font-size:10px;font-weight:700;line-height:1;margin-left:6px;vertical-align:middle;">T</span>`;
+  return `<span title="Cartera heredada" style="display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:9999px;background:var(--muted-text-accessible);color:var(--muted-text-accessible);font-size:10px;font-weight:700;line-height:1;margin-left:6px;vertical-align:middle;">T</span>`;
 };

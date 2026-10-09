@@ -12,41 +12,41 @@ const getSourceConfig = (type: string) => {
       return {
         icon: FileText,
         label: 'DatosCIF',
-        bg: 'bg-blue-500/20',
-        text: 'text-blue-400',
-        border: 'border-blue-500/30'
+        bg: 'bg-primary/20',
+        text: 'text-primary',
+        border: 'border-primary/30'
       };
     case 'linkedin':
       return {
         icon: Linkedin,
         label: 'LinkedIn',
-        bg: 'bg-sky-500/20',
-        text: 'text-sky-400',
-        border: 'border-sky-500/30'
+        bg: 'bg-primary/20',
+        text: 'text-primary',
+        border: 'border-primary/30'
       };
     case 'web':
       return {
         icon: Globe,
         label: 'Web',
-        bg: 'bg-green-500/20',
-        text: 'text-green-400',
-        border: 'border-green-500/30'
+        bg: 'bg-success/20',
+        text: 'text-success',
+        border: 'border-success/30'
       };
     case 'noticias':
       return {
         icon: Newspaper,
         label: 'Noticias',
-        bg: 'bg-purple-500/20',
-        text: 'text-purple-400',
-        border: 'border-purple-500/30'
+        bg: 'bg-primary/20',
+        text: 'text-primary',
+        border: 'border-primary/30'
       };
     default:
       return {
         icon: FileText,
         label: type,
-        bg: 'bg-slate-500/20',
-        text: 'text-slate-400',
-        border: 'border-slate-500/30'
+        bg: 'bg-muted-foreground/20',
+        text: 'text-muted-foreground',
+        border: 'border-muted-foreground/30'
       };
   }
 };
@@ -76,7 +76,7 @@ interface DataSourcesListProps {
 export const DataSourcesList = ({ sources }: DataSourcesListProps) => {
   return (
     <div className="space-y-2">
-      <h4 className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+      <h4 className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
         Fuentes de datos
       </h4>
       <div className="flex flex-wrap gap-2">

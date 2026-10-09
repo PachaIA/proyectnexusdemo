@@ -12,11 +12,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'sonner';
 
 const ESTADOS = [
-  { id: 'prospecto', label: 'Prospecto', color: '#3b82f6' },
-  { id: 'contactado', label: 'Contactado', color: '#f59e0b' },
-  { id: 'propuesta_enviada', label: 'Propuesta Enviada', color: '#f97316' },
-  { id: 'cliente', label: 'Cliente', color: '#22c55e' },
-  { id: 'descartado', label: 'Descartado', color: '#6b7280' },
+  { id: 'prospecto', label: 'Prospecto', color: 'var(--interactive)' },
+  { id: 'contactado', label: 'Contactado', color: 'var(--warning-text)' },
+  { id: 'propuesta_enviada', label: 'Propuesta Enviada', color: 'var(--alert-text)' },
+  { id: 'cliente', label: 'Cliente', color: 'var(--success-text)' },
+  { id: 'descartado', label: 'Descartado', color: 'var(--muted-text-accessible)' },
 ];
 
 const STORAGE_KEY = 'unified_panel_data';
@@ -180,8 +180,8 @@ export const UnifiedCompanyPanel = ({ company, isOpen, onClose, onAddToPipeline 
   const datosCifUrl = `https://www.datoscif.es/empresa/${encodeURIComponent(company.name)}`;
   const telUrl = company.phone ? `tel:${company.phone.replace(/\s/g, '')}` : null;
 
-  const scoreColor = company.score >= 80 ? 'text-red-500' : company.score >= 60 ? 'text-amber-500' : 'text-muted-foreground';
-  const scoreBg = company.score >= 80 ? 'bg-red-500/10' : company.score >= 60 ? 'bg-amber-500/10' : 'bg-muted/50';
+  const scoreColor = company.score >= 80 ? 'text-destructive' : company.score >= 60 ? 'text-warning' : 'text-muted-foreground';
+  const scoreBg = company.score >= 80 ? 'bg-destructive/10' : company.score >= 60 ? 'bg-warning/10' : 'bg-muted/50';
 
   return (
     <AnimatePresence>
@@ -233,8 +233,8 @@ export const UnifiedCompanyPanel = ({ company, isOpen, onClose, onAddToPipeline 
                     onClick={() => updateData({ estado: e.id })}
                     className="px-2.5 py-1.5 rounded-md text-xs font-medium transition-all border"
                     style={{
-                      background: data.estado === e.id ? `${e.color}22` : 'transparent',
-                      borderColor: data.estado === e.id ? e.color : 'hsl(var(--border))',
+                      background: data.estado === e.id ? `color-mix(in srgb, ${e.color} 13.3%, transparent)` : 'transparent',
+                      borderColor: data.estado === e.id ? e.color : 'var(--border)',
                       color: data.estado === e.id ? e.color : 'hsl(var(--muted-foreground))',
                     }}
                   >
@@ -302,7 +302,7 @@ export const UnifiedCompanyPanel = ({ company, isOpen, onClose, onAddToPipeline 
               )}
               {company.rating != null && company.rating > 0 && (
                 <div className="flex items-start gap-3">
-                  <Star className="w-4 h-4 text-amber-400 mt-0.5" />
+                  <Star className="w-4 h-4 text-warning mt-0.5" />
                   <div>
                     <p className="text-xs text-muted-foreground">Rating</p>
                     <p className="text-sm text-foreground">
@@ -373,7 +373,7 @@ export const UnifiedCompanyPanel = ({ company, isOpen, onClose, onAddToPipeline 
                 onClick={handleBriefing}
                 disabled={briefingLoading}
                 variant="outline"
-                className="w-full border-purple-500/30 text-purple-400 hover:bg-purple-500/10"
+                className="w-full border-primary/30 text-primary hover:bg-primary/10"
               >
                 {briefingLoading ? (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />
@@ -383,7 +383,7 @@ export const UnifiedCompanyPanel = ({ company, isOpen, onClose, onAddToPipeline 
                 Briefing IA
               </Button>
               {briefing && (
-                <div ref={briefingRef} className="mt-3 text-xs bg-purple-500/5 border border-purple-500/20 rounded-lg p-3 max-h-60 overflow-y-auto whitespace-pre-wrap text-foreground">
+                <div ref={briefingRef} className="mt-3 text-xs bg-primary/5 border border-primary/20 rounded-lg p-3 max-h-60 overflow-y-auto whitespace-pre-wrap text-foreground">
                   {briefing}
                 </div>
               )}
@@ -408,7 +408,7 @@ export const UnifiedCompanyPanel = ({ company, isOpen, onClose, onAddToPipeline 
               )}
 
               {telUrl ? (
-                <Button asChild className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
+                <Button asChild className="w-full bg-success hover:bg-success text-primary-foreground">
                   <a href={telUrl}>
                     <Phone className="w-4 h-4 mr-2" />
                     Llamar
@@ -423,7 +423,7 @@ export const UnifiedCompanyPanel = ({ company, isOpen, onClose, onAddToPipeline 
 
               <Button
                 variant="outline"
-                className="w-full border-blue-400/50 text-blue-500 hover:bg-blue-500/10"
+                className="w-full border-primary/50 text-primary hover:bg-primary/10"
                 onClick={() => {
                   const url = getEmailMailtoUrl({
                     companyName: company.name,
@@ -453,7 +453,7 @@ export const UnifiedCompanyPanel = ({ company, isOpen, onClose, onAddToPipeline 
 
               <Button
                 variant="outline"
-                className="w-full border-emerald-500/50 text-emerald-600 hover:bg-emerald-500/10"
+                className="w-full border-success/50 text-success hover:bg-success/10"
                 onClick={() => {
                   const lastNote = panelStore[company?.id || '']?.notas?.slice(-1)[0]?.texto;
                   const lines = [

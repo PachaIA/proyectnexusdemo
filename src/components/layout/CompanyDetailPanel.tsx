@@ -1,3 +1,5 @@
+import { fmtEur } from '@/hooks/useOpportunityLines';
+import { Money } from '@/components/Money';
 import { refreshCompanies } from '@/lib/queryClient';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -126,7 +128,7 @@ export const CompanyDetailPanel = ({
     const needsText = company.detectedNeeds.slice(0, 3).join(', ');
     const productsText = company.recommendedProducts.slice(0, 2).join(' y ');
     
-    return `${company.name} presenta una oportunidad comercial ${company.opportunityScore >= 80 ? 'excelente' : company.opportunityScore >= 60 ? 'sólida' : 'con potencial'} en el sector ${sector?.label}. Con ${company.employees} empleados y nivel de digitalización ${digiBadge.label.toLowerCase()}, existe demanda clara de ${needsText}. Recomendamos presentar soluciones de ${productsText} con un ARPU estimado de €${company.estimatedARPU}/mes.${company.growthSignals.length > 0 ? ` Señales positivas: ${company.growthSignals[0]}.` : ''}`;
+    return `${company.name} presenta una oportunidad comercial ${company.opportunityScore >= 80 ? 'excelente' : company.opportunityScore >= 60 ? 'sólida' : 'con potencial'} en el sector ${sector?.label}. Con ${company.employees} empleados y nivel de digitalización ${digiBadge.label.toLowerCase()}, existe demanda clara de ${needsText}. Recomendamos presentar soluciones de ${productsText} con un ARPU estimado de ${fmtEur(company.estimatedARPU)}/mes.${company.growthSignals.length > 0 ? ` Señales positivas: ${company.growthSignals[0]}.` : ''}`;
   };
 
   // ─── Cuerpo unificado de la ficha (header + scroll + footer) ────────────
@@ -137,9 +139,9 @@ export const CompanyDetailPanel = ({
         <div className="px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3 min-w-0 flex-1">
             <div className={cn(
-              "w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-sm font-bold text-white",
-              company.opportunityScore >= 80 ? "bg-[#ef4444]" :
-              company.opportunityScore >= 60 ? "bg-[#f97316]" :
+              "w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-sm font-bold text-primary-foreground",
+              company.opportunityScore >= 80 ? "bg-[var(--alert-text)]" :
+              company.opportunityScore >= 60 ? "bg-[var(--alert-text)]" :
               "bg-muted-foreground"
             )}>
               {company.opportunityScore}
@@ -148,7 +150,7 @@ export const CompanyDetailPanel = ({
               <div className="flex items-center gap-2">
                 <h2 className="text-lg font-bold text-foreground truncate">{company.name}</h2>
                 {waspTamanio === 'GG.CC.' && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-red-500/15 text-red-400 border border-red-500/20 shrink-0">GG.CC.</span>
+                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-destructive/15 text-destructive border border-destructive/20 shrink-0">GG.CC.</span>
                 )}
               </div>
               <p className="text-xs text-muted-foreground">CIF: {company.cif}</p>
@@ -352,7 +354,7 @@ export const CompanyDetailPanel = ({
                 <span className="text-muted-foreground">Permanencia</span>
                 <span className="font-medium text-foreground">{Number.isFinite(waspPermanencia) ? waspPermanencia : 0}</span>
                 <span className="text-muted-foreground">Penalización</span>
-                <span className="font-medium text-foreground">{euroFormatter.format(Number.isFinite(waspPenalizacion) ? waspPenalizacion : 0)}</span>
+                <span className="font-medium text-foreground"><Money>{fmtEur(Number.isFinite(waspPenalizacion) ? waspPenalizacion : 0)}</Money></span>
                 <span className="text-muted-foreground">Tamaño</span>
                 <span className="font-medium text-foreground">{waspTamanio || '—'}</span>
               </div>
@@ -378,7 +380,7 @@ export const CompanyDetailPanel = ({
               <div className="text-center p-3 rounded-xl bg-muted/50 border border-border">
                 <div className="flex items-center justify-center gap-1.5">
                   <Zap className="w-4 h-4 text-accent" />
-                  <span className="text-lg font-bold text-foreground">€{company.estimatedARPU}</span>
+                  <span className="text-lg font-bold text-foreground"><Money>{fmtEur(company.estimatedARPU)}</Money></span>
                 </div>
                 <p className="text-[10px] text-muted-foreground mt-1.5 font-medium">ARPU</p>
               </div>
@@ -415,7 +417,7 @@ export const CompanyDetailPanel = ({
           <Button
             variant="outline"
             size="icon"
-            className="h-10 w-full border-blue-400/50 text-blue-500 hover:bg-blue-500/10"
+            className="h-10 w-full border-primary/50 text-primary hover:bg-primary/10"
             title="Email"
             onClick={() => {
               const url = getEmailMailtoUrl({
@@ -431,14 +433,14 @@ export const CompanyDetailPanel = ({
           <Button
             variant="outline"
             size="icon"
-            className="h-10 w-full border-emerald-500/50 text-emerald-600 hover:bg-emerald-500/10"
+            className="h-10 w-full border-success/50 text-success hover:bg-success/10"
             title="WhatsApp"
             onClick={() => {
               const lines = [
                 `🏢 ${company.name}`,
                 `📍 ${company.address}`,
                 `🎯 Score Nexus: ${company.opportunityScore}/100`,
-                `💶 ARPU estimado: ${company.estimatedARPU}€/mes`,
+                `💶 ARPU estimado: ${fmtEur(company.estimatedARPU)}/mes`,
                 company.contactInfo?.phone ? `📞 ${company.contactInfo.phone}` : '',
                 company.website ? `🔗 ${company.website}` : '',
                 '',

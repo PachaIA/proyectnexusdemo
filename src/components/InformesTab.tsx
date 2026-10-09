@@ -23,15 +23,15 @@ const T = {
   textLabel: 'var(--t-text-label)',
 };
 
-const mono: React.CSSProperties = { fontFamily: "'Space Mono', monospace" };
+const mono: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
 
 const ESTADOS = [
-  { id: 'lead', label: 'Lead', color: '#6b7280' },
-  { id: 'contactado', label: 'Contactado', color: '#3b82f6' },
-  { id: 'propuesta', label: 'Propuesta', color: '#f97316' },
-  { id: 'negociacion', label: 'Negociación', color: '#eab308' },
-  { id: 'ganada', label: 'Ganada', color: '#8b5cf6' },
-  { id: 'perdida', label: 'Perdida', color: '#ef4444' },
+  { id: 'lead', label: 'Lead', color: 'var(--muted-text-accessible)' },
+  { id: 'contactado', label: 'Contactado', color: 'var(--interactive)' },
+  { id: 'propuesta', label: 'Propuesta', color: 'var(--alert-text)' },
+  { id: 'negociacion', label: 'Negociación', color: 'var(--warning-text)' },
+  { id: 'ganada', label: 'Ganada', color: 'var(--interactive)' },
+  { id: 'perdida', label: 'Perdida', color: 'var(--alert-text)' },
 ];
 
 const ACTIVOS = ['contactado', 'propuesta', 'negociacion'];
@@ -39,10 +39,10 @@ const ACTIVOS = ['contactado', 'propuesta', 'negociacion'];
 type MotivoId = 'sin_actividad' | 'sin_proxima' | 'propuesta_pendiente' | 'datos_incompletos';
 
 const MOTIVOS: { id: MotivoId; title: string; icon: string; color: string; desc: string }[] = [
-  { id: 'sin_actividad', title: 'SIN ACTIVIDAD RECIENTE', icon: '🕒', color: '#f59e0b', desc: 'Sin actividades en los últimos 30 días' },
-  { id: 'sin_proxima', title: 'SIN PRÓXIMA ACCIÓN', icon: '📅', color: '#3b82f6', desc: 'Clientes activos sin fecha de próximo contacto' },
-  { id: 'propuesta_pendiente', title: 'PROPUESTAS PENDIENTES', icon: '📋', color: '#f97316', desc: 'En estado propuesta o negociación' },
-  { id: 'datos_incompletos', title: 'DATOS INCOMPLETOS', icon: '⚠️', color: '#ef4444', desc: 'Sin contacto, decisor, dirección o actividad' },
+  { id: 'sin_actividad', title: 'SIN ACTIVIDAD RECIENTE', icon: '🕒', color: 'var(--warning-text)', desc: 'Sin actividades en los últimos 30 días' },
+  { id: 'sin_proxima', title: 'SIN PRÓXIMA ACCIÓN', icon: '📅', color: 'var(--interactive)', desc: 'Clientes activos sin fecha de próximo contacto' },
+  { id: 'propuesta_pendiente', title: 'PROPUESTAS PENDIENTES', icon: '📋', color: 'var(--alert-text)', desc: 'En estado propuesta o negociación' },
+  { id: 'datos_incompletos', title: 'DATOS INCOMPLETOS', icon: '⚠️', color: 'var(--alert-text)', desc: 'Sin contacto, decisor, dirección o actividad' },
 ];
 
 interface InteractionsMap {
@@ -277,8 +277,8 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
             style={{
               ...selectStyle,
               color: T.accent,
-              border: `1px solid ${T.accent}55`,
-              background: `${T.accent}11`,
+              border: `1px solid color-mix(in srgb, ${T.accent} 33.3%, transparent)`,
+              background: `color-mix(in srgb, ${T.accent} 6.7%, transparent)`,
             }}
           >
             ✕ LIMPIAR
@@ -312,7 +312,7 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
                 style={{
                   padding: '12px 14px',
                   borderBottom: `1px solid ${T.borderSubtle}`,
-                  background: `${m.color}0d`,
+                  background: `color-mix(in srgb, ${m.color} 5.1%, transparent)`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
@@ -333,8 +333,8 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
                     fontSize: 14,
                     fontWeight: 700,
                     color: m.color,
-                    background: `${m.color}1a`,
-                    border: `1px solid ${m.color}44`,
+                    background: `color-mix(in srgb, ${m.color} 10.2%, transparent)`,
+                    border: `1px solid color-mix(in srgb, ${m.color} 26.7%, transparent)`,
                     borderRadius: 8,
                     padding: '4px 10px',
                     minWidth: 34,
@@ -383,15 +383,15 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
                           borderRadius: 6,
                           color:
                             item.company.opportunityScore >= 80
-                              ? '#ef4444'
+                              ? 'var(--alert-text)'
                               : item.company.opportunityScore >= 60
-                                ? '#f59e0b'
+                                ? 'var(--warning-text)'
                                 : T.textMuted,
                           background:
                             item.company.opportunityScore >= 80
-                              ? '#ef444415'
+                              ? 'color-mix(in srgb, var(--alert-text) 8.2%, transparent)'
                               : item.company.opportunityScore >= 60
-                                ? '#f59e0b15'
+                                ? 'color-mix(in srgb, var(--warning-text) 8.2%, transparent)'
                                 : T.cardAlt,
                         }}
                       >
@@ -420,9 +420,9 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
                               letterSpacing: 0.5,
                               padding: '2px 6px',
                               borderRadius: 5,
-                              background: `${est.color}18`,
+                              background: `color-mix(in srgb, ${est.color} 9.4%, transparent)`,
                               color: est.color,
-                              border: `1px solid ${est.color}33`,
+                              border: `1px solid color-mix(in srgb, ${est.color} 20.0%, transparent)`,
                             }}
                           >
                             {est.label.toUpperCase()}
@@ -443,9 +443,9 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
                           letterSpacing: 0.5,
                           padding: '6px 9px',
                           borderRadius: 7,
-                          background: '#22c55e15',
-                          border: '1px solid #22c55e44',
-                          color: '#22c55e',
+                          background: 'color-mix(in srgb, var(--success-text) 8.2%, transparent)',
+                          border: '1px solid color-mix(in srgb, var(--success-text) 26.7%, transparent)',
+                          color: 'var(--success-text)',
                           cursor: 'pointer',
                           whiteSpace: 'nowrap',
                           flexShrink: 0,
@@ -467,8 +467,8 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
                           letterSpacing: 0.5,
                           padding: '6px 9px',
                           borderRadius: 7,
-                          background: `${T.accent}15`,
-                          border: `1px solid ${T.accent}44`,
+                          background: `color-mix(in srgb, ${T.accent} 8.2%, transparent)`,
+                          border: `1px solid color-mix(in srgb, ${T.accent} 26.7%, transparent)`,
                           color: T.accent,
                           cursor: 'pointer',
                           whiteSpace: 'nowrap',

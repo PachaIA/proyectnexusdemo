@@ -1,3 +1,6 @@
+import { fmtEur } from '@/hooks/useOpportunityLines';
+import { Money } from '@/components/Money';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Target, TrendingUp, Euro, Zap, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
@@ -133,6 +136,7 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
           <h1 className="text-base font-semibold leading-tight">Cierre de trimestre</h1>
           <p className="text-[11px] text-muted-foreground">{getVodafoneFiscalQuarterLabel()}</p>
         </div>
+        <div className="ml-auto"><ThemeToggle /></div>
       </header>
 
       <main className="max-w-3xl mx-auto p-4 space-y-6">
@@ -147,13 +151,13 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground"><TrendingUp className="w-3.5 h-3.5" />SNAV</div>
-              <div className="text-xl font-bold">{fmt(kpis.snav)} €</div>
+              <div className="text-xl font-bold"><Money>{fmtEur(kpis.snav)}</Money></div>
               <Bar value={kpis.snav} max={nextTier ?? lastTier} />
-              <div className="text-[10px] text-muted-foreground">Tramo {nextTier ? `< ${fmt(nextTier)} €` : 'máximo'}</div>
+              <div className="text-[10px] text-muted-foreground">Tramo {nextTier ? `< ${fmtEur(nextTier)}` : 'máximo'}</div>
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground"><Euro className="w-3.5 h-3.5" />Rentabilidad/línea</div>
-              <div className="text-xl font-bold">{kpis.rentabilidadMedia.toFixed(1)} €</div>
+              <div className="text-xl font-bold"><Money>{fmtEur(kpis.rentabilidadMedia)}</Money></div>
               <Bar value={kpis.rentabilidadMedia} max={rentMax} />
               <div className="text-[10px] text-muted-foreground">Banda {rentLabel(kpis.rentabilidadMedia, scheme)}</div>
             </div>
@@ -179,16 +183,16 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
             <li className="flex gap-2">
               <span className="text-primary">•</span>
               {nextTier
-                ? <span>Necesitas <strong>{fmt(faltaSnav)} € más de SNAV</strong> para saltar al siguiente tramo ({fmt(nextTier)} €), un salto que mejora el multiplicador en toda la banda de rentabilidad.</span>
-                : <span>Ya estás en el tramo máximo de SNAV (≥ {fmt(lastTier)} €).</span>}
+                ? <span>Necesitas <strong><Money>{fmtEur(faltaSnav)}</Money> más de SNAV</strong> para saltar al siguiente tramo (<Money>{fmtEur(nextTier)}</Money>), un salto que mejora el multiplicador en toda la banda de rentabilidad.</span>
+                : <span>Ya estás en el tramo máximo de SNAV (≥ <Money>{fmtEur(lastTier)}</Money>).</span>}
             </li>
             <li className="flex gap-2">
               <span className="text-primary">•</span>
               {actual.altas === 0
                 ? <span>Aún no hay altas este trimestre: la rentabilidad media se definirá con las primeras ventas.</span>
                 : rentaEnRiesgo
-                  ? <span><strong>Rentabilidad en riesgo:</strong> estás a {colchonMargen.toFixed(0)} € de margen de caer de la banda {rentLabel(actual.rentabilidadMedia, scheme)}. Una venta de bajo margen puede bajarte el multiplicador.</span>
-                  : <span>Rentabilidad cómoda en la banda {rentLabel(actual.rentabilidadMedia, scheme)}: tienes {fmt(colchonMargen)} € de margen de colchón antes de caer de banda.</span>}
+                  ? <span><strong>Rentabilidad en riesgo:</strong> estás a <Money>{fmtEur(colchonMargen)}</Money> de margen de caer de la banda {rentLabel(actual.rentabilidadMedia, scheme)}. Una venta de bajo margen puede bajarte el multiplicador.</span>
+                  : <span>Rentabilidad cómoda en la banda {rentLabel(actual.rentabilidadMedia, scheme)}: tienes <Money>{fmtEur(colchonMargen)}</Money> de margen de colchón antes de caer de banda.</span>}
             </li>
           </ul>
         </section>
@@ -226,7 +230,7 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
                     <div className="min-w-0 flex-1">
                       <div className="text-sm font-medium truncate">{o.empresa}</div>
                       <div className="text-[11px] text-muted-foreground">
-                        ~{o.altas} líneas · ~{fmt(o.snav)} € SNAV · probabilidad {o.score}%
+                        ~{o.altas} líneas · ~<Money>{fmtEur(o.snav)}</Money> SNAV · probabilidad {o.score}%
                       </div>
                     </div>
                   </li>
@@ -239,7 +243,7 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
             <div className="rounded-md bg-muted p-3 text-sm space-y-1">
               <div className="font-medium">Con {closed.size} cierre{closed.size > 1 ? 's' : ''} marcado{closed.size > 1 ? 's' : ''}:</div>
               <div className="text-muted-foreground">
-                {kpis.altas}/{target} altas · {fmt(kpis.snav)} € SNAV · {kpis.rentabilidadMedia.toFixed(1)} €/línea · multiplicador ×{kpis.multiplicador.toFixed(1)}
+                {kpis.altas}/{target} altas · <Money>{fmtEur(kpis.snav)}</Money> SNAV · <Money>{fmtEur(kpis.rentabilidadMedia)}</Money>/línea · multiplicador ×{kpis.multiplicador.toFixed(1)}
                 {kpis.multiplicador > actual.multiplicador && <span className="text-primary font-medium"> (sube de ×{actual.multiplicador.toFixed(1)})</span>}
               </div>
             </div>

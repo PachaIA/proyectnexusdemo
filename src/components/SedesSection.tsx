@@ -157,8 +157,8 @@ const SedeRow = memo(({ sede, onDelete, onSetPrincipal, onEdit }: SedeRowProps) 
             {sede.tipo}
           </span>
           {sede.principal && (
-            <span className="inline-flex items-center gap-1 text-amber-500 text-[10px] font-semibold uppercase">
-              <Star className="w-3 h-3 fill-amber-500" /> Principal
+            <span className="inline-flex items-center gap-1 text-warning text-[10px] font-semibold uppercase">
+              <Star className="w-3 h-3 fill-warning" /> Principal
             </span>
           )}
         </div>
@@ -180,7 +180,7 @@ const SedeRow = memo(({ sede, onDelete, onSetPrincipal, onEdit }: SedeRowProps) 
         {!sede.principal && (
           <button
             onClick={() => onSetPrincipal(sede.id)}
-            className="p-1.5 rounded hover:bg-amber-500/10 text-muted-foreground hover:text-amber-500 transition-colors"
+            className="p-1.5 rounded hover:bg-warning/10 text-muted-foreground hover:text-warning transition-colors"
             title="Marcar como principal"
           >
             <Star className="w-3.5 h-3.5" />

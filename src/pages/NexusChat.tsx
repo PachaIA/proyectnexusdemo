@@ -197,10 +197,10 @@ export default function NexusChatPage() {
                 <div className="flex items-center gap-1.5 text-xs">
                   <span className="text-muted-foreground truncate">{currentCompany}</span>
                   {nexusStatus === "found" && (
-                    <span className="text-emerald-500 font-medium text-[10px]">● NEXUS</span>
+                    <span className="text-success font-medium text-[10px]">● NEXUS</span>
                   )}
                   {nexusStatus === "not_found" && (
-                    <span className="text-amber-500 font-medium text-[10px]">○ NUEVA</span>
+                    <span className="text-warning font-medium text-[10px]">○ NUEVA</span>
                   )}
                 </div>
               )}

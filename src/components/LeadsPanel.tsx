@@ -23,12 +23,12 @@ import {
 import { Badge } from './ui/badge';
 
 const estadoConfig: Record<string, { label: string; color: string; bg: string }> = {
-  lead: { label: 'Lead', color: 'text-gray-400', bg: 'bg-gray-500/20' },
-  contactado: { label: 'Contactado', color: 'text-blue-400', bg: 'bg-blue-500/20' },
-  propuesta: { label: 'Propuesta', color: 'text-orange-400', bg: 'bg-orange-500/20' },
-  negociacion: { label: 'Negociación', color: 'text-yellow-400', bg: 'bg-yellow-500/20' },
-  ganada: { label: 'Ganada', color: 'text-purple-400', bg: 'bg-purple-500/20' },
-  perdida: { label: 'Perdida', color: 'text-red-400', bg: 'bg-red-500/20' },
+  lead: { label: 'Lead', color: 'text-muted-foreground', bg: 'bg-muted-foreground/20' },
+  contactado: { label: 'Contactado', color: 'text-primary', bg: 'bg-primary/20' },
+  propuesta: { label: 'Propuesta', color: 'text-warning', bg: 'bg-warning/20' },
+  negociacion: { label: 'Negociación', color: 'text-warning', bg: 'bg-warning/20' },
+  ganada: { label: 'Ganada', color: 'text-primary', bg: 'bg-primary/20' },
+  perdida: { label: 'Perdida', color: 'text-destructive', bg: 'bg-destructive/20' },
 };
 
 const actionConfig: Record<string, { icon: any; label: string }> = {
@@ -55,7 +55,7 @@ const LeadsPanel = () => {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
       </div>
     );
   }
@@ -67,15 +67,15 @@ const LeadsPanel = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50"
+          className="bg-muted-foreground/50 rounded-xl p-4 border border-muted-foreground/50"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
-              <Users className="w-5 h-5 text-blue-400" />
+            <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+              <Users className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats.total}</p>
-              <p className="text-xs text-slate-400">Total Leads</p>
+              <p className="text-2xl font-bold text-primary-foreground">{stats.total}</p>
+              <p className="text-xs text-muted-foreground">Total Leads</p>
             </div>
           </div>
         </motion.div>
@@ -84,15 +84,15 @@ const LeadsPanel = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50"
+          className="bg-muted-foreground/50 rounded-xl p-4 border border-muted-foreground/50"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
-              <CheckCircle className="w-5 h-5 text-green-400" />
+            <div className="w-10 h-10 rounded-lg bg-success/20 flex items-center justify-center">
+              <CheckCircle className="w-5 h-5 text-success" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats.ganada}</p>
-              <p className="text-xs text-slate-400">Ganados</p>
+              <p className="text-2xl font-bold text-primary-foreground">{stats.ganada}</p>
+              <p className="text-xs text-muted-foreground">Ganados</p>
             </div>
           </div>
         </motion.div>
@@ -101,15 +101,15 @@ const LeadsPanel = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50"
+          className="bg-muted-foreground/50 rounded-xl p-4 border border-muted-foreground/50"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-yellow-500/20 flex items-center justify-center">
-              <Target className="w-5 h-5 text-yellow-400" />
+            <div className="w-10 h-10 rounded-lg bg-warning/20 flex items-center justify-center">
+              <Target className="w-5 h-5 text-warning" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats.avgScore}</p>
-              <p className="text-xs text-slate-400">Score Medio</p>
+              <p className="text-2xl font-bold text-primary-foreground">{stats.avgScore}</p>
+              <p className="text-xs text-muted-foreground">Score Medio</p>
             </div>
           </div>
         </motion.div>
@@ -118,15 +118,15 @@ const LeadsPanel = () => {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-slate-800/50 rounded-xl p-4 border border-slate-700/50"
+          className="bg-muted-foreground/50 rounded-xl p-4 border border-muted-foreground/50"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-purple-500/20 flex items-center justify-center">
-              <DollarSign className="w-5 h-5 text-purple-400" />
+            <div className="w-10 h-10 rounded-lg bg-primary/20 flex items-center justify-center">
+              <DollarSign className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <p className="text-2xl font-bold text-white">{stats.pipelineValue > 0 ? `${stats.propuesta + stats.negociacion}` : '0'}</p>
-              <p className="text-xs text-slate-400">En Pipeline Activo</p>
+              <p className="text-2xl font-bold text-primary-foreground">{stats.pipelineValue > 0 ? `${stats.propuesta + stats.negociacion}` : '0'}</p>
+              <p className="text-xs text-muted-foreground">En Pipeline Activo</p>
             </div>
           </div>
         </motion.div>
@@ -134,11 +134,11 @@ const LeadsPanel = () => {
 
       {/* Filters */}
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-white">Pipeline de Leads</h2>
+        <h2 className="text-lg font-semibold text-primary-foreground">Pipeline de Leads</h2>
         <div className="flex items-center gap-2">
-          <Filter className="w-4 h-4 text-slate-400" />
+          <Filter className="w-4 h-4 text-muted-foreground" />
           <Select value={filterEstado} onValueChange={setFilterEstado}>
-            <SelectTrigger className="w-40 bg-slate-800 border-slate-700">
+            <SelectTrigger className="w-40 bg-muted-foreground border-muted-foreground">
               <SelectValue placeholder="Filtrar por estado" />
             </SelectTrigger>
             <SelectContent>
@@ -153,38 +153,38 @@ const LeadsPanel = () => {
 
       {/* Leads Table */}
       {filteredLeads.length === 0 ? (
-        <div className="text-center py-12 bg-slate-800/30 rounded-xl border border-slate-700/50">
-          <Users className="w-12 h-12 text-slate-600 mx-auto mb-3" />
-          <p className="text-slate-400">No hay leads en el pipeline</p>
-          <p className="text-sm text-slate-500 mt-1">
+        <div className="text-center py-12 bg-muted-foreground/30 rounded-xl border border-muted-foreground/50">
+          <Users className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
+          <p className="text-muted-foreground">No hay leads en el pipeline</p>
+          <p className="text-sm text-muted-foreground mt-1">
             Convierte empresas en leads desde el mapa
           </p>
         </div>
       ) : (
-        <div className="bg-slate-800/30 rounded-xl border border-slate-700/50 overflow-hidden">
+        <div className="bg-muted-foreground/30 rounded-xl border border-muted-foreground/50 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
-              <thead className="bg-slate-800/50">
+              <thead className="bg-muted-foreground/50">
                 <tr>
-                  <th className="text-left text-xs font-medium text-slate-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-4 py-3">
                     Empresa
                   </th>
-                  <th className="text-left text-xs font-medium text-slate-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-4 py-3">
                     Sector
                   </th>
-                  <th className="text-left text-xs font-medium text-slate-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-4 py-3">
                     Score
                   </th>
-                  <th className="text-left text-xs font-medium text-slate-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-4 py-3">
                     Líneas
                   </th>
-                  <th className="text-left text-xs font-medium text-slate-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-4 py-3">
                     Estado
                   </th>
-                  <th className="text-left text-xs font-medium text-slate-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-left text-xs font-medium text-muted-foreground uppercase tracking-wider px-4 py-3">
                     Próxima Acción
                   </th>
-                  <th className="text-right text-xs font-medium text-slate-400 uppercase tracking-wider px-4 py-3">
+                  <th className="text-right text-xs font-medium text-muted-foreground uppercase tracking-wider px-4 py-3">
                     Acciones
                   </th>
                 </tr>
@@ -202,28 +202,28 @@ const LeadsPanel = () => {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ delay: index * 0.05 }}
-                        className="hover:bg-slate-700/30 transition-colors"
+                        className="hover:bg-muted-foreground/30 transition-colors"
                       >
                         <td className="px-4 py-3">
                           <div>
-                            <p className="text-sm font-medium text-white">{lead.empresa}</p>
-                            <p className="text-xs text-slate-400">{lead.cif}</p>
+                            <p className="text-sm font-medium text-primary-foreground">{lead.empresa}</p>
+                            <p className="text-xs text-muted-foreground">{lead.cif}</p>
                           </div>
                         </td>
                         <td className="px-4 py-3">
-                          <span className="text-sm text-slate-300 capitalize">{lead.sector}</span>
+                          <span className="text-sm text-muted-foreground capitalize">{lead.sector}</span>
                         </td>
                         <td className="px-4 py-3">
                           <span className={`text-sm font-medium ${
-                            lead.opportunity_score >= 80 ? 'text-green-400' :
-                            lead.opportunity_score >= 60 ? 'text-yellow-400' :
-                            'text-orange-400'
+                            lead.opportunity_score >= 80 ? 'text-success' :
+                            lead.opportunity_score >= 60 ? 'text-warning' :
+                            'text-warning'
                           }`}>
                             {lead.opportunity_score}
                           </span>
                         </td>
                         <td className="px-4 py-3">
-                          <span className="text-sm text-slate-300">
+                          <span className="text-sm text-muted-foreground">
                             {lead.tamano || '—'}
                           </span>
                         </td>
@@ -246,7 +246,7 @@ const LeadsPanel = () => {
                         </td>
                         <td className="px-4 py-3">
                           {action && (
-                            <div className="flex items-center gap-2 text-sm text-slate-300">
+                            <div className="flex items-center gap-2 text-sm text-muted-foreground">
                               <action.icon className="w-4 h-4" />
                               <span>{action.label}</span>
                             </div>
@@ -265,7 +265,7 @@ const LeadsPanel = () => {
                                 Editar notas
                               </DropdownMenuItem>
                               <DropdownMenuItem 
-                                className="gap-2 text-red-400"
+                                className="gap-2 text-destructive"
                                 onClick={() => archiveLead(lead.id)}
                               >
                                 <Trash2 className="w-4 h-4" />

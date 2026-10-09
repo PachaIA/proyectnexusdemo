@@ -107,7 +107,7 @@ export const AddCompanyModal = ({ isOpen, onClose, onCompanyAdded }: AddCompanyM
         markerRef.current = L.marker([geocodedCoords.lat, geocodedCoords.lng], {
           icon: L.divIcon({
             className: '',
-            html: `<div style="width:20px;height:20px;border-radius:50%;background:#22c55e;border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>`,
+            html: `<div style="width:20px;height:20px;border-radius:50%;background:var(--success-text);border:3px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);"></div>`,
             iconSize: [20, 20],
             iconAnchor: [10, 10],
           }),
@@ -241,12 +241,12 @@ export const AddCompanyModal = ({ isOpen, onClose, onCompanyAdded }: AddCompanyM
               </p>
             )}
             {!geocoding && geocodeStatus === 'found' && (
-              <p className="text-xs text-green-600 flex items-center gap-1">
+              <p className="text-xs text-success flex items-center gap-1">
                 <MapPin className="w-3 h-3" /> Ubicación encontrada
               </p>
             )}
             {!geocoding && geocodeStatus === 'not_found' && direccion.trim().length >= 5 && (
-              <p className="text-xs text-amber-600 flex items-center gap-1">
+              <p className="text-xs text-warning flex items-center gap-1">
                 <AlertTriangle className="w-3 h-3" /> No encontrada — se usará ubicación aproximada de Málaga
               </p>
             )}

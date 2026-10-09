@@ -1,3 +1,4 @@
+import { fmtEur } from '@/hooks/useOpportunityLines';
 import { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { toast } from 'sonner';
@@ -28,7 +29,7 @@ const T = {
   textLabel: 'var(--t-text-label)',
 };
 
-const mono: React.CSSProperties = { fontFamily: "'Space Mono', monospace" };
+const mono: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
 
 const fmtDate = (d?: string | null) => {
   if (!d) return null;
@@ -167,7 +168,7 @@ export function QuickReportModal({
     L.push(`- Necesidades: ${(company.detectedNeeds || []).join(', ') || '—'}`);
     L.push(`- Señales de crecimiento: ${(company.growthSignals || []).join(', ') || '—'}`);
     L.push(
-      `- Venta cerrada: ${sales.length} operaciones · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${totals.snav.toFixed(0)}€ · margen ${totals.margen.toFixed(0)}€`,
+      `- Venta cerrada: ${sales.length} operaciones · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${fmtEur(totals.snav)} · margen ${fmtEur(totals.margen)}`,
     );
     L.push(
       `- Pipeline: ${lead ? `${lead.estado} · próx. acción ${lead.next_action || '—'} ${fmtDate(lead.next_action_date) || ''}` : 'Sin lead asociado'}`,
@@ -235,7 +236,7 @@ export function QuickReportModal({
     L.push(`- **Necesidades:** ${(company.detectedNeeds || []).join(', ') || '—'}`);
     L.push(`- **Señales de crecimiento:** ${(company.growthSignals || []).join(', ') || '—'}`);
     L.push(
-      `- **Venta cerrada:** ${sales.length} operaciones · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${totals.snav.toFixed(0)}€ · margen ${totals.margen.toFixed(0)}€`,
+      `- **Venta cerrada:** ${sales.length} operaciones · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${fmtEur(totals.snav)} · margen ${fmtEur(totals.margen)}`,
     );
     L.push(
       `- **Pipeline:** ${lead ? `${lead.estado} · próx. acción ${lead.next_action || '—'} ${fmtDate(lead.next_action_date) || ''}` : 'Sin lead asociado'}`,
@@ -278,21 +279,22 @@ export function QuickReportModal({
 <html lang="es"><head><meta charset="utf-8">
 <title>Informe rápido — ${esc(company.name)}</title>
 <style>
+  :root { --bg: #EFE7D7; --surface: #F8F4EC; --border: #DED4C2; --text: #101A22; --muted-text-accessible: #5A6066; --alert-text: #A33D33; --success-text: #30624C; }
   @page { size: A4; margin: 18mm; }
   * { box-sizing: border-box; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #fff; color: #1a1a1a; margin: 0; font-size: 12px; line-height: 1.5; }
+  body { font-family: 'Inter', Arial, sans-serif; background: var(--surface); color: var(--text); margin: 0; font-size: 12px; line-height: 1.5; }
   h1 { font-size: 18px; margin: 0 0 2px; }
-  .meta { color: #555; font-size: 11px; margin-bottom: 16px; }
-  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #333; padding-bottom: 4px; margin: 18px 0 8px; page-break-after: avoid; }
+  .meta { color: var(--muted-text-accessible); font-size: 11px; margin-bottom: 16px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); padding-bottom: 4px; margin: 18px 0 8px; page-break-after: avoid; }
   table { width: 100%; border-collapse: collapse; page-break-inside: avoid; }
-  td { padding: 3px 6px; vertical-align: top; border-bottom: 1px solid #eee; }
-  td.lbl { width: 150px; font-weight: 600; color: #444; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+  td { padding: 3px 6px; vertical-align: top; border-bottom: 1px solid var(--border); }
+  td.lbl { width: 150px; font-weight: 600; color: var(--muted-text-accessible); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
   ul { margin: 4px 0; padding-left: 18px; }
   li { margin-bottom: 2px; }
-  .warn { color: #b91c1c; }
-  .ok { color: #15803d; }
-  .act { border-left: 3px solid #ccc; padding-left: 8px; margin-bottom: 6px; }
-  .act .d { font-size: 10px; color: #666; text-transform: uppercase; }
+  .warn { color: var(--alert-text); }
+  .ok { color: var(--success-text); }
+  .act { border-left: 3px solid var(--muted-text-accessible); padding-left: 8px; margin-bottom: 6px; }
+  .act .d { font-size: 10px; color: var(--muted-text-accessible); text-transform: uppercase; }
 </style></head><body>
 <h1>Informe rápido del cliente — ${esc(company.name)}</h1>
 <div class="meta">Generado el ${esc(generado)} · Grupo Enertel</div>
@@ -314,7 +316,7 @@ ${row('Multisede', sedes.length > 1 || company.isMultiSite ? `Sí · ${sedes.len
 ${row('Productos', (company.recommendedProducts || []).join(' · '))}
 ${row('Necesidades', (company.detectedNeeds || []).join(' · '))}
 ${row('Crecimiento', (company.growthSignals || []).join(' · '))}
-${row('Venta cerrada', sales.length ? `${sales.length} ops · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${totals.snav.toFixed(0)}€ · margen ${totals.margen.toFixed(0)}€` : '')}
+${row('Venta cerrada', sales.length ? `${sales.length} ops · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${fmtEur(totals.snav)} · margen ${fmtEur(totals.margen)}` : '')}
 ${row('Pipeline', lead ? `${lead.estado} · ${lead.next_action || '—'} ${fmtDate(lead.next_action_date) || ''}` : '')}
 </table>
 
@@ -325,8 +327,8 @@ ${row('Decisores', contactos.map((c: any) => `${c.name || '—'} (${c.role || '�
 ${row('Última actividad', lastActivity ? `${fmtDate(lastActivity.activity_date)} · ${typeLabel(lastActivity.activity_type)} · ${lastActivity.summary}` : fmtDate(ultimoContacto) || '')}
 </table>
 ${recent.length
-    ? recent.map((a) => `<div class="act"><div class="d">${esc(fmtDate(a.activity_date) || '')} · ${esc(typeLabel(a.activity_type))}</div>${esc(a.summary)}${a.outcome ? `<div style="font-size:11px;color:#555">Resultado: ${esc(a.outcome)}</div>` : ''}</div>`).join('')
-    : '<p style="color:#666">Sin actividades registradas</p>'}
+    ? recent.map((a) => `<div class="act"><div class="d">${esc(fmtDate(a.activity_date) || '')} · ${esc(typeLabel(a.activity_type))}</div>${esc(a.summary)}${a.outcome ? `<div style="font-size:11px;color:var(--muted-text-accessible)">Resultado: ${esc(a.outcome)}</div>` : ''}</div>`).join('')
+    : '<p style="color:var(--muted-text-accessible)">Sin actividades registradas</p>'}
 
 <h2>4. Próximos pasos</h2>
 <table>
@@ -406,7 +408,7 @@ ${pendientes.length
           border: `1px solid ${T.border}`,
           borderRadius: 16,
           overflow: 'hidden',
-          boxShadow: '0 30px 80px rgba(0,0,0,0.6)',
+          boxShadow: "none",
         }}
       >
         {/* Header */}
@@ -470,7 +472,7 @@ ${pendientes.length
               label="VENTA CERRADA"
               value={
                 sales.length
-                  ? `${sales.length} ops · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${totals.snav.toFixed(0)}€ · margen ${totals.margen.toFixed(0)}€`
+                  ? `${sales.length} ops · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${fmtEur(totals.snav)} · margen ${fmtEur(totals.margen)}`
                   : null
               }
             />
@@ -567,9 +569,9 @@ ${pendientes.length
                       letterSpacing: 1,
                       padding: '4px 8px',
                       borderRadius: 6,
-                      background: '#ef444418',
-                      border: '1px solid #ef444440',
-                      color: '#ef4444',
+                      background: 'color-mix(in srgb, var(--alert-text) 9.4%, transparent)',
+                      border: '1px solid color-mix(in srgb, var(--alert-text) 25.1%, transparent)',
+                      color: 'var(--alert-text)',
                     }}
                   >
                     ⚠ {p.toUpperCase()}
@@ -577,7 +579,7 @@ ${pendientes.length
                 ))}
               </div>
             ) : (
-              <span style={{ fontSize: 12, color: '#22c55e' }}>✓ Ficha completa</span>
+              <span style={{ fontSize: 12, color: 'var(--success-text)' }}>✓ Ficha completa</span>
             )}
           </Section>
         </div>
@@ -648,8 +650,8 @@ ${pendientes.length
             style={{
               padding: '10px 16px',
               borderRadius: 10,
-              background: `${T.accent}22`,
-              border: `1px solid ${T.accent}66`,
+              background: `color-mix(in srgb, ${T.accent} 13.3%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${T.accent} 40.0%, transparent)`,
               color: T.accent,
               cursor: 'pointer',
               ...mono,

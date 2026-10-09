@@ -2,164 +2,176 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+:root, html[data-theme="noche"] {
+  --bg: #101A22;
+  --surface: #16232D;
+  --surface-2: #1D2E3A;
+  --border: #253645;
+  --border-hsl: 208.125 30.189% 20.784%;
+  --text: #EFE7D7;
+  --text-muted: #8A8F94;
+  --brand: #3E6E80;
+  --interactive: #6FA3B8;
+  --money: #D9A441;
+  --alert: #C0564A;
+  --money-style: text;
+  --money-foreground: var(--money);
+  --alert-text: #E38D81;
+  --muted-text-accessible: #A0A6AC;
+  --success-text: #9BC6B1;
+  --warning-text: #D6B77B;
+  --background: 206.667 36.000% 9.804%;
+  --foreground: 40.000 42.857% 89.020%;
+  --card: 206.087 34.328% 13.137%;
+  --card-foreground: 40.000 42.857% 89.020%;
+  --popover: 204.828 33.333% 17.059%;
+  --popover-foreground: 40.000 42.857% 89.020%;
+  --primary: 197.260 33.953% 57.843%;
+  --primary-foreground: 206.667 36.000% 9.804%;
+  --secondary: 204.828 33.333% 17.059%;
+  --secondary-foreground: 40.000 42.857% 89.020%;
+  --muted: 204.828 33.333% 17.059%;
+  --accent: 197.260 33.953% 57.843%;
+  --accent-foreground: 206.667 36.000% 9.804%;
+  --input: 208.125 30.189% 20.784%;
+  --ring: 197.260 33.953% 57.843%;
+  --sidebar-background: 206.667 36.000% 9.804%;
+  --sidebar-foreground: 40.000 42.857% 89.020%;
+  --sidebar-primary: 197.260 33.953% 57.843%;
+  --sidebar-primary-foreground: 206.667 36.000% 9.804%;
+  --sidebar-accent: 204.828 33.333% 17.059%;
+  --sidebar-accent-foreground: 40.000 42.857% 89.020%;
+  --sidebar-border: 208.125 30.189% 20.784%;
+  --sidebar-ring: 197.260 33.953% 57.843%;
+  --muted-foreground: 210.000 6.742% 65.098%;
+  --destructive: 7.347 63.636% 69.804%;
+  --destructive-foreground: 206.667 36.000% 9.804%;
+  --success: 150.698 27.389% 69.216%;
+  --success-foreground: 206.667 36.000% 9.804%;
+  --warning: 39.560 52.601% 66.078%;
+  --warning-foreground: 206.667 36.000% 9.804%;
+  --info: 197.260 33.953% 57.843%;
+  --info-foreground: 206.667 36.000% 9.804%;
+  --score-high: 150.698 27.389% 69.216%;
+  --score-medium: 39.560 52.601% 66.078%;
+  --score-low: 7.347 63.636% 69.804%;
+  --money-hsl: 39.079 66.667% 55.294%;
+  --t-bg: var(--bg);
+  --t-sidebar: var(--bg);
+  --t-card: var(--surface);
+  --t-card-alt: var(--surface-2);
+  --t-card-hover: var(--surface-2);
+  --t-border: var(--border);
+  --t-border-subtle: var(--border);
+  --t-accent: var(--interactive);
+  --t-accent-light: var(--interactive);
+  --t-accent-dark: var(--interactive);
+  --t-text-primary: var(--text);
+  --t-text-secondary: var(--text);
+  --t-text-tertiary: var(--muted-text-accessible);
+  --t-text-muted: var(--muted-text-accessible);
+  --t-text-label: var(--muted-text-accessible);
+  --t-header-bg: var(--surface);
+  --t-color-scheme: dark;
+  --radius: 0.375rem;
+  --gradient-primary: none;
+  --gradient-accent: none;
+  --gradient-card: none;
+  --gradient-score-high: none;
+  --gradient-score-medium: none;
+  --gradient-score-low: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+  --shadow-card: none;
+  --shadow-accent: none;
+}
 
-@layer base {
-  :root {
-    /* Electric Blue Tech Theme — Light Mode */
-    --background: 216 30% 97%;
-    --foreground: 216 40% 10%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 216 40% 10%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 216 40% 10%;
-
-    /* Electric Blue primary */
-    --primary: 220 100% 50%;
-    --primary-foreground: 0 0% 100%;
-
-    /* Secondary */
-    --secondary: 216 20% 96%;
-    --secondary-foreground: 216 40% 20%;
-
-    --muted: 216 15% 92%;
-    --muted-foreground: 216 15% 45%;
-
-    /* Accent — Electric Blue */
-    --accent: 220 100% 50%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 216 20% 90%;
-    --input: 216 20% 90%;
-    --ring: 220 100% 50%;
-
-    --radius: 0.75rem;
-
-    /* Custom semantic colors */
-    --success: 142 70% 45%;
-    --success-foreground: 0 0% 100%;
-    
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 100%;
-    
-    --info: 199 89% 48%;
-    --info-foreground: 0 0% 100%;
-
-    /* Score colors */
-    --score-high: 142 70% 45%;
-    --score-medium: 38 92% 50%;
-    --score-low: 0 84% 60%;
-
-    /* Gradient definitions */
-    --gradient-primary: linear-gradient(135deg, hsl(220 100% 50%) 0%, hsl(220 100% 60%) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(220 100% 45%) 0%, hsl(220 100% 55%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(216 20% 98%) 100%);
-    --gradient-score-high: linear-gradient(135deg, hsl(142 70% 45%) 0%, hsl(142 70% 55%) 100%);
-    --gradient-score-medium: linear-gradient(135deg, hsl(38 92% 50%) 0%, hsl(38 92% 60%) 100%);
-    --gradient-score-low: linear-gradient(135deg, hsl(0 84% 60%) 0%, hsl(0 84% 70%) 100%);
-
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 hsl(216 20% 10% / 0.05);
-    --shadow-md: 0 4px 6px -1px hsl(216 20% 10% / 0.1), 0 2px 4px -2px hsl(216 20% 10% / 0.1);
-    --shadow-lg: 0 10px 15px -3px hsl(216 20% 10% / 0.1), 0 4px 6px -4px hsl(216 20% 10% / 0.1);
-    --shadow-xl: 0 20px 25px -5px hsl(216 20% 10% / 0.1), 0 8px 10px -6px hsl(216 20% 10% / 0.1);
-    --shadow-card: 0 4px 20px -2px hsl(216 20% 10% / 0.08);
-    --shadow-accent: 0 4px 14px 0 hsl(220 100% 50% / 0.25);
-
-    --sidebar-background: 216 60% 12%;
-    --sidebar-foreground: 210 20% 95%;
-    --sidebar-primary: 220 100% 50%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 216 50% 20%;
-    --sidebar-accent-foreground: 210 20% 95%;
-    --sidebar-border: 216 45% 22%;
-    --sidebar-ring: 220 100% 50%;
-
-    /* Terminal theme tokens — light mode */
-    --t-bg: #f5f6fa;
-    --t-sidebar: #eef0f5;
-    --t-card: #ffffff;
-    --t-card-alt: #f8f9fc;
-    --t-card-hover: #f0f1f5;
-    --t-border: #e0e2ea;
-    --t-border-subtle: #eaecf0;
-    --t-accent: #7c5cfc;
-    --t-accent-light: #6a4de0;
-    --t-accent-dark: #5a3fd4;
-    --t-text-primary: #1a1a2e;
-    --t-text-secondary: #44445a;
-    --t-text-tertiary: #66667a;
-    --t-text-muted: #88889a;
-    --t-text-label: #9999aa;
-    --t-header-bg: #ffffff;
-    --t-color-scheme: light;
-  }
-
-  .dark {
-    /* Dark Mode — Bloomberg-style Intelligence Terminal */
-    --background: 240 40% 4%;
-    --foreground: 240 5% 88%;
-
-    --card: 240 25% 8%;
-    --card-foreground: 240 5% 88%;
-
-    --popover: 240 25% 8%;
-    --popover-foreground: 240 5% 88%;
-
-    --primary: 252 95% 68%;
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 240 20% 12%;
-    --secondary-foreground: 240 5% 75%;
-
-    --muted: 240 15% 13%;
-    --muted-foreground: 240 5% 45%;
-
-    --accent: 252 95% 68%;
-    --accent-foreground: 0 0% 100%;
-
-    --destructive: 0 70% 50%;
-    --destructive-foreground: 0 0% 100%;
-
-    --border: 240 12% 16%;
-    --input: 240 12% 16%;
-    --ring: 252 95% 68%;
-
-    --shadow-accent: 0 4px 14px 0 hsl(252 95% 68% / 0.25);
-
-    --sidebar-background: 240 40% 3%;
-    --sidebar-foreground: 240 5% 85%;
-    --sidebar-primary: 252 95% 68%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 20% 11%;
-    --sidebar-accent-foreground: 240 5% 85%;
-    --sidebar-border: 240 12% 14%;
-    --sidebar-ring: 252 95% 68%;
-
-    /* Terminal theme tokens — dark mode */
-    --t-bg: #0a0b14;
-    --t-sidebar: #0f1019;
-    --t-card: #161622;
-    --t-card-alt: #1e1e2e;
-    --t-card-hover: #1c1c2c;
-    --t-border: #2a2a3a;
-    --t-border-subtle: #222233;
-    --t-accent: #7c5cfc;
-    --t-accent-light: #9b7dff;
-    --t-accent-dark: #5a3fd4;
-    --t-text-primary: #e0e0e0;
-    --t-text-secondary: #a0a0b0;
-    --t-text-tertiary: #888899;
-    --t-text-muted: #666677;
-    --t-text-label: #555566;
-    --t-header-bg: #0f0f1a;
-    --t-color-scheme: dark;
-  }
+html[data-theme="caliza"] {
+  --bg: #EFE7D7;
+  --surface: #F8F4EC;
+  --surface-2: #FFFFFF;
+  --border: #DED4C2;
+  --border-hsl: 38.571 29.787% 81.569%;
+  --text: #101A22;
+  --text-muted: #5A6066;
+  --brand: #3E6E80;
+  --interactive: #3E6E80;
+  --money: #D9A441;
+  --alert: #A33D33;
+  --money-style: accent;
+  --money-foreground: var(--text);
+  --alert-text: #A33D33;
+  --muted-text-accessible: #5A6066;
+  --success-text: #30624C;
+  --warning-text: #78591E;
+  --background: 40.000 42.857% 89.020%;
+  --foreground: 206.667 36.000% 9.804%;
+  --card: 40.000 46.154% 94.902%;
+  --card-foreground: 206.667 36.000% 9.804%;
+  --popover: 0.000 0.000% 100.000%;
+  --popover-foreground: 206.667 36.000% 9.804%;
+  --primary: 196.364 34.737% 37.255%;
+  --primary-foreground: 0.000 0.000% 100.000%;
+  --secondary: 0.000 0.000% 100.000%;
+  --secondary-foreground: 206.667 36.000% 9.804%;
+  --muted: 0.000 0.000% 100.000%;
+  --accent: 196.364 34.737% 37.255%;
+  --accent-foreground: 0.000 0.000% 100.000%;
+  --input: 38.571 29.787% 81.569%;
+  --ring: 196.364 34.737% 37.255%;
+  --sidebar-background: 40.000 42.857% 89.020%;
+  --sidebar-foreground: 206.667 36.000% 9.804%;
+  --sidebar-primary: 196.364 34.737% 37.255%;
+  --sidebar-primary-foreground: 0.000 0.000% 100.000%;
+  --sidebar-accent: 0.000 0.000% 100.000%;
+  --sidebar-accent-foreground: 206.667 36.000% 9.804%;
+  --sidebar-border: 38.571 29.787% 81.569%;
+  --sidebar-ring: 196.364 34.737% 37.255%;
+  --muted-foreground: 210.000 6.250% 37.647%;
+  --destructive: 5.357 52.336% 41.961%;
+  --destructive-foreground: 0.000 0.000% 100.000%;
+  --success: 153.600 34.247% 28.627%;
+  --success-foreground: 0.000 0.000% 100.000%;
+  --warning: 39.333 60.000% 29.412%;
+  --warning-foreground: 0.000 0.000% 100.000%;
+  --info: 196.364 34.737% 37.255%;
+  --info-foreground: 0.000 0.000% 100.000%;
+  --score-high: 153.600 34.247% 28.627%;
+  --score-medium: 39.333 60.000% 29.412%;
+  --score-low: 5.357 52.336% 41.961%;
+  --money-hsl: 39.079 66.667% 55.294%;
+  --t-bg: var(--bg);
+  --t-sidebar: var(--bg);
+  --t-card: var(--surface);
+  --t-card-alt: var(--surface-2);
+  --t-card-hover: var(--surface-2);
+  --t-border: var(--border);
+  --t-border-subtle: var(--border);
+  --t-accent: var(--interactive);
+  --t-accent-light: var(--interactive);
+  --t-accent-dark: var(--interactive);
+  --t-text-primary: var(--text);
+  --t-text-secondary: var(--text);
+  --t-text-tertiary: var(--muted-text-accessible);
+  --t-text-muted: var(--muted-text-accessible);
+  --t-text-label: var(--muted-text-accessible);
+  --t-header-bg: var(--surface);
+  --t-color-scheme: light;
+  --radius: 0.375rem;
+  --gradient-primary: none;
+  --gradient-accent: none;
+  --gradient-card: none;
+  --gradient-score-high: none;
+  --gradient-score-medium: none;
+  --gradient-score-low: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+  --shadow-card: none;
+  --shadow-accent: none;
 }
 
 @layer base {
@@ -173,7 +185,7 @@
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight;
+    @apply font-semibold;
   }
 }
 
@@ -210,17 +222,17 @@
 
   .score-badge-high {
     background: var(--gradient-score-high);
-    @apply text-white;
+    @apply text-primary-foreground;
   }
 
   .score-badge-medium {
     background: var(--gradient-score-medium);
-    @apply text-white;
+    @apply text-primary-foreground;
   }
 
   .score-badge-low {
     background: var(--gradient-score-low);
-    @apply text-white;
+    @apply text-primary-foreground;
   }
 
   .filter-chip {
@@ -236,7 +248,7 @@
   }
 
   .map-marker {
-    @apply w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold;
+    @apply w-8 h-8 rounded-full flex items-center justify-center text-primary-foreground text-xs font-bold;
     box-shadow: var(--shadow-lg);
   }
 }
@@ -312,7 +324,7 @@
 
 .leaflet-popup-content-wrapper {
   @apply rounded-xl shadow-lg border border-border;
-  background: hsl(240 20% 9%);
+  background: hsl(var(--popover));
   padding: 0;
 }
 
@@ -322,7 +334,7 @@
 }
 
 .leaflet-popup-tip {
-  background: hsl(240 20% 9%);
+  background: hsl(var(--popover));
   box-shadow: none;
 }
 
@@ -361,7 +373,7 @@
 .leaflet-control-zoom a {
   background: hsl(var(--card)) !important;
   color: hsl(var(--foreground)) !important;
-  border: 1px solid hsl(var(--border)) !important;
+  border: 1px solid var(--border) !important;
 }
 
 .leaflet-control-zoom a:hover {
@@ -380,3 +392,56 @@
 .safe-area-bottom {
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
+
+/* Nexus presentation policy: shared by legacy inline views and semantic UI. */
+html[data-theme] body { background: var(--bg); color: var(--text); }
+html[data-theme] *, html[data-theme] *::before, html[data-theme] *::after {
+  box-shadow: none !important;
+  text-shadow: none !important;
+  letter-spacing: 0 !important;
+  font-variant-numeric: tabular-nums;
+  border-color: var(--border);
+}
+html[data-theme] :not(svg):not(svg *) { font-family: 'Inter', sans-serif !important; }
+html[data-theme] :is(h1, h2, .nexus-kpi, .text-xl.font-bold, .text-3xl, .text-4xl, .text-5xl) { font-family: 'Space Grotesk', sans-serif !important; }
+html[data-theme] :is(code, .nexus-reference, [data-reference]) { font-family: 'JetBrains Mono', monospace !important; }
+html[data-theme] [class*="font-mono"] { font-family: 'Inter', sans-serif !important; }
+html[data-theme] [class*="gradient"], html[data-theme] [style*="gradient"] { background-image: none !important; }
+html[data-theme] [style*="gradient"] { background-color: var(--surface-2) !important; }
+html[data-theme] [class*="drop-shadow"] { filter: none !important; }
+html[data-theme] :is(section, nav) { border-left-width: 0; border-right-width: 0; }
+html[data-theme] section[class*="border"] { border-top-width: 1px; border-bottom-width: 0; background: transparent; border-radius: 0; }
+html[data-theme] [style*="border"] { border-color: var(--border) !important; }
+html[data-theme] [style*="font-family"] { font-family: 'Inter', sans-serif !important; }
+html[data-theme] :is(button, a)[style*="background: var(--interactive)"] { color: hsl(var(--primary-foreground)) !important; }
+html[data-theme] .nexus-money { color: var(--money-foreground) !important; font: inherit; font-variant-numeric: tabular-nums; }
+html[data-theme="caliza"] .nexus-money { text-decoration: underline; text-decoration-color: var(--money); text-decoration-thickness: 3px; text-underline-offset: 5px; }
+html[data-theme] .nexus-money-card { border-left: 0; }
+html[data-theme="caliza"] .nexus-money-card { border-left: 3px solid var(--money); }
+html[data-theme] input::placeholder, html[data-theme] textarea::placeholder { color: var(--muted-text-accessible); opacity: 1; }
+html[data-theme] [class*="text-muted-foreground/"] { color: var(--muted-text-accessible); }
+html[data-theme] :focus-visible { outline: 2px solid var(--interactive); outline-offset: 3px; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+
+html[data-theme] .nexus-money { font-family: inherit !important; }
+html[data-theme] :is(code, .nexus-reference, [data-reference]) { font-family: 'JetBrains Mono', monospace !important; }
+html[data-theme="caliza"] :is(.bg-primary\/10, .bg-primary\/20, .bg-accent\/10, .bg-accent\/20)[class*="text-primary"],
+html[data-theme="caliza"] :is(.bg-primary\/10, .bg-primary\/20, .bg-accent\/10, .bg-accent\/20)[class*="text-accent"] { color: var(--text); }
+html[data-theme] nav { border-width: 0; background: transparent; }
+html[data-theme] :is(.card-elevated, div.border.rounded-lg, div.border.rounded-xl, div.border.rounded-md) { border-width: 0; }
+html[data-theme] .leaflet-popup-content-wrapper { background: var(--surface); }
+html[data-theme] .marker-cluster { background: var(--surface-2) !important; }
+html[data-theme] .marker-cluster div { background: var(--interactive) !important; color: hsl(var(--primary-foreground)) !important; }
+
+html[data-theme] .nexus-money * { color: var(--money-foreground) !important; font-family: inherit !important; }
+html[data-theme] [data-score-bucket] { background: var(--surface); color: var(--text); }
+html[data-theme] [data-score-bucket="hot"] { color: var(--alert-text); }
+html[data-theme] [data-score-bucket="warm"] { color: var(--warning-text); }
+html[data-theme] [data-score-bucket="cold"] { color: var(--muted-text-accessible); }
+
+html[data-theme] [class*="text-accent/"], html[data-theme] [class*="text-primary/"] { color: var(--interactive); }
+html[data-theme="caliza"] [class*="bg-destructive/"][class*="text-destructive"],
+html[data-theme="caliza"] [class*="bg-warning/"][class*="text-warning"] { color: var(--text); }
+html[data-theme="caliza"] [style*="color-mix"] { background-color: var(--surface) !important; }
+html[data-theme="caliza"] [style*="color-mix"][style*="color: var(--interactive)"],
+html[data-theme="caliza"] [style*="color-mix"][style*="color: var(--t-accent)"] { color: var(--text) !important; }

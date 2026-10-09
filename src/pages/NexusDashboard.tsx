@@ -1,3 +1,5 @@
+import { fmtEur } from '@/hooks/useOpportunityLines';
+import { Money } from '@/components/Money';
 import { requestOpportunityFields } from '@/lib/opportunity';
 import { refreshCompanies, refreshLeads } from '@/lib/queryClient';
 import { getEffectiveUser } from '@/lib/openUser';
@@ -45,18 +47,18 @@ const T = {
 };
 
 const sectorColors: Record<string, string> = {
-  salud: "#ef4444", industria: "#f59e0b", logistica: "#3b82f6",
-  tecnologia: "#8b5cf6", retail: "#ec4899", turismo: "#14b8a6",
-  educacion: "#22c55e", servicios: "#f97316",
+  salud: "var(--alert-text)", industria: "var(--warning-text)", logistica: "var(--interactive)",
+  tecnologia: "var(--interactive)", retail: "var(--alert-text)", turismo: "var(--success-text)",
+  educacion: "var(--success-text)", servicios: "var(--alert-text)",
 };
 const sectorIcons: Record<string, string> = {
   salud: "🏥", industria: "🏭", logistica: "📦", tecnologia: "💻",
   retail: "🛒", turismo: "🏨", educacion: "🎓", servicios: "💼",
 };
 const actionIcons: Record<string, string> = { visit: "🚗", call: "📞", email: "✉️", proposal: "📋", "follow-up": "🔄" };
-const priorityColors: Record<string, string> = { alta: "#ef4444", media: "#f59e0b", baja: "#6b7280" };
-const powerColors: Record<string, string> = { alto: "#ef4444", medio: "#f59e0b", bajo: "#6b7280" };
-const accessColors: Record<string, string> = { facil: "#22c55e", medio: "#f59e0b", dificil: "#ef4444" };
+const priorityColors: Record<string, string> = { alta: "var(--alert-text)", media: "var(--warning-text)", baja: "var(--muted-text-accessible)" };
+const powerColors: Record<string, string> = { alto: "var(--alert-text)", medio: "var(--warning-text)", bajo: "var(--muted-text-accessible)" };
+const accessColors: Record<string, string> = { facil: "var(--success-text)", medio: "var(--warning-text)", dificil: "var(--alert-text)" };
 
 function getSafeActionType(nextBestAction: Company["nextBestAction"]): keyof typeof actionIcons {
   const normalized = typeof nextBestAction?.type === "string" ? nextBestAction.type.trim().toLowerCase() : "";
@@ -69,12 +71,12 @@ function getSafePriority(nextBestAction: Company["nextBestAction"]): keyof typeo
 }
 
 const ESTADOS = [
-  { id: "lead", label: "⚪ LEAD", color: "#6b7280" },
-  { id: "contactado", label: "🔵 CONTACTADO", color: "#3b82f6" },
-  { id: "propuesta", label: "🟠 PROPUESTA", color: "#f97316" },
-  { id: "negociacion", label: "🟡 NEGOCIACIÓN", color: "#eab308" },
-  { id: "ganada", label: "🟣 GANADA", color: "#8b5cf6" },
-  { id: "perdida", label: "🔴 PERDIDA", color: "#ef4444" },
+  { id: "lead", label: "⚪ LEAD", color: "var(--muted-text-accessible)" },
+  { id: "contactado", label: "🔵 CONTACTADO", color: "var(--interactive)" },
+  { id: "propuesta", label: "🟠 PROPUESTA", color: "var(--alert-text)" },
+  { id: "negociacion", label: "🟡 NEGOCIACIÓN", color: "var(--warning-text)" },
+  { id: "ganada", label: "🟣 GANADA", color: "var(--interactive)" },
+  { id: "perdida", label: "🔴 PERDIDA", color: "var(--alert-text)" },
 ];
 
 interface Nota { fecha: string; texto: string; }
@@ -100,7 +102,7 @@ function getInteraction(map: InteractionsMap, id: string): InteractionData {
   return map[id] || { estado: "lead", notas: [], ultimoContacto: null, proximoContacto: null, contactadoHoy: false };
 }
 function getEstadoColor(estado: string): string {
-  return ESTADOS.find(e => e.id === estado)?.color || "#3b82f6";
+  return ESTADOS.find(e => e.id === estado)?.color || "var(--interactive)";
 }
 function getNextContactLabel(dateStr: string | null): string | null {
   if (!dateStr) return null;
@@ -121,7 +123,7 @@ function addDays(days: number): string {
 
 // ─── Score Badge ─────────────────────────────────────────────────────────
 function ScoreBadge({ score }: { score: number }) {
-  const color = score >= 80 ? "#ef4444" : score >= 60 ? "#f59e0b" : "#6b7280";
+  const color = score >= 80 ? "var(--alert-text)" : score >= 60 ? "var(--warning-text)" : "var(--muted-text-accessible)";
   const label = score >= 80 ? "🔥 ALTA" : score >= 60 ? "⚡ MEDIA" : "· BAJA";
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
@@ -129,12 +131,12 @@ function ScoreBadge({ score }: { score: number }) {
         width: 52, height: 52, borderRadius: "50%",
         border: `3px solid ${color}`, display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
-        boxShadow: `0 0 16px ${color}55`, background: `${color}18`,
+        boxShadow: "none", background: `color-mix(in srgb, ${color} 9.4%, transparent)`,
       }}>
-        <span style={{ fontSize: 15, fontWeight: 900, color, fontFamily: "'Space Mono', monospace", lineHeight: 1 }}>{score}</span>
-        <span style={{ fontSize: 8, color: `${color}aa`, letterSpacing: 1 }}>SCORE</span>
+        <span style={{ fontSize: 15, fontWeight: 900, color, fontFamily: "'Inter', sans-serif", lineHeight: 1 }}>{score}</span>
+        <span style={{ fontSize: 8, color: `color-mix(in srgb, ${color} 66.7%, transparent)`, letterSpacing: 1 }}>SCORE</span>
       </div>
-      <span style={{ fontSize: 11, fontWeight: 700, color, letterSpacing: 2, fontFamily: "'Space Mono', monospace" }}>{label}</span>
+      <span style={{ fontSize: 11, fontWeight: 700, color, letterSpacing: 2, fontFamily: "'Inter', sans-serif" }}>{label}</span>
     </div>
   );
 }
@@ -248,7 +250,7 @@ function AIBriefing({ company, onClose }: { company: Company; onClose: () => voi
         width: "min(680px, 95vw)", height: "80vh",
         background: T.card, border: `1px solid ${T.border}`,
         borderRadius: 16, display: "flex", flexDirection: "column",
-        boxShadow: `0 0 60px ${T.accent}22, 0 24px 80px #00000088`, overflow: "hidden",
+        boxShadow: "none", overflow: "hidden",
       }}>
         <div style={{
           padding: "16px 20px", borderBottom: `1px solid ${T.border}`,
@@ -260,13 +262,13 @@ function AIBriefing({ company, onClose }: { company: Company; onClose: () => voi
               width: 36, height: 36, borderRadius: 8,
               background: `linear-gradient(135deg, ${T.accent}, ${T.accentLight})`,
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 18, boxShadow: `0 0 20px ${T.accent}66`,
+              fontSize: 18, boxShadow: "none",
             }}>⚡</div>
             <div>
-              <div style={{ color: T.textPrimary, fontWeight: 800, fontSize: 14, fontFamily: "'Space Mono', monospace", letterSpacing: 1 }}>
+              <div style={{ color: T.textPrimary, fontWeight: 800, fontSize: 14, fontFamily: "'Inter', sans-serif", letterSpacing: 1 }}>
                 NEXUS AI — {company.name}
               </div>
-              <div style={{ color: T.textMuted, fontSize: 11, fontFamily: "'Space Mono', monospace", letterSpacing: 2 }}>
+              <div style={{ color: T.textMuted, fontSize: 11, fontFamily: "'Inter', sans-serif", letterSpacing: 2 }}>
                 INTELIGENCIA COMERCIAL
               </div>
             </div>
@@ -274,14 +276,14 @@ function AIBriefing({ company, onClose }: { company: Company; onClose: () => voi
           <button onClick={onClose} style={{
             background: "none", border: `1px solid ${T.border}`, color: T.textTertiary,
             borderRadius: 8, padding: "6px 12px", cursor: "pointer", fontSize: 13,
-            fontFamily: "'Space Mono', monospace",
+            fontFamily: "'Inter', sans-serif",
           }}>✕ CERRAR</button>
         </div>
         <div style={{ flex: 1, overflowY: "auto", padding: "20px", display: "flex", flexDirection: "column", gap: 16 }}>
           {initialLoading && messages.length === 0 ? (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 16 }}>
-              <div style={{ width: 48, height: 48, borderRadius: "50%", border: `3px solid ${T.accent}33`, borderTopColor: T.accent, animation: "nexus-spin 1s linear infinite" }} />
-              <span style={{ color: T.textMuted, fontFamily: "'Space Mono', monospace", fontSize: 12, letterSpacing: 2 }}>ANALIZANDO EMPRESA...</span>
+              <div style={{ width: 48, height: 48, borderRadius: "50%", border: `3px solid color-mix(in srgb, ${T.accent} 20.0%, transparent)`, borderTopColor: T.accent, animation: "nexus-spin 1s linear infinite" }} />
+              <span style={{ color: T.textMuted, fontFamily: "'Inter', sans-serif", fontSize: 12, letterSpacing: 2 }}>ANALIZANDO EMPRESA...</span>
             </div>
           ) : messages.map((m, i) => (
             <div key={i} style={{ display: "flex", gap: 12, flexDirection: m.role === "user" ? "row-reverse" : "row" }}>
@@ -289,14 +291,14 @@ function AIBriefing({ company, onClose }: { company: Company; onClose: () => voi
                 width: 32, height: 32, borderRadius: "50%", flexShrink: 0,
                 background: m.role === "user" ? T.border : `linear-gradient(135deg, ${T.accent}, ${T.accentLight})`,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 14, boxShadow: m.role !== "user" ? `0 0 12px ${T.accent}44` : "none",
+                fontSize: 14, boxShadow: m.role !== "user" ? `0 0 12px color-mix(in srgb, ${T.accent} 26.7%, transparent)` : "none",
               }}>{m.role === "user" ? "👤" : "⚡"}</div>
               <div style={{
                 maxWidth: "78%", padding: "12px 16px", borderRadius: 12,
                 background: m.role === "user" ? T.cardHover : T.cardAlt,
                 border: `1px solid ${T.border}`,
                 color: m.role === "user" ? T.textSecondary : T.textPrimary,
-                fontSize: 13, lineHeight: 1.7, fontFamily: "'DM Sans', sans-serif", whiteSpace: "pre-wrap",
+                fontSize: 13, lineHeight: 1.7, fontFamily: "'Inter', sans-serif", whiteSpace: "pre-wrap",
               }}>{m.content}</div>
             </div>
           ))}
@@ -313,13 +315,13 @@ function AIBriefing({ company, onClose }: { company: Company; onClose: () => voi
         <div style={{ padding: "12px 16px", borderTop: `1px solid ${T.border}`, display: "flex", gap: 10 }}>
           <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()}
             placeholder="Pregunta algo al briefing..."
-            style={{ flex: 1, background: T.cardAlt, border: `1px solid ${T.border}`, borderRadius: 10, padding: "10px 14px", color: T.textPrimary, fontSize: 13, outline: "none", fontFamily: "'DM Sans', sans-serif" }} />
+            style={{ flex: 1, background: T.cardAlt, border: `1px solid ${T.border}`, borderRadius: 10, padding: "10px 14px", color: T.textPrimary, fontSize: 13, outline: "none", fontFamily: "'Inter', sans-serif" }} />
           <button onClick={send} disabled={loading || !input.trim()} style={{
             padding: "10px 18px", background: `linear-gradient(135deg, ${T.accent}, ${T.accentDark})`,
-            border: "none", borderRadius: 10, color: "#fff", fontWeight: 700,
+            border: "none", borderRadius: 10, color: "var(--text)", fontWeight: 700,
             cursor: loading ? "not-allowed" : "pointer", fontSize: 13,
-            fontFamily: "'Space Mono', monospace", opacity: loading || !input.trim() ? 0.5 : 1,
-            boxShadow: `0 0 20px ${T.accent}44`,
+            fontFamily: "'Inter', sans-serif", opacity: loading || !input.trim() ? 0.5 : 1,
+            boxShadow: "none",
           }}>→</button>
         </div>
       </div>
@@ -413,7 +415,7 @@ function InteractionRegistry({
     update({ proximoContacto: dateStr });
   };
 
-  const mono: React.CSSProperties = { fontFamily: "'Space Mono', monospace" };
+  const mono: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
@@ -426,7 +428,7 @@ function InteractionRegistry({
           {ESTADOS.map(e => (
             <button key={e.id} onClick={() => handleEstado(e.id)} style={{
               padding: "5px 10px", borderRadius: 6, cursor: "pointer",
-              background: data.estado === e.id ? `${e.color}22` : "transparent",
+              background: data.estado === e.id ? `color-mix(in srgb, ${e.color} 13.3%, transparent)` : "transparent",
               border: `1px solid ${data.estado === e.id ? e.color : T.borderSubtle}`,
               color: data.estado === e.id ? e.color : T.textTertiary,
               ...mono, fontSize: 9, letterSpacing: 1, transition: "all 0.15s",
@@ -441,16 +443,16 @@ function InteractionRegistry({
         <button onClick={handleContactadoHoy} disabled={data.contactadoHoy} style={{
           display: "flex", alignItems: "center", gap: 8,
           padding: "8px 14px", borderRadius: 8, cursor: data.contactadoHoy ? "default" : "pointer",
-          background: data.contactadoHoy ? "#22c55e18" : T.card,
-          border: `1px solid ${data.contactadoHoy ? "#22c55e44" : T.borderSubtle}`,
-          color: data.contactadoHoy ? "#22c55e" : T.textTertiary,
+          background: data.contactadoHoy ? "color-mix(in srgb, var(--success-text) 9.4%, transparent)" : T.card,
+          border: `1px solid ${data.contactadoHoy ? "color-mix(in srgb, var(--success-text) 26.7%, transparent)" : T.borderSubtle}`,
+          color: data.contactadoHoy ? "var(--success-text)" : T.textTertiary,
           ...mono, fontSize: 10, letterSpacing: 1, transition: "all 0.15s", width: "100%",
         }}>
           <span style={{
             width: 16, height: 16, borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center",
-            border: `2px solid ${data.contactadoHoy ? "#22c55e" : T.border}`,
-            background: data.contactadoHoy ? "#22c55e" : "transparent",
-            color: "#fff", fontSize: 10,
+            border: `2px solid ${data.contactadoHoy ? "var(--success-text)" : T.border}`,
+            background: data.contactadoHoy ? "var(--success-text)" : "transparent",
+            color: "var(--text)", fontSize: 10,
           }}>{data.contactadoHoy ? "✓" : ""}</span>
           Contactado hoy ✓
         </button>
@@ -484,14 +486,14 @@ function InteractionRegistry({
           style={{
             width: "100%", background: T.card, border: `1px solid ${T.borderSubtle}`, borderRadius: 8,
             padding: "8px 12px", color: T.textSecondary, fontSize: 12, outline: "none", resize: "none",
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "'Inter', sans-serif",
           }}
         />
         <button onClick={handleSaveNote} disabled={!noteText.trim()} style={{
           marginTop: 6, padding: "6px 14px", borderRadius: 6, cursor: noteText.trim() ? "pointer" : "not-allowed",
           background: noteText.trim() ? T.accent : T.card,
           border: `1px solid ${noteText.trim() ? T.accent : T.borderSubtle}`,
-          color: "#fff", ...mono, fontSize: 9, letterSpacing: 1, opacity: noteText.trim() ? 1 : 0.4,
+          color: "var(--text)", ...mono, fontSize: 9, letterSpacing: 1, opacity: noteText.trim() ? 1 : 0.4,
           transition: "all 0.15s",
         }}>GUARDAR NOTA</button>
         {data.notas.map((n, i) => (
@@ -519,9 +521,9 @@ function InteractionRegistry({
             <div style={{
               background: T.card, border: `1px solid ${T.border}`, borderRadius: 12,
               padding: "24px 28px", maxWidth: 360, width: "90%",
-              boxShadow: "0 16px 48px rgba(0,0,0,0.4)",
+              boxShadow: "none",
             }}>
-              <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700, color: T.textPrimary, letterSpacing: 1, marginBottom: 10 }}>
+              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, color: T.textPrimary, letterSpacing: 1, marginBottom: 10 }}>
                 ¿Eliminar esta nota?
               </div>
               <p style={{ fontSize: 12, color: T.textTertiary, marginBottom: 18, lineHeight: 1.5 }}>
@@ -531,7 +533,7 @@ function InteractionRegistry({
                 <button onClick={() => setDeleteNoteIdx(null)} style={{
                   padding: "7px 16px", borderRadius: 6, cursor: "pointer",
                   background: "none", border: `1px solid ${T.borderSubtle}`, color: T.textTertiary,
-                  fontFamily: "'Space Mono', monospace", fontSize: 10, letterSpacing: 1,
+                  fontFamily: "'Inter', sans-serif", fontSize: 10, letterSpacing: 1,
                 }}>CANCELAR</button>
                 <button onClick={() => {
                   const updated = [...data.notas];
@@ -540,8 +542,8 @@ function InteractionRegistry({
                   setDeleteNoteIdx(null);
                 }} style={{
                   padding: "7px 16px", borderRadius: 6, cursor: "pointer",
-                  background: "#ef4444", border: "none", color: "#fff",
-                  fontFamily: "'Space Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: 1,
+                  background: "var(--alert-text)", border: "none", color: "var(--text)",
+                  fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 1,
                 }}>ELIMINAR</button>
               </div>
             </div>
@@ -569,10 +571,10 @@ function InteractionRegistry({
         <input type="date" value={manualDate} onChange={e => handleNextContact(e.target.value)} style={{
           background: T.card, border: `1px solid ${T.borderSubtle}`, borderRadius: 6,
           padding: "6px 10px", color: T.textSecondary, fontSize: 11, outline: "none",
-          fontFamily: "'DM Sans', sans-serif", colorScheme: "var(--t-color-scheme)",
+          fontFamily: "'Inter', sans-serif", colorScheme: "var(--t-color-scheme)",
         }} />
         {data.proximoContacto && (
-          <div style={{ ...mono, fontSize: 9, color: "#f97316", marginTop: 6 }}>
+          <div style={{ ...mono, fontSize: 9, color: "var(--alert-text)", marginTop: 6 }}>
             Programado: {new Date(data.proximoContacto).toLocaleDateString("es-ES", { weekday: "short", day: "numeric", month: "short" })}
           </div>
         )}
@@ -598,7 +600,7 @@ function BriefingCompanyPicker({ companies, onPick }: { companies: Company[]; on
     <div style={{ padding: "32px 0" }}>
       <div style={{ textAlign: "center", marginBottom: 20 }}>
         <div style={{ fontSize: 40, marginBottom: 10 }}>⬡</div>
-        <h2 style={{ fontFamily: "'Space Mono', monospace", fontSize: 13, color: T.textSecondary, letterSpacing: 2, marginBottom: 6 }}>
+        <h2 style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: T.textSecondary, letterSpacing: 2, marginBottom: 6 }}>
           BRIEFING DIARIO
         </h2>
         <p style={{ color: T.textMuted, fontSize: 12 }}>
@@ -613,7 +615,7 @@ function BriefingCompanyPicker({ companies, onPick }: { companies: Company[]; on
         style={{
           width: "100%", background: T.card, border: `1px solid ${T.border}`,
           borderRadius: 10, padding: "12px 14px", color: T.textPrimary,
-          fontSize: 13, outline: "none", fontFamily: "'DM Sans', sans-serif",
+          fontSize: 13, outline: "none", fontFamily: "'Inter', sans-serif",
           marginBottom: 14,
         }}
       />
@@ -632,7 +634,7 @@ function BriefingCompanyPicker({ companies, onPick }: { companies: Company[]; on
               padding: "10px 14px", background: "transparent",
               border: "none", borderBottom: `1px solid ${T.borderSubtle}`,
               color: T.textPrimary, cursor: "pointer", textAlign: "left",
-              fontFamily: "'DM Sans', sans-serif",
+              fontFamily: "'Inter', sans-serif",
             }}
           >
             <span style={{ fontSize: 16 }}>{sectorIcons[c.sector ?? ""] ?? "🏢"}</span>
@@ -640,11 +642,11 @@ function BriefingCompanyPicker({ companies, onPick }: { companies: Company[]; on
               <div style={{ fontSize: 13, fontWeight: 600, color: T.textPrimary, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                 {c.name}
               </div>
-              <div style={{ fontSize: 10, color: T.textMuted, fontFamily: "'Space Mono', monospace", letterSpacing: 0.5 }}>
+              <div style={{ fontSize: 10, color: T.textMuted, fontFamily: "'Inter', sans-serif", letterSpacing: 0.5 }}>
                 {(c.sector ?? "—").toUpperCase()} · {c.address ?? ""}
               </div>
             </div>
-            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: T.textTertiary }}>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, color: T.textTertiary }}>
               {c.opportunityScore ?? "—"}
             </span>
           </button>
@@ -711,16 +713,16 @@ export default function NexusDashboard() {
 
 
   return (
-    <div style={{ minHeight: "100vh", background: T.bg, fontFamily: "'DM Sans', sans-serif", color: T.textPrimary, display: "flex", flexDirection: "column" }}>
+    <div style={{ minHeight: "100vh", background: T.bg, fontFamily: "'Inter', sans-serif", color: T.textPrimary, display: "flex", flexDirection: "column" }}>
       <div style={{ position: "sticky", top: 0, zIndex: 50 }}>
         <Header />
       </div>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700;800&display=swap');
+        700&family=DM+Sans:wght@300;400;500;700;800&display=swap');
         .nexus-page * { box-sizing: border-box; }
         .nexus-page ::-webkit-scrollbar { width: 4px; } .nexus-page ::-webkit-scrollbar-track { background: ${T.card}; } .nexus-page ::-webkit-scrollbar-thumb { background: ${T.border}; border-radius: 2px; }
         @keyframes nexusFadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes nexusGlowPulse { 0%,100% { box-shadow: 0 0 20px ${T.accent}33; } 50% { box-shadow: 0 0 40px ${T.accent}66; } }
+        @keyframes nexusGlowPulse { 0%,100% { box-shadow: 0 0 20px color-mix(in srgb, ${T.accent} 20.0%, transparent); } 50% { box-shadow: 0 0 40px color-mix(in srgb, ${T.accent} 40.0%, transparent); } }
         .nexus-company-row:hover { background: ${T.cardHover} !important; border-color: ${T.border} !important; }
         .nexus-action-btn:hover { transform: translateY(-1px); filter: brightness(1.15); }
       `}</style>
@@ -763,9 +765,9 @@ export default function NexusDashboard() {
                 <button onClick={() => { setSelected(null); setNexusView('clientes'); }} style={{
                   background: "none", border: `1px solid ${T.border}`, borderRadius: 6,
                   padding: "4px 10px", color: T.textTertiary, cursor: "pointer",
-                  fontFamily: "'Space Mono', monospace", fontSize: 10, letterSpacing: 1,
+                  fontFamily: "'Inter', sans-serif", fontSize: 10, letterSpacing: 1,
                 }}>← VOLVER A CLIENTES</button>
-                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: T.textLabel, letterSpacing: 1 }}>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, color: T.textLabel, letterSpacing: 1 }}>
                   ⬡ NEXUS / BRIEFING / <span style={{ color: T.textMuted }}>{selected.name.toUpperCase()}</span>
                 </div>
               </div>
@@ -797,7 +799,7 @@ function EditableTagList({
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState<string[]>(items);
   const [newItem, setNewItem] = useState("");
-  const mono: React.CSSProperties = { fontFamily: "'Space Mono', monospace" };
+  const mono: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
 
   useEffect(() => { setDraft(items); }, [items]);
 
@@ -844,7 +846,7 @@ function EditableTagList({
               }}
             />
             <button onClick={() => setDraft(draft.filter((_, j) => j !== i))} style={{
-              background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 14, padding: 0,
+              background: "none", border: "none", color: "var(--alert-text)", cursor: "pointer", fontSize: 14, padding: 0,
             }}>✕</button>
           </div>
         ))}
@@ -867,13 +869,13 @@ function EditableTagList({
           <button onClick={() => {
             if (newItem.trim()) { setDraft([...draft, newItem.trim()]); setNewItem(""); }
           }} style={{
-            background: T.accent, border: "none", borderRadius: 6, color: "#fff",
+            background: T.accent, border: "none", borderRadius: 6, color: "var(--text)",
             padding: "4px 10px", cursor: "pointer", fontSize: 11, ...mono,
           }}>+</button>
         </div>
         <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
           <button onClick={save} style={{
-            background: T.accent, border: "none", borderRadius: 6, color: "#fff",
+            background: T.accent, border: "none", borderRadius: 6, color: "var(--text)",
             padding: "5px 14px", cursor: "pointer", fontSize: 10, ...mono, letterSpacing: 1,
           }}>GUARDAR</button>
           <button onClick={() => { setDraft(items); setEditing(false); }} style={{
@@ -981,7 +983,7 @@ function DetailPanel({
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                   <h2 style={{ fontSize: 18, fontWeight: 800, color: T.textPrimary, lineHeight: 1.2 }}>{selected.name}</h2>
-                  <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 11, padding: "2px 8px", borderRadius: 6, background: T.cardAlt, border: `1px solid ${T.borderSubtle}`, color: T.textSecondary, letterSpacing: 1 }}>
+                  <span data-reference style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, padding: "2px 8px", borderRadius: 6, background: T.cardAlt, border: `1px solid ${T.borderSubtle}`, color: T.textSecondary, letterSpacing: 1 }}>
                     CIF: {selected.cif || '—'}
                   </span>
                   {/* Mini cluster: hot · score · digitalización · rentabilidad */}
@@ -993,15 +995,15 @@ function DetailPanel({
                     >🔥</button>
                     {(() => {
                       const s = selected.opportunityScore;
-                      const c = s >= 80 ? "#ef4444" : s >= 60 ? "#f59e0b" : "#6b7280";
+                      const c = s >= 80 ? "var(--alert-text)" : s >= 60 ? "var(--warning-text)" : "var(--muted-text-accessible)";
                       return (
-                        <span title={`Score ${s}`} style={{ width: 22, height: 22, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", border: `1.5px solid ${c}`, color: c, fontFamily: "'Space Mono', monospace", fontWeight: 800, fontSize: 10, lineHeight: 1 }}>{s}</span>
+                        <span title={`Score ${s}`} style={{ width: 22, height: 22, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", border: `1.5px solid ${c}`, color: c, fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 10, lineHeight: 1 }}>{s}</span>
                       );
                     })()}
                     {(() => {
                       const lvl = selected.digitalizationLevel || 'medio';
                       const bars = lvl === 'alto' ? 3 : lvl === 'medio' ? 2 : 1;
-                      const color = lvl === 'alto' ? "#22c55e" : lvl === 'medio' ? "#f59e0b" : "#6b7280";
+                      const color = lvl === 'alto' ? "var(--success-text)" : lvl === 'medio' ? "var(--warning-text)" : "var(--muted-text-accessible)";
                       const label = lvl === 'alto' ? 'Digitalización alta' : lvl === 'medio' ? 'Digitalización media' : 'Digitalización baja';
                       return (
                         <span title={label} style={{ display: "inline-flex", alignItems: "flex-end", gap: 1.5, height: 13 }}>
@@ -1019,23 +1021,23 @@ function DetailPanel({
                           placeholder="0"
                           autoFocus
                           onKeyDown={e => { if (e.key === 'Enter') saveRentabilidad(); if (e.key === 'Escape') setEditingRent(false); }}
-                          style={{ width: 44, background: T.card, border: `1px solid ${T.border}`, borderRadius: 4, padding: "1px 4px", color: T.textSecondary, fontSize: 11, fontWeight: 700, outline: "none", fontFamily: "'Space Mono', monospace" }}
+                          style={{ width: 44, background: T.card, border: `1px solid ${T.border}`, borderRadius: 4, padding: "1px 4px", color: T.textSecondary, fontSize: 11, fontWeight: 700, outline: "none", fontFamily: "'Inter', sans-serif" }}
                         />
-                        <button onClick={saveRentabilidad} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "#22c55e", padding: 0 }}>✓</button>
-                        <button onClick={() => setEditingRent(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "#ef4444", padding: 0 }}>✕</button>
+                        <button onClick={saveRentabilidad} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "var(--success-text)", padding: 0 }}>✓</button>
+                        <button onClick={() => setEditingRent(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "var(--alert-text)", padding: 0 }}>✕</button>
                       </span>
                     ) : (
                       <button
                         onClick={() => setEditingRent(true)}
                         title="Rentabilidad por línea"
-                        style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700, color: selected.rentabilidadLinea != null ? "#22c55e" : T.textMuted, lineHeight: 1 }}
+                        style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, color: selected.rentabilidadLinea != null ? "var(--success-text)" : T.textMuted, lineHeight: 1 }}
                       >
-                        {selected.rentabilidadLinea != null ? `${selected.rentabilidadLinea}€` : '—€'}
+                        {selected.rentabilidadLinea != null ? <Money>{fmtEur(selected.rentabilidadLinea)}</Money> : '—'}
                       </button>
                     )}
                   </div>
                 </div>
-                <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: T.textLabel, letterSpacing: 2, marginTop: 4 }}>
+                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, color: T.textLabel, letterSpacing: 2, marginTop: 4 }}>
                   {selected.sector?.toUpperCase()} · {(selected.locationType || '').toUpperCase()} · {(selected.location || '').toUpperCase()}
                 </div>
               </div>
@@ -1061,18 +1063,18 @@ function DetailPanel({
 
       <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 20, maxHeight: "calc(100vh - 300px)", overflowY: "auto" }}>
         {saving && (
-          <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: T.accent, letterSpacing: 2, textAlign: "center" }}>GUARDANDO...</div>
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, color: T.accent, letterSpacing: 2, textAlign: "center" }}>GUARDANDO...</div>
         )}
 
         {/* Recommended action */}
         <div style={{
-          background: `${priorityColors[selectedActionPriority]}12`,
-          border: `1px solid ${priorityColors[selectedActionPriority]}33`,
+          background: `color-mix(in srgb, ${priorityColors[selectedActionPriority]} 7.1%, transparent)`,
+          border: `1px solid color-mix(in srgb, ${priorityColors[selectedActionPriority]} 20.0%, transparent)`,
           borderRadius: 12, padding: "14px 16px",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
             <span style={{ fontSize: 18 }}>{actionIcons[selectedActionType]}</span>
-            <span style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, fontWeight: 700, color: priorityColors[selectedActionPriority], letterSpacing: 2 }}>
+            <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 700, color: priorityColors[selectedActionPriority], letterSpacing: 2 }}>
               ACCIÓN RECOMENDADA — {selectedActionType.toUpperCase()}
             </span>
           </div>
@@ -1086,7 +1088,7 @@ function DetailPanel({
         {/* Decision makers — editable */}
         <div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 10 }}>
-            <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 9, color: T.textLabel, letterSpacing: 3 }}>// DECISORES</div>
+            <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, color: T.textLabel, letterSpacing: 3 }}>// DECISORES</div>
             <button onClick={() => setEditingDM(!editingDM)} style={{
               background: "none", border: "none", cursor: "pointer", fontSize: 11, color: T.textMuted, padding: 0,
             }} title="Editar decisores">✏️</button>
@@ -1097,7 +1099,7 @@ function DetailPanel({
               {dmDraft.map((dm: any, i: number) => (
                 <div key={i} style={{
                   background: T.card, borderRadius: 10, padding: "10px 14px",
-                  border: `1px solid ${dm.principal ? '#f59e0b66' : T.borderSubtle}`,
+                  border: `1px solid ${dm.principal ? 'color-mix(in srgb, var(--warning-text) 40.0%, transparent)' : T.borderSubtle}`,
                   display: "flex", flexDirection: "column", gap: 4,
                 }}>
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 6 }}>
@@ -1111,32 +1113,32 @@ function DetailPanel({
                         title={dm.principal ? 'Contacto principal' : 'Marcar como principal'}
                         style={{
                           background: 'none', border: 'none', cursor: 'pointer', padding: 0,
-                          fontSize: 14, color: dm.principal ? '#f59e0b' : T.textMuted,
+                          fontSize: 14, color: dm.principal ? 'var(--warning-text)' : T.textMuted,
                         }}
                       >{dm.principal ? '★' : '☆'}</button>
                       <div style={{ fontWeight: 700, fontSize: 13, color: T.textPrimary }}>{dm.name || dm.role}</div>
                     </div>
                     <div style={{ display: "flex", gap: 6 }}>
                       <span style={{
-                        padding: "3px 8px", borderRadius: 6, fontSize: 9, fontFamily: "'Space Mono', monospace", letterSpacing: 1,
-                        background: `${powerColors[dm.decisionPower]}18`, border: `1px solid ${powerColors[dm.decisionPower]}44`,
+                        padding: "3px 8px", borderRadius: 6, fontSize: 9, fontFamily: "'Inter', sans-serif", letterSpacing: 1,
+                        background: `color-mix(in srgb, ${powerColors[dm.decisionPower]} 9.4%, transparent)`, border: `1px solid color-mix(in srgb, ${powerColors[dm.decisionPower]} 26.7%, transparent)`,
                         color: powerColors[dm.decisionPower],
                       }}>⚡ {dm.decisionPower?.toUpperCase()}</span>
                       <span style={{
-                        padding: "3px 8px", borderRadius: 6, fontSize: 9, fontFamily: "'Space Mono', monospace", letterSpacing: 1,
-                        background: `${accessColors[dm.accessibility]}18`, border: `1px solid ${accessColors[dm.accessibility]}44`,
+                        padding: "3px 8px", borderRadius: 6, fontSize: 9, fontFamily: "'Inter', sans-serif", letterSpacing: 1,
+                        background: `color-mix(in srgb, ${accessColors[dm.accessibility]} 9.4%, transparent)`, border: `1px solid color-mix(in srgb, ${accessColors[dm.accessibility]} 26.7%, transparent)`,
                         color: accessColors[dm.accessibility],
                       }}>🔓 {dm.accessibility?.toUpperCase()}</span>
                     </div>
                   </div>
                   {dm.role && (
-                    <div style={{ fontFamily: "'Space Mono', monospace", fontSize: 10, color: T.textMuted }}>
+                    <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 10, color: T.textMuted }}>
                       {dm.role}
                     </div>
                   )}
                   <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 11, color: T.textTertiary }}>
                     {dm.mobile && (
-                      <a href={`tel:${dm.mobile.replace(/\s/g, '')}`} style={{ color: "#22c55e", textDecoration: "none" }}>
+                      <a href={`tel:${dm.mobile.replace(/\s/g, '')}`} style={{ color: "var(--success-text)", textDecoration: "none" }}>
                         📱 {dm.mobile}
                       </a>
                     )}
@@ -1152,8 +1154,8 @@ function DetailPanel({
                       style={{
                         display: "inline-flex", alignItems: "center", gap: 6, alignSelf: "flex-start",
                         padding: "4px 12px", borderRadius: 6, cursor: "pointer",
-                        background: "#0077b518", border: "1px solid #0077b544", color: "#0077b5",
-                        fontFamily: "'Space Mono', monospace", fontSize: 10, fontWeight: 600, letterSpacing: 1,
+                        background: "color-mix(in srgb, var(--interactive) 9.4%, transparent)", border: "1px solid color-mix(in srgb, var(--interactive) 26.7%, transparent)", color: "var(--interactive)",
+                        fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 600, letterSpacing: 1,
                         transition: "all 0.15s",
                       }}
                     >🔗 VER LINKEDIN</button>
@@ -1168,7 +1170,7 @@ function DetailPanel({
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {dmDraft.map((dm, i) => (
                 <div key={i} style={{
-                  background: T.card, borderRadius: 10, padding: "10px 14px", border: `1px solid ${T.accent}44`,
+                  background: T.card, borderRadius: 10, padding: "10px 14px", border: `1px solid color-mix(in srgb, ${T.accent} 26.7%, transparent)`,
                   display: "flex", flexDirection: "column", gap: 6,
                 }}>
                   <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
@@ -1185,7 +1187,7 @@ function DetailPanel({
                       style={{ flex: 1, background: T.cardAlt, border: `1px solid ${T.borderSubtle}`, borderRadius: 6, padding: "4px 8px", color: T.textSecondary, fontSize: 12, outline: "none" }}
                     />
                     <button onClick={() => setDmDraft(dmDraft.filter((_, j) => j !== i))} style={{
-                      background: "none", border: "none", color: "#ef4444", cursor: "pointer", fontSize: 14, padding: 0,
+                      background: "none", border: "none", color: "var(--alert-text)", cursor: "pointer", fontSize: 14, padding: 0,
                     }}>✕</button>
                   </div>
                   <div style={{ display: "flex", gap: 6 }}>
@@ -1234,16 +1236,16 @@ function DetailPanel({
               ))}
               <button onClick={() => setDmDraft([...dmDraft, { name: '', role: '', mobile: '', email: '', linkedin_url: '', decisionPower: 'medio', accessibility: 'medio', contactChannel: 'email', source: 'manual' } as any])} style={{
                 background: T.cardAlt, border: `1px dashed ${T.border}`, borderRadius: 8, padding: "8px",
-                color: T.textTertiary, cursor: "pointer", fontSize: 11, fontFamily: "'Space Mono', monospace",
+                color: T.textTertiary, cursor: "pointer", fontSize: 11, fontFamily: "'Inter', sans-serif",
               }}>+ AÑADIR DECISOR</button>
               <div style={{ display: "flex", gap: 6 }}>
                 <button onClick={saveDMs} style={{
-                  background: T.accent, border: "none", borderRadius: 6, color: "#fff",
-                  padding: "6px 14px", cursor: "pointer", fontSize: 10, fontFamily: "'Space Mono', monospace", letterSpacing: 1,
+                  background: T.accent, border: "none", borderRadius: 6, color: "var(--text)",
+                  padding: "6px 14px", cursor: "pointer", fontSize: 10, fontFamily: "'Inter', sans-serif", letterSpacing: 1,
                 }}>GUARDAR</button>
                 <button onClick={() => { setDmDraft(selected.decisionMakers); setEditingDM(false); }} style={{
                   background: "none", border: `1px solid ${T.borderSubtle}`, borderRadius: 6, color: T.textTertiary,
-                  padding: "6px 14px", cursor: "pointer", fontSize: 10, fontFamily: "'Space Mono', monospace", letterSpacing: 1,
+                  padding: "6px 14px", cursor: "pointer", fontSize: 10, fontFamily: "'Inter', sans-serif", letterSpacing: 1,
                 }}>CANCELAR</button>
               </div>
             </div>
@@ -1255,13 +1257,13 @@ function DetailPanel({
           <EditableTagList
             items={selected.detectedNeeds}
             label="NECESIDADES"
-            dotColor="#ef4444"
+            dotColor="var(--alert-text)"
             onSave={(items) => persistField('detected_needs', items)}
           />
           <EditableTagList
             items={selected.recommendedProducts}
             label="PRODUCTOS"
-            dotColor="#22c55e"
+            dotColor="var(--success-text)"
             onSave={(items) => persistField('recommended_products', items)}
           />
         </div>
@@ -1271,7 +1273,7 @@ function DetailPanel({
           <EditableTagList
             items={selected.growthSignals}
             label="SEÑALES DE CRECIMIENTO"
-            dotColor="#22c55e"
+            dotColor="var(--success-text)"
             emoji="📈"
             onSave={(items) => persistField('growth_signals', items)}
           />
@@ -1301,8 +1303,8 @@ function DetailPanel({
               toast.success('Marcado para llamar hoy');
             } catch (e) { console.error(e); toast.error('Error al marcar llamada'); }
           }} style={{
-            padding: "14px", borderRadius: 12, background: "#3b82f622", border: "1px solid #3b82f644",
-            color: "#3b82f6", cursor: "pointer", fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: 1, transition: "all 0.2s",
+            padding: "14px", borderRadius: 12, background: "color-mix(in srgb, var(--interactive) 13.3%, transparent)", border: "1px solid color-mix(in srgb, var(--interactive) 26.7%, transparent)",
+            color: "var(--interactive)", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, transition: "all 0.2s",
           }}>📞 LLAMAR</button>
           <button className="nexus-action-btn" onClick={async () => {
             try {
@@ -1326,14 +1328,14 @@ function DetailPanel({
               toast.success('Marcado para visitar hoy');
             } catch (e) { console.error(e); toast.error('Error al marcar visita'); }
           }} style={{
-            padding: "14px", borderRadius: 12, background: "#f59e0b22", border: "1px solid #f59e0b44",
-            color: "#f59e0b", cursor: "pointer", fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: 1, transition: "all 0.2s",
+            padding: "14px", borderRadius: 12, background: "color-mix(in srgb, var(--warning-text) 13.3%, transparent)", border: "1px solid color-mix(in srgb, var(--warning-text) 26.7%, transparent)",
+            color: "var(--warning-text)", cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, transition: "all 0.2s",
           }}>🚗 VISITAR</button>
           <button className="nexus-action-btn" onClick={toggleHot} style={{
             padding: "14px", borderRadius: 12,
-            background: isHot ? "#ef444422" : T.cardAlt, border: `1px solid ${isHot ? "#ef4444" : T.border}`,
-            color: isHot ? "#ef4444" : T.textTertiary, cursor: "pointer",
-            fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: 1, transition: "all 0.2s",
+            background: isHot ? "color-mix(in srgb, var(--alert-text) 13.3%, transparent)" : T.cardAlt, border: `1px solid ${isHot ? "var(--alert-text)" : T.border}`,
+            color: isHot ? "var(--alert-text)" : T.textTertiary, cursor: "pointer",
+            fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 1, transition: "all 0.2s",
           }}>🔥 {isHot ? 'CALIENTE' : 'MARCAR'}</button>
         </div>
 
@@ -1342,26 +1344,26 @@ function DetailPanel({
           <button className="nexus-action-btn" onClick={onShowAI} style={{
             gridColumn: "1 / -1", padding: "14px", borderRadius: 12,
             background: `linear-gradient(135deg, ${T.accent}, ${T.accentDark})`,
-            border: "none", color: "#fff", cursor: "pointer",
-            fontFamily: "'Space Mono', monospace", fontSize: 11, fontWeight: 700, letterSpacing: 2,
-            transition: "all 0.2s", boxShadow: `0 0 30px ${T.accent}44`,
+            border: "none", color: "var(--text)", cursor: "pointer",
+            fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2,
+            transition: "all 0.2s", boxShadow: "none",
           }}>⚡ BRIEFING IA — PREPARAR VISITA</button>
           <button className="nexus-action-btn" onClick={() => onOpenArcGIS(selected)} style={{
             padding: "11px", borderRadius: 10, background: T.cardAlt, border: `1px solid ${T.border}`,
-            color: T.textTertiary, cursor: "pointer", fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 1, transition: "all 0.2s",
+            color: T.textTertiary, cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: 9, letterSpacing: 1, transition: "all 0.2s",
           }}>🗺️ VER FIBRA</button>
           <button className="nexus-action-btn" onClick={() => window.open(`https://maps.google.com?q=${encodeURIComponent(selected.address)}`, "_blank")} style={{
             padding: "11px", borderRadius: 10, background: T.cardAlt, border: `1px solid ${T.border}`,
-            color: T.textTertiary, cursor: "pointer", fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 1, transition: "all 0.2s",
+            color: T.textTertiary, cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: 9, letterSpacing: 1, transition: "all 0.2s",
           }}>📍 MAPS</button>
           <button className="nexus-action-btn" onClick={() => selected.contactInfo?.email && window.open(`mailto:${selected.contactInfo.email}`, "_blank")} style={{
             padding: "11px", borderRadius: 10, background: T.cardAlt, border: `1px solid ${T.border}`,
-            color: T.textTertiary, cursor: "pointer", fontFamily: "'Space Mono', monospace", fontSize: 9, letterSpacing: 1, transition: "all 0.2s",
+            color: T.textTertiary, cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: 9, letterSpacing: 1, transition: "all 0.2s",
           }}>✉️ EMAIL</button>
           <button className="nexus-action-btn" onClick={() => setShowReport(true)} style={{
             gridColumn: "1 / -1", padding: "12px", borderRadius: 10, background: T.cardAlt,
-            border: `1px solid ${T.accent}66`, color: T.accent, cursor: "pointer",
-            fontFamily: "'Space Mono', monospace", fontSize: 10, fontWeight: 700, letterSpacing: 2, transition: "all 0.2s",
+            border: `1px solid color-mix(in srgb, ${T.accent} 40.0%, transparent)`, color: T.accent, cursor: "pointer",
+            fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, transition: "all 0.2s",
           }}>📄 INFORME RÁPIDO</button>
         </div>
 

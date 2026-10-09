@@ -1,3 +1,4 @@
+import { Money } from '@/components/Money';
 import { useMemo } from 'react';
 import { toast } from 'sonner';
 import { Header } from '@/components/Header';
@@ -36,10 +37,10 @@ const Seguimiento = () => {
           {rows.map((l) => (
             <tr key={l.id} onClick={() => open(l)} className="border-t border-border cursor-pointer hover:bg-muted/40">
               <td className="py-2 px-2 font-medium">{l.empresa}</td>
-              <td className="px-2 text-muted-foreground">{STAGE_LABEL[normalizeStage(l.estado)]}{l.importe_mensual_eur != null ? ` · ${fmtEur(l.importe_mensual_eur)}/mes` : ''}</td>
+              <td className="px-2 text-muted-foreground">{STAGE_LABEL[normalizeStage(l.estado)]}{l.importe_mensual_eur != null ? <> · <Money>{fmtEur(l.importe_mensual_eur)}</Money>/mes</> : ''}</td>
               <td className="px-2">{nextActionLabel(l.next_action)}</td>
               <td className={`px-2 tabular-nums ${tone}`}>{fmtDate(l.next_action_date!)}</td>
-              <td className="px-2 text-right tabular-nums">{fmtEur(marginOf(l))}</td>
+              <td className="px-2 text-right tabular-nums"><Money>{fmtEur(marginOf(l))}</Money></td>
             </tr>
           ))}
         </tbody>

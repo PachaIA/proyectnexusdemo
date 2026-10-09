@@ -22,33 +22,33 @@ const ScoreBreakdown = ({ breakdown, totalScore }: ScoreBreakdownProps) => {
   const percentage = Math.round((totalScore / maxPossible) * 100);
   
   const getScoreColor = () => {
-    if (totalScore >= 80) return 'text-green-400';
-    if (totalScore >= 60) return 'text-yellow-400';
-    return 'text-orange-400';
+    if (totalScore >= 80) return 'text-success';
+    if (totalScore >= 60) return 'text-warning';
+    return 'text-warning';
   };
   
   const getProgressColor = (points: number, maxPoints: number) => {
     const pct = (points / maxPoints) * 100;
-    if (pct >= 80) return 'bg-green-500';
-    if (pct >= 50) return 'bg-yellow-500';
-    return 'bg-orange-500';
+    if (pct >= 80) return 'bg-success';
+    if (pct >= 50) return 'bg-warning';
+    return 'bg-warning';
   };
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h4 className="text-sm font-semibold text-white flex items-center gap-2">
-          <Target className="w-4 h-4 text-blue-400" />
+        <h4 className="text-sm font-semibold text-primary-foreground flex items-center gap-2">
+          <Target className="w-4 h-4 text-primary" />
           Score Explicable
         </h4>
         <div className="text-right">
           <span className={`text-2xl font-bold ${getScoreColor()}`}>{totalScore}</span>
-          <span className="text-slate-400 text-sm">/{maxPossible}</span>
+          <span className="text-muted-foreground text-sm">/{maxPossible}</span>
         </div>
       </div>
       
       {/* Barra de progreso total */}
-      <div className="relative h-3 bg-slate-700 rounded-full overflow-hidden">
+      <div className="relative h-3 bg-muted-foreground rounded-full overflow-hidden">
         <motion.div
           initial={{ width: 0 }}
           animate={{ width: `${percentage}%` }}
@@ -72,18 +72,18 @@ const ScoreBreakdown = ({ breakdown, totalScore }: ScoreBreakdownProps) => {
             className="space-y-1"
           >
             <div className="flex items-center justify-between text-sm">
-              <div className="flex items-center gap-2 text-slate-300">
+              <div className="flex items-center gap-2 text-muted-foreground">
                 {getFactorIcon(item.factor)}
                 <span>{item.factor}</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-white font-medium">+{item.points}</span>
-                <span className="text-slate-500 text-xs">/{item.maxPoints}</span>
+                <span className="text-primary-foreground font-medium">+{item.points}</span>
+                <span className="text-muted-foreground text-xs">/{item.maxPoints}</span>
               </div>
             </div>
             
             <div className="flex items-center gap-2">
-              <div className="flex-1 h-1.5 bg-slate-700 rounded-full overflow-hidden">
+              <div className="flex-1 h-1.5 bg-muted-foreground rounded-full overflow-hidden">
                 <motion.div
                   initial={{ width: 0 }}
                   animate={{ width: `${(item.points / item.maxPoints) * 100}%` }}
@@ -93,13 +93,13 @@ const ScoreBreakdown = ({ breakdown, totalScore }: ScoreBreakdownProps) => {
               </div>
             </div>
             
-            <p className="text-xs text-slate-500">{item.description}</p>
+            <p className="text-xs text-muted-foreground">{item.description}</p>
           </motion.div>
         ))}
       </div>
       
-      <div className="pt-2 border-t border-slate-700">
-        <p className="text-xs text-slate-400 text-center">
+      <div className="pt-2 border-t border-muted-foreground">
+        <p className="text-xs text-muted-foreground text-center">
           💡 Score calculado con datos de DatosCIF, LinkedIn y fuentes públicas
         </p>
       </div>

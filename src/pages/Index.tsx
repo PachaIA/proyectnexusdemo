@@ -208,8 +208,8 @@ const Index = () => {
     {
       label: 'Fuente',
       chips: [
-        { id: 'wasp', label: 'Wasp', color: '#3b82f6' },
-        { id: 'places', label: 'Places', color: '#22c55e' },
+        { id: 'wasp', label: 'Wasp', color: 'var(--interactive)' },
+        { id: 'places', label: 'Places', color: 'var(--success-text)' },
       ],
       active: sourceFilter,
       onChange: setSourceFilter,
@@ -217,10 +217,10 @@ const Index = () => {
     {
       label: 'Operador',
       chips: [
-        { id: 'orange', label: 'Orange', color: '#ff6600' },
-        { id: 'movistar', label: 'Movistar', color: '#019DF4' },
-        { id: 'vodafone', label: 'Vodafone', color: '#e60000' },
-        { id: 'otros', label: 'Otros', color: '#6b7280' },
+        { id: 'orange', label: 'Orange', color: 'var(--alert-text)' },
+        { id: 'movistar', label: 'Movistar', color: 'var(--interactive)' },
+        { id: 'vodafone', label: 'Vodafone', color: 'var(--alert-text)' },
+        { id: 'otros', label: 'Otros', color: 'var(--muted-text-accessible)' },
       ],
       active: operatorFilter,
       onChange: setOperatorFilter,
@@ -228,9 +228,9 @@ const Index = () => {
     {
       label: 'Score',
       chips: [
-        { id: 'alta', label: 'Alto ≥80', color: '#ef4444' },
-        { id: 'media', label: 'Medio 60-79', color: '#f97316' },
-        { id: 'baja', label: 'Bajo <60', color: '#22c55e' },
+        { id: 'alta', label: 'Alto ≥80', color: 'var(--alert-text)' },
+        { id: 'media', label: 'Medio 60-79', color: 'var(--alert-text)' },
+        { id: 'baja', label: 'Bajo <60', color: 'var(--success-text)' },
       ],
       active: scoreFilter,
       onChange: setScoreFilter,
