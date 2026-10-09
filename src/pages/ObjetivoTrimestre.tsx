@@ -153,7 +153,7 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground"><TrendingUp className="w-3.5 h-3.5" />SNAV</div>
               <div className="text-xl font-bold"><Money>{fmtEur(kpis.snav)}</Money></div>
               <Bar value={kpis.snav} max={nextTier ?? lastTier} />
-              <div className="text-[10px] text-muted-foreground">Tramo {nextTier ? `< $<Money>{fmtEur(nextTier)}</Money>` : 'máximo'}</div>
+              <div className="text-[10px] text-muted-foreground">Tramo {nextTier ? `< ${fmtEur(nextTier)}` : 'máximo'}</div>
             </div>
             <div className="space-y-1.5">
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground"><Euro className="w-3.5 h-3.5" />Rentabilidad/línea</div>

@@ -234,7 +234,7 @@ export const UnifiedCompanyPanel = ({ company, isOpen, onClose, onAddToPipeline 
                     className="px-2.5 py-1.5 rounded-md text-xs font-medium transition-all border"
                     style={{
                       background: data.estado === e.id ? `${e.color}22` : 'transparent',
-                      borderColor: data.estado === e.id ? e.color : 'hsl(var(--border))',
+                      borderColor: data.estado === e.id ? e.color : 'var(--border)',
                       color: data.estado === e.id ? e.color : 'hsl(var(--muted-foreground))',
                     }}
                   >

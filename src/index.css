@@ -7,6 +7,7 @@
   --surface: #16232D;
   --surface-2: #1D2E3A;
   --border: #253645;
+  --border-hsl: 208.125 30.189% 20.784%;
   --text: #EFE7D7;
   --text-muted: #8A8F94;
   --brand: #3E6E80;
@@ -92,6 +93,7 @@ html[data-theme="caliza"] {
   --surface: #F8F4EC;
   --surface-2: #FFFFFF;
   --border: #DED4C2;
+  --border-hsl: 38.571 29.787% 81.569%;
   --text: #101A22;
   --text-muted: #5A6066;
   --brand: #3E6E80;
