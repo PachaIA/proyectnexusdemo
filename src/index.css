@@ -469,7 +469,8 @@ html[data-theme="caliza"] [style*="color-mix"][style*="color: var(--t-accent)"] 
 }
 
 .nexus-daily-intro__logo {
-  width: clamp(160px, 42vw, 420px);
+  width: clamp(320px, 70vw, 900px);
+  max-width: calc(100vw - 32px);
   height: auto;
   animation: nexus-intro-forward 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
