@@ -14,6 +14,7 @@ import type { Company } from '@/data/companies';
 
 export const HoyTab = ({ companies, selected, onSelect, detail }: { companies: Company[]; selected: Company | null; onSelect: (company: Company) => void; detail?: ReactNode }) => {
   const navigate = useNavigate();
+  const [bucket, setBucket] = useState<'Vencidas' | 'Hoy' | 'Próximas' | null>(null);
   const [actionsView, setActionsView] = useState<'lista' | 'calendario'>('lista');
   const { leads, isLoading, error } = useLeads();
   const { sales, isLoading: salesLoading } = useSales();
@@ -48,13 +49,13 @@ export const HoyTab = ({ companies, selected, onSelect, detail }: { companies: C
         </div>
          {actionsView === 'calendario' ? <div className="border-y border-border divide-y divide-border">{Object.entries(pending.reduce<Record<string, typeof pending>>((groups, lead) => { const date = lead.next_action_date; if (date) (groups[date] ||= []).push(lead); return groups; }, {})).map(([date, rows]) => <div key={date} className="grid grid-cols-[7rem_1fr] gap-4 py-3"><time className="text-sm font-semibold tabular-nums" dateTime={date}>{dateLabel(date)}</time><div className="space-y-2">{rows.map(lead => <Link key={lead.id} to={`/clientes/${encodeURIComponent(lead.company_id)}`} className="w-full text-left flex justify-between gap-3 rounded-md bg-card p-3 hover:bg-muted"><span><strong className="block text-sm">{lead.empresa}</strong><span className="text-xs text-muted-foreground">{nextActionLabel(lead.next_action)}</span></span><Money>{fmtEur(opportunityMargin(lead, lines))}</Money></Link>)}</div></div>)}{pending.length === 0 && <p className="py-6 text-sm text-muted-foreground">Nada pendiente hoy</p>}</div> : <>
         <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4">
-          {[{ label: 'Vencidas', count: overdueCount, tone: 'text-destructive', icon: Clock3 }, { label: 'Hoy', count: todayCount, tone: 'text-primary', icon: CalendarClock }, { label: 'Próximas', count: laterCount, tone: 'text-info', icon: ArrowRight }].map(item => <div key={item.label} className="rounded-md bg-card p-3 sm:p-4"><div className={`flex items-center justify-between gap-2 ${item.tone}`}><span className="text-xs sm:text-sm font-medium">{item.label}</span><item.icon className="h-4 w-4 shrink-0" /></div><p className={`mt-2 text-3xl font-semibold tabular-nums ${item.tone}`}>{isLoading ? '—' : item.count}</p></div>)}
+          {[{ label: 'Vencidas', count: overdueCount, tone: 'text-destructive', icon: Clock3 }, { label: 'Hoy', count: todayCount, tone: 'text-primary', icon: CalendarClock }, { label: 'Próximas', count: laterCount, tone: 'text-info', icon: ArrowRight }].map(item => <button type="button" key={item.label} aria-pressed={bucket === item.label} onClick={() => setBucket(b => b === item.label ? null : item.label as typeof bucket)} className={`text-left rounded-md bg-card p-3 sm:p-4 hover:bg-muted transition-colors ring-inset ${bucket === item.label ? 'ring-2 ring-ring' : ''}`}><div className={`flex items-center justify-between gap-2 ${item.tone}`}><span className="text-xs sm:text-sm font-medium">{item.label}</span><item.icon className="h-4 w-4 shrink-0" /></div><p className={`mt-2 text-3xl font-semibold tabular-nums ${item.tone}`}>{isLoading ? '—' : item.count}</p></button>)}
         </div>
         {error ? <p role="alert" className="text-destructive">No se pudieron cargar las oportunidades.</p> : isLoading ? <p className="text-muted-foreground py-4">Cargando...</p> : pending.length === 0 ? <p className="text-muted-foreground py-6">Nada pendiente hoy</p> : (
           <div className="overflow-x-auto border-y border-border">
             <table className="w-full text-sm">
               <thead className="text-xs text-muted-foreground border-b border-border"><tr><th className="text-left py-2 pr-3">Cliente / Oportunidad</th><th className="text-left px-3">Próxima acción</th><th className="text-left px-3">Fecha</th><th className="text-right px-3">Margen €</th><th><span className="sr-only">Llamar</span></th></tr></thead>
-              <tbody>{pending.map(lead => {
+              <tbody>{pending.filter(lead => { const d = lead.next_action_date ?? ''; return !bucket || (bucket === 'Vencidas' ? d < today : bucket === 'Hoy' ? d === today : d > today); }).map(lead => {
                 const date = lead.next_action_date;
                 if (!date) return null;
                 const overdue = date < today;
