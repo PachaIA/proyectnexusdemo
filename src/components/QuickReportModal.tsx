@@ -1,3 +1,4 @@
+import { fmtEur } from '@/hooks/useOpportunityLines';
 import { useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import { toast } from 'sonner';
@@ -167,7 +168,7 @@ export function QuickReportModal({
     L.push(`- Necesidades: ${(company.detectedNeeds || []).join(', ') || '—'}`);
     L.push(`- Señales de crecimiento: ${(company.growthSignals || []).join(', ') || '—'}`);
     L.push(
-      `- Venta cerrada: ${sales.length} operaciones · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${totals.snav.toFixed(0)}€ · margen ${totals.margen.toFixed(0)}€`,
+      `- Venta cerrada: ${sales.length} operaciones · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${fmtEur(totals.snav)} · margen ${fmtEur(totals.margen)}`,
     );
     L.push(
       `- Pipeline: ${lead ? `${lead.estado} · próx. acción ${lead.next_action || '—'} ${fmtDate(lead.next_action_date) || ''}` : 'Sin lead asociado'}`,
@@ -235,7 +236,7 @@ export function QuickReportModal({
     L.push(`- **Necesidades:** ${(company.detectedNeeds || []).join(', ') || '—'}`);
     L.push(`- **Señales de crecimiento:** ${(company.growthSignals || []).join(', ') || '—'}`);
     L.push(
-      `- **Venta cerrada:** ${sales.length} operaciones · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${totals.snav.toFixed(0)}€ · margen ${totals.margen.toFixed(0)}€`,
+      `- **Venta cerrada:** ${sales.length} operaciones · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${fmtEur(totals.snav)} · margen ${fmtEur(totals.margen)}`,
     );
     L.push(
       `- **Pipeline:** ${lead ? `${lead.estado} · próx. acción ${lead.next_action || '—'} ${fmtDate(lead.next_action_date) || ''}` : 'Sin lead asociado'}`,
@@ -278,14 +279,15 @@ export function QuickReportModal({
 <html lang="es"><head><meta charset="utf-8">
 <title>Informe rápido — ${esc(company.name)}</title>
 <style>
+  :root { --bg: #EFE7D7; --surface: #F8F4EC; --border: #DED4C2; --text: #101A22; --muted-text-accessible: #5A6066; --alert-text: #A33D33; --success-text: #30624C; }
   @page { size: A4; margin: 18mm; }
   * { box-sizing: border-box; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--text); color: var(--muted-text-accessible); margin: 0; font-size: 12px; line-height: 1.5; }
+  body { font-family: 'Inter', Arial, sans-serif; background: var(--surface); color: var(--text); margin: 0; font-size: 12px; line-height: 1.5; }
   h1 { font-size: 18px; margin: 0 0 2px; }
   .meta { color: var(--muted-text-accessible); font-size: 11px; margin-bottom: 16px; }
-  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid var(--muted-text-accessible); padding-bottom: 4px; margin: 18px 0 8px; page-break-after: avoid; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid var(--border); padding-bottom: 4px; margin: 18px 0 8px; page-break-after: avoid; }
   table { width: 100%; border-collapse: collapse; page-break-inside: avoid; }
-  td { padding: 3px 6px; vertical-align: top; border-bottom: 1px solid var(--text); }
+  td { padding: 3px 6px; vertical-align: top; border-bottom: 1px solid var(--border); }
   td.lbl { width: 150px; font-weight: 600; color: var(--muted-text-accessible); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
   ul { margin: 4px 0; padding-left: 18px; }
   li { margin-bottom: 2px; }
@@ -314,7 +316,7 @@ ${row('Multisede', sedes.length > 1 || company.isMultiSite ? `Sí · ${sedes.len
 ${row('Productos', (company.recommendedProducts || []).join(' · '))}
 ${row('Necesidades', (company.detectedNeeds || []).join(' · '))}
 ${row('Crecimiento', (company.growthSignals || []).join(' · '))}
-${row('Venta cerrada', sales.length ? `${sales.length} ops · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${totals.snav.toFixed(0)}€ · margen ${totals.margen.toFixed(0)}€` : '')}
+${row('Venta cerrada', sales.length ? `${sales.length} ops · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${fmtEur(totals.snav)} · margen ${fmtEur(totals.margen)}` : '')}
 ${row('Pipeline', lead ? `${lead.estado} · ${lead.next_action || '—'} ${fmtDate(lead.next_action_date) || ''}` : '')}
 </table>
 
@@ -470,7 +472,7 @@ ${pendientes.length
               label="VENTA CERRADA"
               value={
                 sales.length
-                  ? `${sales.length} ops · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${totals.snav.toFixed(0)}€ · margen ${totals.margen.toFixed(0)}€`
+                  ? `${sales.length} ops · ${totals.movil} móvil · ${totals.fibra} fibra · SNAV ${fmtEur(totals.snav)} · margen ${fmtEur(totals.margen)}`
                   : null
               }
             />
@@ -648,8 +650,8 @@ ${pendientes.length
             style={{
               padding: '10px 16px',
               borderRadius: 10,
-              background: `${T.accent}22`,
-              border: `1px solid ${T.accent}66`,
+              background: `color-mix(in srgb, ${T.accent} 13.3%, transparent)`,
+              border: `1px solid color-mix(in srgb, ${T.accent} 40.0%, transparent)`,
               color: T.accent,
               cursor: 'pointer',
               ...mono,

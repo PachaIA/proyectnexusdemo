@@ -1,3 +1,5 @@
+import { Money } from '@/components/Money';
+import { fmtEur } from '@/hooks/useOpportunityLines';
 import { useState, useMemo } from "react";
 import { Company } from "@/data/companies";
 import { useCompanies } from "@/hooks/useCompanies";

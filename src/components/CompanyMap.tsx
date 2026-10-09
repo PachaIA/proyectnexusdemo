@@ -1,3 +1,4 @@
+import { fmtEur } from '@/hooks/useOpportunityLines';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -236,7 +237,7 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
           ${company.operadorActual ? `<div style="font-size:11px;color:var(--muted-text-accessible);">Operador: <strong>${company.operadorActual}</strong></div>` : ''}
           ${company.lineasTotal > 0 ? `<div style="font-size:11px;color:var(--muted-text-accessible);">Líneas: <strong>${company.lineasTotal}</strong> (${company.lineasMovil}M + ${company.lineasFijo}F)</div>` : ''}
           ${company.permanencia > 0 ? `<div style="font-size:11px;color:var(--muted-text-accessible);">Permanencia: <strong>${company.permanencia} meses</strong></div>` : ''}
-          ${company.penalizacion > 0 ? `<div style="font-size:11px;color:var(--alert-text);">Penalización: <strong>€${company.penalizacion.toLocaleString('es-ES')}</strong></div>` : ''}
+          ${company.penalizacion > 0 ? `<div style="font-size:11px;color:var(--alert-text);">Penalización: <strong class="nexus-money">${fmtEur(company.penalizacion)}</strong></div>` : ''}
         </div>` : '';
 
       const pipelineSection = lead ? `

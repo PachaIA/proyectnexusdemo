@@ -233,7 +233,7 @@ export const UnifiedCompanyPanel = ({ company, isOpen, onClose, onAddToPipeline 
                     onClick={() => updateData({ estado: e.id })}
                     className="px-2.5 py-1.5 rounded-md text-xs font-medium transition-all border"
                     style={{
-                      background: data.estado === e.id ? `${e.color}22` : 'transparent',
+                      background: data.estado === e.id ? `color-mix(in srgb, ${e.color} 13.3%, transparent)` : 'transparent',
                       borderColor: data.estado === e.id ? e.color : 'var(--border)',
                       color: data.estado === e.id ? e.color : 'hsl(var(--muted-foreground))',
                     }}

@@ -58,7 +58,7 @@ function ActivityForm({ value, onChange, onSave, onCancel, saving }: FormProps) 
           {ACTIVITY_TYPES.map(t => (
             <button key={t.id} type="button" onClick={() => onChange({ activity_type: t.id as ActivityType })} style={{
               padding: '4px 9px', borderRadius: 6, cursor: 'pointer',
-              background: value.activity_type === t.id ? `${'var(--t-accent)'}22` : 'transparent',
+              background: value.activity_type === t.id ? `color-mix(in srgb, ${'var(--t-accent)'} 13.3%, transparent)` : 'transparent',
               border: `1px solid ${value.activity_type === t.id ? T.accent : T.borderSubtle}`,
               color: value.activity_type === t.id ? T.accent : T.textTertiary,
               ...mono, fontSize: 9, letterSpacing: 1,

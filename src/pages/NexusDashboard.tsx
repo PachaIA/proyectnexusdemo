@@ -1,3 +1,5 @@
+import { fmtEur } from '@/hooks/useOpportunityLines';
+import { Money } from '@/components/Money';
 import { requestOpportunityFields } from '@/lib/opportunity';
 import { refreshCompanies, refreshLeads } from '@/lib/queryClient';
 import { getEffectiveUser } from '@/lib/openUser';
@@ -129,10 +131,10 @@ function ScoreBadge({ score }: { score: number }) {
         width: 52, height: 52, borderRadius: "50%",
         border: `3px solid ${color}`, display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
-        boxShadow: `0 0 16px ${color}55`, background: `${color}18`,
+        boxShadow: `0 0 16px color-mix(in srgb, ${color} 33.3%, transparent)`, background: `color-mix(in srgb, ${color} 9.4%, transparent)`,
       }}>
         <span style={{ fontSize: 15, fontWeight: 900, color, fontFamily: "'Inter', sans-serif", lineHeight: 1 }}>{score}</span>
-        <span style={{ fontSize: 8, color: `${color}aa`, letterSpacing: 1 }}>SCORE</span>
+        <span style={{ fontSize: 8, color: `color-mix(in srgb, ${color} 66.7%, transparent)`, letterSpacing: 1 }}>SCORE</span>
       </div>
       <span style={{ fontSize: 11, fontWeight: 700, color, letterSpacing: 2, fontFamily: "'Inter', sans-serif" }}>{label}</span>
     </div>
@@ -248,7 +250,7 @@ function AIBriefing({ company, onClose }: { company: Company; onClose: () => voi
         width: "min(680px, 95vw)", height: "80vh",
         background: T.card, border: `1px solid ${T.border}`,
         borderRadius: 16, display: "flex", flexDirection: "column",
-        boxShadow: `0 0 60px ${T.accent}22, 0 24px 80px color-mix(in srgb, var(--bg) 53.3%, transparent)`, overflow: "hidden",
+        boxShadow: `0 0 60px color-mix(in srgb, ${T.accent} 13.3%, transparent), 0 24px 80px color-mix(in srgb, var(--bg) 53.3%, transparent)`, overflow: "hidden",
       }}>
         <div style={{
           padding: "16px 20px", borderBottom: `1px solid ${T.border}`,
@@ -260,7 +262,7 @@ function AIBriefing({ company, onClose }: { company: Company; onClose: () => voi
               width: 36, height: 36, borderRadius: 8,
               background: `linear-gradient(135deg, ${T.accent}, ${T.accentLight})`,
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 18, boxShadow: `0 0 20px ${T.accent}66`,
+              fontSize: 18, boxShadow: `0 0 20px color-mix(in srgb, ${T.accent} 40.0%, transparent)`,
             }}>⚡</div>
             <div>
               <div style={{ color: T.textPrimary, fontWeight: 800, fontSize: 14, fontFamily: "'Inter', sans-serif", letterSpacing: 1 }}>
@@ -280,7 +282,7 @@ function AIBriefing({ company, onClose }: { company: Company; onClose: () => voi
         <div style={{ flex: 1, overflowY: "auto", padding: "20px", display: "flex", flexDirection: "column", gap: 16 }}>
           {initialLoading && messages.length === 0 ? (
             <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: 16 }}>
-              <div style={{ width: 48, height: 48, borderRadius: "50%", border: `3px solid ${T.accent}33`, borderTopColor: T.accent, animation: "nexus-spin 1s linear infinite" }} />
+              <div style={{ width: 48, height: 48, borderRadius: "50%", border: `3px solid color-mix(in srgb, ${T.accent} 20.0%, transparent)`, borderTopColor: T.accent, animation: "nexus-spin 1s linear infinite" }} />
               <span style={{ color: T.textMuted, fontFamily: "'Inter', sans-serif", fontSize: 12, letterSpacing: 2 }}>ANALIZANDO EMPRESA...</span>
             </div>
           ) : messages.map((m, i) => (
@@ -289,7 +291,7 @@ function AIBriefing({ company, onClose }: { company: Company; onClose: () => voi
                 width: 32, height: 32, borderRadius: "50%", flexShrink: 0,
                 background: m.role === "user" ? T.border : `linear-gradient(135deg, ${T.accent}, ${T.accentLight})`,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 14, boxShadow: m.role !== "user" ? `0 0 12px ${T.accent}44` : "none",
+                fontSize: 14, boxShadow: m.role !== "user" ? `0 0 12px color-mix(in srgb, ${T.accent} 26.7%, transparent)` : "none",
               }}>{m.role === "user" ? "👤" : "⚡"}</div>
               <div style={{
                 maxWidth: "78%", padding: "12px 16px", borderRadius: 12,
@@ -319,7 +321,7 @@ function AIBriefing({ company, onClose }: { company: Company; onClose: () => voi
             border: "none", borderRadius: 10, color: "var(--text)", fontWeight: 700,
             cursor: loading ? "not-allowed" : "pointer", fontSize: 13,
             fontFamily: "'Inter', sans-serif", opacity: loading || !input.trim() ? 0.5 : 1,
-            boxShadow: `0 0 20px ${T.accent}44`,
+            boxShadow: `0 0 20px color-mix(in srgb, ${T.accent} 26.7%, transparent)`,
           }}>→</button>
         </div>
       </div>
@@ -426,7 +428,7 @@ function InteractionRegistry({
           {ESTADOS.map(e => (
             <button key={e.id} onClick={() => handleEstado(e.id)} style={{
               padding: "5px 10px", borderRadius: 6, cursor: "pointer",
-              background: data.estado === e.id ? `${e.color}22` : "transparent",
+              background: data.estado === e.id ? `color-mix(in srgb, ${e.color} 13.3%, transparent)` : "transparent",
               border: `1px solid ${data.estado === e.id ? e.color : T.borderSubtle}`,
               color: data.estado === e.id ? e.color : T.textTertiary,
               ...mono, fontSize: 9, letterSpacing: 1, transition: "all 0.15s",
@@ -720,7 +722,7 @@ export default function NexusDashboard() {
         .nexus-page * { box-sizing: border-box; }
         .nexus-page ::-webkit-scrollbar { width: 4px; } .nexus-page ::-webkit-scrollbar-track { background: ${T.card}; } .nexus-page ::-webkit-scrollbar-thumb { background: ${T.border}; border-radius: 2px; }
         @keyframes nexusFadeUp { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes nexusGlowPulse { 0%,100% { box-shadow: 0 0 20px ${T.accent}33; } 50% { box-shadow: 0 0 40px ${T.accent}66; } }
+        @keyframes nexusGlowPulse { 0%,100% { box-shadow: 0 0 20px color-mix(in srgb, ${T.accent} 20.0%, transparent); } 50% { box-shadow: 0 0 40px color-mix(in srgb, ${T.accent} 40.0%, transparent); } }
         .nexus-company-row:hover { background: ${T.cardHover} !important; border-color: ${T.border} !important; }
         .nexus-action-btn:hover { transform: translateY(-1px); filter: brightness(1.15); }
       `}</style>
@@ -981,7 +983,7 @@ function DetailPanel({
               <div>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                   <h2 style={{ fontSize: 18, fontWeight: 800, color: T.textPrimary, lineHeight: 1.2 }}>{selected.name}</h2>
-                  <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, padding: "2px 8px", borderRadius: 6, background: T.cardAlt, border: `1px solid ${T.borderSubtle}`, color: T.textSecondary, letterSpacing: 1 }}>
+                  <span data-reference style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, padding: "2px 8px", borderRadius: 6, background: T.cardAlt, border: `1px solid ${T.borderSubtle}`, color: T.textSecondary, letterSpacing: 1 }}>
                     CIF: {selected.cif || '—'}
                   </span>
                   {/* Mini cluster: hot · score · digitalización · rentabilidad */}
@@ -1030,7 +1032,7 @@ function DetailPanel({
                         title="Rentabilidad por línea"
                         style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, color: selected.rentabilidadLinea != null ? "var(--success-text)" : T.textMuted, lineHeight: 1 }}
                       >
-                        {selected.rentabilidadLinea != null ? `${selected.rentabilidadLinea}€` : '—€'}
+                        {selected.rentabilidadLinea != null ? <Money>{fmtEur(selected.rentabilidadLinea)}</Money> : '—'}
                       </button>
                     )}
                   </div>
@@ -1066,8 +1068,8 @@ function DetailPanel({
 
         {/* Recommended action */}
         <div style={{
-          background: `${priorityColors[selectedActionPriority]}12`,
-          border: `1px solid ${priorityColors[selectedActionPriority]}33`,
+          background: `color-mix(in srgb, ${priorityColors[selectedActionPriority]} 7.1%, transparent)`,
+          border: `1px solid color-mix(in srgb, ${priorityColors[selectedActionPriority]} 20.0%, transparent)`,
           borderRadius: 12, padding: "14px 16px",
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
@@ -1119,12 +1121,12 @@ function DetailPanel({
                     <div style={{ display: "flex", gap: 6 }}>
                       <span style={{
                         padding: "3px 8px", borderRadius: 6, fontSize: 9, fontFamily: "'Inter', sans-serif", letterSpacing: 1,
-                        background: `${powerColors[dm.decisionPower]}18`, border: `1px solid ${powerColors[dm.decisionPower]}44`,
+                        background: `color-mix(in srgb, ${powerColors[dm.decisionPower]} 9.4%, transparent)`, border: `1px solid color-mix(in srgb, ${powerColors[dm.decisionPower]} 26.7%, transparent)`,
                         color: powerColors[dm.decisionPower],
                       }}>⚡ {dm.decisionPower?.toUpperCase()}</span>
                       <span style={{
                         padding: "3px 8px", borderRadius: 6, fontSize: 9, fontFamily: "'Inter', sans-serif", letterSpacing: 1,
-                        background: `${accessColors[dm.accessibility]}18`, border: `1px solid ${accessColors[dm.accessibility]}44`,
+                        background: `color-mix(in srgb, ${accessColors[dm.accessibility]} 9.4%, transparent)`, border: `1px solid color-mix(in srgb, ${accessColors[dm.accessibility]} 26.7%, transparent)`,
                         color: accessColors[dm.accessibility],
                       }}>🔓 {dm.accessibility?.toUpperCase()}</span>
                     </div>
@@ -1168,7 +1170,7 @@ function DetailPanel({
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {dmDraft.map((dm, i) => (
                 <div key={i} style={{
-                  background: T.card, borderRadius: 10, padding: "10px 14px", border: `1px solid ${T.accent}44`,
+                  background: T.card, borderRadius: 10, padding: "10px 14px", border: `1px solid color-mix(in srgb, ${T.accent} 26.7%, transparent)`,
                   display: "flex", flexDirection: "column", gap: 6,
                 }}>
                   <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
@@ -1344,7 +1346,7 @@ function DetailPanel({
             background: `linear-gradient(135deg, ${T.accent}, ${T.accentDark})`,
             border: "none", color: "var(--text)", cursor: "pointer",
             fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2,
-            transition: "all 0.2s", boxShadow: `0 0 30px ${T.accent}44`,
+            transition: "all 0.2s", boxShadow: `0 0 30px color-mix(in srgb, ${T.accent} 26.7%, transparent)`,
           }}>⚡ BRIEFING IA — PREPARAR VISITA</button>
           <button className="nexus-action-btn" onClick={() => onOpenArcGIS(selected)} style={{
             padding: "11px", borderRadius: 10, background: T.cardAlt, border: `1px solid ${T.border}`,
@@ -1360,7 +1362,7 @@ function DetailPanel({
           }}>✉️ EMAIL</button>
           <button className="nexus-action-btn" onClick={() => setShowReport(true)} style={{
             gridColumn: "1 / -1", padding: "12px", borderRadius: 10, background: T.cardAlt,
-            border: `1px solid ${T.accent}66`, color: T.accent, cursor: "pointer",
+            border: `1px solid color-mix(in srgb, ${T.accent} 40.0%, transparent)`, color: T.accent, cursor: "pointer",
             fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, transition: "all 0.2s",
           }}>📄 INFORME RÁPIDO</button>
         </div>

@@ -1,3 +1,5 @@
+import { Money } from '@/components/Money';
+import { fmtEur } from '@/hooks/useOpportunityLines';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Building2, CheckCircle, Shield, TrendingUp, 

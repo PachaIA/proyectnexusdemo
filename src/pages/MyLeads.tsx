@@ -1,3 +1,5 @@
+import { Money } from '@/components/Money';
+import { fmtEur } from '@/hooks/useOpportunityLines';
 import { useEffect, useState, useMemo } from 'react';
 import { useLeads, Lead } from '@/hooks/useLeads';
 import { useCompanies } from '@/hooks/useCompanies';
@@ -156,21 +158,21 @@ function KanbanCard({ lead, onAdvance, onWin, onLose, onArchive, onOpenDetail, o
             flex: 1, minWidth: 0, textAlign: 'left', background: 'transparent', border: 'none', padding: 0, cursor: 'pointer',
             fontWeight: 700, fontSize: 12, color: T.accentLight,
             overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-            textDecoration: 'underline', textDecorationColor: `${T.accent}44`,
+            textDecoration: 'underline', textDecorationColor: `color-mix(in srgb, ${T.accent} 26.7%, transparent)`,
           }}
         >
           {lead.empresa}
         </button>
         <span style={{
           ...mono, fontSize: 11, fontWeight: 800, color: scoreColor,
-          background: `${scoreColor}18`, padding: '2px 8px', borderRadius: 6,
-          border: `1px solid ${scoreColor}33`,
+          background: `color-mix(in srgb, ${scoreColor} 9.4%, transparent)`, padding: '2px 8px', borderRadius: 6,
+          border: `1px solid color-mix(in srgb, ${scoreColor} 20.0%, transparent)`,
         }}>{lead.opportunity_score}</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <span style={{ fontSize: 10, color: T.textTertiary, textTransform: 'capitalize' }}>{lead.sector}</span>
         {subState && (
-          <span style={{ ...mono, fontSize: 8, padding: '1px 6px', borderRadius: 4, background: `${subState.color}18`, color: subState.color, border: `1px solid ${subState.color}33` }}>
+          <span style={{ ...mono, fontSize: 8, padding: '1px 6px', borderRadius: 4, background: `color-mix(in srgb, ${subState.color} 9.4%, transparent)`, color: subState.color, border: `1px solid color-mix(in srgb, ${subState.color} 20.0%, transparent)` }}>
             {subState.label}
           </span>
         )}
@@ -179,13 +181,13 @@ function KanbanCard({ lead, onAdvance, onWin, onLose, onArchive, onOpenDetail, o
       <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }} onClick={e => e.stopPropagation()}>
         {canAdvance && (
           <button onClick={onAdvance} title="Avanzar" style={{
-            background: `${T.accent}22`, border: `1px solid ${T.accent}44`, borderRadius: 5,
+            background: `color-mix(in srgb, ${T.accent} 13.3%, transparent)`, border: `1px solid color-mix(in srgb, ${T.accent} 26.7%, transparent)`, borderRadius: 5,
             padding: '3px 7px', cursor: 'pointer', color: T.accentLight, fontSize: 11,
           }}>▶</button>
         )}
         <div style={{ position: 'relative' }}>
           <button onClick={() => setShowStatusMenu(!showStatusMenu)} title="Cambiar estado" style={{
-            background: `${stageColor}18`, border: `1px solid ${stageColor}44`, borderRadius: 5,
+            background: `color-mix(in srgb, ${stageColor} 9.4%, transparent)`, border: `1px solid color-mix(in srgb, ${stageColor} 26.7%, transparent)`, borderRadius: 5,
             padding: '3px 7px', cursor: 'pointer', color: stageColor, fontSize: 11,
           }}>⇅</button>
           {showStatusMenu && (
@@ -197,7 +199,7 @@ function KanbanCard({ lead, onAdvance, onWin, onLose, onArchive, onOpenDetail, o
               {ALL_STATES.map(s => (
                 <button key={s.key} onClick={() => { onChangeStatus(s.key); setShowStatusMenu(false); }} style={{
                   display: 'flex', alignItems: 'center', gap: 6, width: '100%', padding: '5px 8px',
-                  background: lead.estado === s.key ? `${s.color}22` : 'transparent',
+                  background: lead.estado === s.key ? `color-mix(in srgb, ${s.color} 13.3%, transparent)` : 'transparent',
                   border: 'none', borderRadius: 4, cursor: 'pointer', color: T.textPrimary, fontSize: 11,
                 }}>
                   <span>{s.icon}</span>
@@ -452,7 +454,7 @@ const MyLeads = () => {
           <div style={{ display: 'flex', gap: 8 }}>
             <button onClick={handleExportPDF} style={{
               ...mono, fontSize: 10, letterSpacing: 1, padding: '6px 14px', borderRadius: 8,
-              background: `${T.accent}11`, border: `1px solid ${T.accent}44`, color: T.accentLight, cursor: 'pointer',
+              background: `color-mix(in srgb, ${T.accent} 6.7%, transparent)`, border: `1px solid color-mix(in srgb, ${T.accent} 26.7%, transparent)`, color: T.accentLight, cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 6,
             }}><Download size={13} /> EXPORTAR PDF</button>
             <button onClick={() => navigate('/map')} style={{
@@ -498,7 +500,7 @@ const MyLeads = () => {
                         </div>
                         <span style={{
                           ...mono, fontSize: 12, fontWeight: 800, color: col.color,
-                          background: `${col.color}18`, padding: '2px 8px', borderRadius: 6,
+                          background: `color-mix(in srgb, ${col.color} 9.4%, transparent)`, padding: '2px 8px', borderRadius: 6,
                         }}>{stageLeads.length}</span>
                       </div>
                     </div>
@@ -551,7 +553,7 @@ const MyLeads = () => {
                   <YAxis type="category" dataKey="name" width={80} tick={{ fill: T.textTertiary, fontSize: 10, fontFamily: "'Inter', sans-serif" }} axisLine={false} tickLine={false} />
                   <Tooltip
                     contentStyle={{ background: T.cardAlt, border: `1px solid ${T.border}`, borderRadius: 8, color: T.textPrimary, fontSize: 12 }}
-                    cursor={{ fill: `${T.accent}11` }}
+                    cursor={{ fill: `color-mix(in srgb, ${T.accent} 6.7%, transparent)` }}
                   />
                   <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={18}>
                     {sectorData.map((entry, i) => (

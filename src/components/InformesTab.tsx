@@ -277,8 +277,8 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
             style={{
               ...selectStyle,
               color: T.accent,
-              border: `1px solid ${T.accent}55`,
-              background: `${T.accent}11`,
+              border: `1px solid color-mix(in srgb, ${T.accent} 33.3%, transparent)`,
+              background: `color-mix(in srgb, ${T.accent} 6.7%, transparent)`,
             }}
           >
             ✕ LIMPIAR
@@ -312,7 +312,7 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
                 style={{
                   padding: '12px 14px',
                   borderBottom: `1px solid ${T.borderSubtle}`,
-                  background: `${m.color}0d`,
+                  background: `color-mix(in srgb, ${m.color} 5.1%, transparent)`,
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'space-between',
@@ -333,8 +333,8 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
                     fontSize: 14,
                     fontWeight: 700,
                     color: m.color,
-                    background: `${m.color}1a`,
-                    border: `1px solid ${m.color}44`,
+                    background: `color-mix(in srgb, ${m.color} 10.2%, transparent)`,
+                    border: `1px solid color-mix(in srgb, ${m.color} 26.7%, transparent)`,
                     borderRadius: 8,
                     padding: '4px 10px',
                     minWidth: 34,
@@ -420,9 +420,9 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
                               letterSpacing: 0.5,
                               padding: '2px 6px',
                               borderRadius: 5,
-                              background: `${est.color}18`,
+                              background: `color-mix(in srgb, ${est.color} 9.4%, transparent)`,
                               color: est.color,
-                              border: `1px solid ${est.color}33`,
+                              border: `1px solid color-mix(in srgb, ${est.color} 20.0%, transparent)`,
                             }}
                           >
                             {est.label.toUpperCase()}
@@ -467,8 +467,8 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
                           letterSpacing: 0.5,
                           padding: '6px 9px',
                           borderRadius: 7,
-                          background: `${T.accent}15`,
-                          border: `1px solid ${T.accent}44`,
+                          background: `color-mix(in srgb, ${T.accent} 8.2%, transparent)`,
+                          border: `1px solid color-mix(in srgb, ${T.accent} 26.7%, transparent)`,
                           color: T.accent,
                           cursor: 'pointer',
                           whiteSpace: 'nowrap',
