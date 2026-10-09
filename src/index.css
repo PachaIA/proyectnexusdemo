@@ -438,3 +438,10 @@ html[data-theme] [data-score-bucket] { background: var(--surface); color: var(--
 html[data-theme] [data-score-bucket="hot"] { color: var(--alert-text); }
 html[data-theme] [data-score-bucket="warm"] { color: var(--warning-text); }
 html[data-theme] [data-score-bucket="cold"] { color: var(--muted-text-accessible); }
+
+html[data-theme] [class*="text-accent/"], html[data-theme] [class*="text-primary/"] { color: var(--interactive); }
+html[data-theme="caliza"] [class*="bg-destructive/"][class*="text-destructive"],
+html[data-theme="caliza"] [class*="bg-warning/"][class*="text-warning"] { color: var(--text); }
+html[data-theme="caliza"] [style*="color-mix"] { background-color: var(--surface) !important; }
+html[data-theme="caliza"] [style*="color-mix"][style*="color: var(--interactive)"],
+html[data-theme="caliza"] [style*="color-mix"][style*="color: var(--t-accent)"] { color: var(--text) !important; }
