@@ -1,5 +1,8 @@
 # Roadmap
 
+- [x] Corregir gráficos del pipeline y simplificar navegación principal
+- [x] Ficha de cliente en una columna con historial existente, nota directa y Datos plegados; cambios de etapa históricos no disponibles, sin inventarlos
+
 - [x] Aplicar marca Nexus Noche/Caliza: tokens, tipografía, importes accesibles, botón de tema persistente y comprobación de pantallas; sin cambios comerciales
 
 - [x] Desacoplar compensación: esquema MR PRO en Cloud, cálculos desde esquema activo, pruebas de igualdad e informe de archivos/líneas

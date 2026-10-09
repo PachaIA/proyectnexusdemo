@@ -1,3 +1,5 @@
+import { ClientDetailOverview } from '@/components/ClientDetailOverview';
+import { ActivitySection } from '@/components/ActivitySection';
 import { fmtEur } from '@/hooks/useOpportunityLines';
 import { Money } from '@/components/Money';
 import { refreshCompanies } from '@/lib/queryClient';
@@ -134,63 +136,10 @@ export const CompanyDetailPanel = ({
   // ─── Cuerpo unificado de la ficha (header + scroll + footer) ────────────
   const panelContent = (
     <div className="flex flex-col h-full overflow-hidden">
-      {/* Sticky Header */}
-      <div className="sticky top-0 z-10 bg-card border-b border-border shrink-0">
-        <div className="px-4 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3 min-w-0 flex-1">
-            <div className={cn(
-              "w-11 h-11 rounded-full flex items-center justify-center shrink-0 text-sm font-bold text-primary-foreground",
-              company.opportunityScore >= 80 ? "bg-[var(--alert-text)]" :
-              company.opportunityScore >= 60 ? "bg-[var(--alert-text)]" :
-              "bg-muted-foreground"
-            )}>
-              {company.opportunityScore}
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold text-foreground truncate">{company.name}</h2>
-                {waspTamanio === 'GG.CC.' && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-destructive/15 text-destructive border border-destructive/20 shrink-0">GG.CC.</span>
-                )}
-              </div>
-              <p className="text-xs text-muted-foreground">CIF: {company.cif}</p>
-            </div>
-          </div>
-          <button 
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-muted transition-colors shrink-0"
-            aria-label="Cerrar panel"
-          >
-            <X className="w-5 h-5 text-muted-foreground" />
-          </button>
-        </div>
-        {/* Resumen fijo NO editable: dirección principal (de la sede principal) + contacto principal */}
-        <div className="px-4 pb-3">
-          <CompanyTopSummary company={company} />
-        </div>
-        {/* Mobile big call button */}
-        {isMobile && contactPhone && (
-          <div className="px-4 pb-3">
-            <a
-              href={`tel:${contactPhone}`}
-              className="flex items-center justify-center gap-2 w-full py-3.5 rounded-xl bg-primary text-primary-foreground font-bold text-base no-underline active:opacity-80 transition-opacity"
-              style={{ textDecoration: 'none' }}
-            >
-              <Phone className="w-5 h-5" /> LLAMAR — {contactPhone}
-            </a>
-            <button
-              onClick={() => navigate(`/llamada/${company.id}`)}
-              className="mt-2 w-full py-2.5 rounded-xl border border-primary/40 text-primary text-sm font-semibold active:opacity-80"
-            >
-              Modo llamada
-            </button>
-          </div>
-        )}
-      </div>
-
-      {/* Scrollable Content */}
       <ScrollArea className="flex-1">
-        <div className="p-4 space-y-5 pb-24 md:pb-5">
+        <div className="px-4 pb-5">
+          <ClientDetailOverview key={company.id} company={company} headerAction={<Button variant="ghost" size="icon" onClick={onClose} aria-label="Cerrar panel"><X className="w-5 h-5" /></Button>}>
+          <div className="space-y-5">
           {/* 1. CONTACT INFORMATION */}
           <section className="bg-muted/40 rounded-xl p-4 border border-border">
             <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">
@@ -246,7 +195,7 @@ export const CompanyDetailPanel = ({
                   <Linkedin className="w-4 h-4 text-muted-foreground shrink-0" />
                   <button
                     onClick={() => {
-                      const url = company.linkedin!.startsWith('http') ? company.linkedin! : `https://${company.linkedin!}`;
+                      const url = company.linkedin?.startsWith('http') ? company.linkedin : `https://${company.linkedin}`;
                       window.open(url, '_blank');
                     }}
                     disabled={!company.linkedin || company.linkedin.trim() === ''}
@@ -391,6 +340,9 @@ export const CompanyDetailPanel = ({
           <section>
             <NextBestAction action={company.nextBestAction} companyName={company.name} />
           </section>
+          <ActivitySection companyId={company.id} />
+          </div>
+          </ClientDetailOverview>
         </div>
       </ScrollArea>
 

@@ -578,7 +578,7 @@ const MyLeads = () => {
         {view.vista === 'tabla' && <OpportunityList leads={viewLeads as any} />}
 
         {/* ROW 3: Charts */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
           {/* Bar chart: leads by sector */}
           <div style={{
             background: T.card, border: `1px solid ${T.border}`, borderRadius: 14,
@@ -588,15 +588,15 @@ const MyLeads = () => {
             {sectorData.length === 0 ? (
               <div style={{ ...mono, fontSize: 10, color: T.textMuted, textAlign: 'center', padding: 40 }}>SIN DATOS</div>
             ) : (
-              <ResponsiveContainer width="100%" height={200}>
-                <BarChart data={sectorData} layout="vertical" margin={{ left: 0, right: 20, top: 0, bottom: 0 }}>
+              <ResponsiveContainer width="100%" height={Math.max(200, sectorData.length * 42)}>
+                <BarChart data={sectorData} layout="vertical" barCategoryGap={12} margin={{ left: 0, right: 20, top: 8, bottom: 8 }}>
                   <XAxis type="number" hide />
-                  <YAxis type="category" dataKey="name" width={80} tick={{ fill: T.textTertiary, fontSize: 10, fontFamily: "'Inter', sans-serif" }} axisLine={false} tickLine={false} />
+                  <YAxis type="category" dataKey="name" width={110} interval={0} tick={{ fill: T.textTertiary, fontSize: 11, fontFamily: "'Inter', sans-serif" }} axisLine={false} tickLine={false} />
                   <Tooltip
                     contentStyle={{ background: T.cardAlt, border: `1px solid ${T.border}`, borderRadius: 8, color: T.textPrimary, fontSize: 12 }}
                     cursor={{ fill: `color-mix(in srgb, ${T.accent} 6.7%, transparent)` }}
                   />
-                  <Bar dataKey="count" radius={[0, 6, 6, 0]} barSize={18}>
+                  <Bar dataKey="count" name="Oportunidades" label={{ position: 'right', fill: 'var(--text)', fontSize: 12 }} radius={[0, 4, 4, 0]} barSize={18}>
                     {sectorData.map((entry, i) => (
                       <Cell key={i} fill={entry.fill} />
                     ))}
@@ -626,14 +626,14 @@ const MyLeads = () => {
                       <div style={{ flex: 1, position: 'relative', height: 28 }}>
                         <div style={{
                           width: `${widthPct}%`, height: '100%', borderRadius: 6,
-                          background: `linear-gradient(90deg, ${stage.color}, ${stage.color}88)`,
+                          background: stage.color,
                           display: 'flex', alignItems: 'center', justifyContent: 'center',
                           transition: 'width 0.5s ease',
                           minWidth: 36,
                         }}>
-                          <span style={{ ...mono, fontSize: 12, fontWeight: 800, color: 'var(--text)' }}>{stage.count}</span>
                         </div>
                       </div>
+                      <span className="text-foreground text-sm font-semibold tabular-nums w-8 text-right">{stage.count}</span>
                     </div>
                   );
                 })}
