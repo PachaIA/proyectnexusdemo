@@ -1,7 +1,7 @@
 # Roadmap
 
-- [ ] Corregir gráficos del pipeline y simplificar navegación principal
-- [ ] Ficha de cliente en una columna con historial, nota directa y Datos plegados
+- [x] Corregir gráficos del pipeline y simplificar navegación principal
+- [x] Ficha de cliente en una columna con historial existente, nota directa y Datos plegados; cambios de etapa históricos no disponibles, sin inventarlos
 
 - [x] Aplicar marca Nexus Noche/Caliza: tokens, tipografía, importes accesibles, botón de tema persistente y comprobación de pantallas; sin cambios comerciales
 
