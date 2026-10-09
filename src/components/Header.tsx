@@ -17,29 +17,16 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 
 const NexusLogo = () => (
   <div className="flex items-center gap-2.5 mr-4">
-    <div className="relative flex items-center justify-center w-9 h-9">
-      <svg viewBox="0 0 36 36" className="w-9 h-9">
-        <polygon
-          points="18,1 32.5,9 32.5,27 18,35 3.5,27 3.5,9"
-          fill="none"
-          stroke="var(--interactive)"
-          strokeWidth="2"
-          strokeLinejoin="round"
-        />
-        <polygon
-          points="18,6 28,12 28,24 18,30 8,24 8,12"
-          fill="var(--interactive)"
-          fillOpacity="0.15"
-          stroke="var(--interactive)"
-          strokeWidth="1"
-          strokeLinejoin="round"
-        />
-        <circle cx="18" cy="18" r="3" fill="var(--interactive)" />
-      </svg>
-    </div>
+    <img
+      src="/nexus-avatar.png"
+      alt="Nexus"
+      width={32}
+      height={32}
+      className="w-8 h-8 rounded-full shrink-0"
+    />
     <div className="flex flex-col">
       <span
-        className="text-[15px] font-extrabold tracking-[3px] leading-none text-primary"
+        className="font-display text-[15px] font-extrabold tracking-[3px] leading-none text-primary"
       >
         NEXUS
       </span>
