@@ -143,7 +143,7 @@ function ScoreBadge({ score }: { score: number }) {
 // ─── AI Briefing Modal ──────────────────────────────────────────────────
 interface AIMessage { role: "user" | "assistant"; content: string; }
 
-function AIBriefing({ company, onClose }: { company: Company; onClose: () => void }) {
+export function AIBriefing({ company, onClose }: { company: Company; onClose: () => void }) {
   const [messages, setMessages] = useState<AIMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -898,6 +898,8 @@ export function DetailPanel({
         {saving && (
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, color: T.accent, letterSpacing: 2, textAlign: "center" }}>GUARDANDO...</div>
         )}
+
+        {routeDetail && <section className="border-y border-border py-4"><div className="text-xs font-semibold text-muted-foreground mb-2">BRIEFING DIARIO</div><p className="text-sm text-foreground">{selected.nextBestAction?.reason || 'Sin recomendación disponible'}</p></section>}
 
         {/* Recommended action */}
         <div style={{

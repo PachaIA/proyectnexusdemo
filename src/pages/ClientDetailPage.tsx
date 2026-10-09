@@ -1,16 +1,18 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Navigate, useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { useCompanies } from '@/hooks/useCompanies';
 import { DetailPanel } from '@/pages/NexusDashboard';
+import { AIBriefing } from '@/pages/NexusDashboard';
 
 export default function ClientDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { companies, isLoading } = useCompanies();
   const company = useMemo(() => companies.find(item => item.id === id), [companies, id]);
+  const [showAI, setShowAI] = useState(false);
 
   if (!id) return <Navigate to="/clientes" replace />;
 
@@ -28,7 +30,7 @@ export default function ClientDetailPage() {
             company={company}
             interactions={{}}
             onUpdate={() => undefined}
-            onShowAI={() => undefined}
+            onShowAI={() => setShowAI(true)}
             onOpenArcGIS={() => window.open(`https://experience.arcgis.com/experience/e97b58724a4c4e2e84470e733bd2746d/page/Cableada?address=${encodeURIComponent(company.address)}`, '_blank')}
             routeDetail
           />
@@ -38,6 +40,7 @@ export default function ClientDetailPage() {
             <Button className="mt-4" onClick={() => navigate('/clientes')}>Ver clientes</Button>
           </div>
         )}
+        {showAI && company && <AIBriefing company={company} onClose={() => setShowAI(false)} />}
       </main>
     </div>
   );
