@@ -1,9 +1,9 @@
 import { Money } from '@/components/Money';
 import { fmtEur, useOpportunityLines } from '@/hooks/useOpportunityLines';
 import { opportunityMargin } from '@/lib/dashboardSummary';
-import { activityTone, daysSince, lastActivityByCompany, byMarginDesc } from '@/lib/pipelineBoard';
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { activityTone, daysSince, byMarginDesc } from '@/lib/pipelineBoard';
+import { useUrlView, useLastActivity } from '@/hooks/useUrlView';
+import { ViewToolbar } from '@/components/ViewToolbar';
 import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useEffect, useState, useMemo } from 'react';
 import { useLeads, Lead } from '@/hooks/useLeads';
@@ -46,6 +46,8 @@ const T = {
 };
 
 // Merged: Contactado + Cualificado into one column
+const PIPELINE_DEFAULTS = { vista: 'kanban', q: '', filtro: 'todos' };
+
 const PIPELINE_COLUMNS = [
   { keys: ['lead'], label: 'Lead', color: 'var(--muted-text-accessible)', icon: '⚪' },
   { keys: ['contactado'], label: 'Contactado', color: 'var(--interactive)', icon: '📞' },
@@ -298,15 +300,8 @@ const MyLeads = () => {
   const { companies } = useCompanies();
   const navigate = useNavigate();
   const { lines } = useOpportunityLines();
-  const { data: activityRows = [] } = useQuery({
-    queryKey: ['company_activities', 'last-dates'],
-    queryFn: async () => {
-      const { data, error } = await supabase.from('company_activities').select('company_id, activity_date');
-      if (error) throw error;
-      return data as { company_id: string; activity_date: string }[];
-    },
-  });
-  const lastActivity = useMemo(() => lastActivityByCompany(activityRows), [activityRows]);
+  const lastActivity = useLastActivity();
+  const [view, setView, viewQuery] = useUrlView(PIPELINE_DEFAULTS);
   const [archiveTarget, setArchiveTarget] = useState<string | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [showProposal, setShowProposal] = useState(false);
@@ -330,6 +325,12 @@ const MyLeads = () => {
 
 
   const activeLeads = useMemo(() => leads.filter(l => !l.archived_at), [leads]);
+  // Mismo conjunto filtrado para Kanban y Tabla; los KPIs siguen mostrando todo el pipeline.
+  const viewLeads = useMemo(() => activeLeads.filter(l => {
+    if (view.q && !l.empresa.toLowerCase().includes(view.q.toLowerCase())) return false;
+    if (view.filtro === 'sin-actividad' && daysSince(lastActivity.get(l.company_id) ?? l.updated_at) <= 14) return false;
+    return true;
+  }), [activeLeads, view.q, view.filtro, lastActivity]);
   const stats = getLeadStats();
 
   // KPI calculations
@@ -481,7 +482,13 @@ const MyLeads = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
             <div style={{ ...mono, fontSize: 9, color: T.textLabel, letterSpacing: 3 }}>// PIPELINE COMERCIAL</div>
           </div>
-          <div style={{ display: 'flex', gap: 8 }}>
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center', flexWrap: 'wrap' }}>
+            <input aria-label="Buscar cliente" placeholder="Buscar cliente…" value={view.q} onChange={e => setView({ q: e.target.value })} className="h-8 rounded-md border border-border bg-background px-2 text-xs" />
+            <select aria-label="Actividad" value={view.filtro} onChange={e => setView({ filtro: e.target.value })} className="h-8 rounded-md border border-border bg-background px-2 text-xs">
+              <option value="todos">Toda actividad</option>
+              <option value="sin-actividad">Sin actividad (+14 días)</option>
+            </select>
+            <ViewToolbar page="pipeline" views={[{ id: 'kanban', label: 'Kanban' }, { id: 'tabla', label: 'Tabla' }]} current={view.vista} onChange={vista => setView({ vista })} query={viewQuery} />
             <button onClick={handleExportPDF} style={{
               ...mono, fontSize: 10, letterSpacing: 1, padding: '6px 14px', borderRadius: 8,
               background: `color-mix(in srgb, ${T.accent} 6.7%, transparent)`, border: `1px solid color-mix(in srgb, ${T.accent} 26.7%, transparent)`, color: T.accentLight, cursor: 'pointer',
@@ -503,13 +510,13 @@ const MyLeads = () => {
         </div>
 
         {/* ROW 2: Kanban Pipeline — 6 columns (Contactado+Cualificado merged) */}
-        <DndContext sensors={isMobile ? [] : sensors} onDragEnd={isMobile ? undefined : handleDragEnd}>
+        {view.vista !== 'tabla' && <DndContext sensors={isMobile ? [] : sensors} onDragEnd={isMobile ? undefined : handleDragEnd}>
           <div style={{
             display: 'grid', gridTemplateColumns: `repeat(${PIPELINE_COLUMNS.length}, minmax(0, 1fr))`, gap: 12,
             marginBottom: 20, minHeight: 300,
           }}>
             {PIPELINE_COLUMNS.map(col => {
-              const stageLeads = byMarginDesc(activeLeads.filter(l => col.keys.includes(l.estado || 'lead')), l => opportunityMargin(l, lines));
+              const stageLeads = byMarginDesc(viewLeads.filter(l => col.keys.includes(l.estado || 'lead')), l => opportunityMargin(l, lines));
               const stageMargin = stageLeads.reduce((sum, l) => sum + (opportunityMargin(l, lines) ?? 0), 0);
               const colId = col.keys.join('-');
               return (
@@ -566,9 +573,9 @@ const MyLeads = () => {
               );
             })}
           </div>
-        </DndContext>
+        </DndContext>}
 
-        <OpportunityList leads={activeLeads as any} />
+        {view.vista === 'tabla' && <OpportunityList leads={viewLeads as any} />}
 
         {/* ROW 3: Charts */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
