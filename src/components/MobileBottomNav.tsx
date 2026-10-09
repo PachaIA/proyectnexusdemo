@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { LayoutDashboard, Users, Map, Kanban, Calculator, FileText, CalendarClock, BellRing } from 'lucide-react';
 import { useFollowUps } from '@/hooks/useFollowUps';
 import { cn } from '@/lib/utils';
@@ -17,7 +17,6 @@ const tabs = [
 ];
 
 export const MobileBottomNav = () => {
-  const navigate = useNavigate();
   const location = useLocation();
   const { urgentCount } = useFollowUps();
   if (location.pathname.startsWith('/llamada')) return null;
@@ -26,13 +25,11 @@ export const MobileBottomNav = () => {
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[9999] bg-card border-t border-border flex items-stretch safe-area-bottom">
       {tabs.map((tab) => {
         const Icon = tab.icon;
-        const active = location.pathname === tab.path;
         return (
-          <button
+          <NavLink
             key={tab.label}
-            onClick={() => { if (!active) navigate(tab.path); }}
-            aria-current={active ? 'page' : undefined}
-            className={cn(
+            to={tab.path}
+            className={({ isActive: active }) => cn(
               'flex-1 flex flex-col items-center justify-center py-2 gap-0.5 transition-colors',
               active ? 'text-primary' : 'text-muted-foreground'
             )}
@@ -44,7 +41,7 @@ export const MobileBottomNav = () => {
               )}
             </span>
             <span className="text-[10px] font-medium">{tab.label}</span>
-          </button>
+          </NavLink>
         );
       })}
     </nav>
