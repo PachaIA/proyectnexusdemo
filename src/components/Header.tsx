@@ -13,6 +13,7 @@ import { useLeads } from '@/hooks/useLeads';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { NotesDrawer } from '@/components/NotesDrawer';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
+import { ThemeToggle } from '@/components/ThemeToggle';
 
 const NexusLogo = () => (
   <div className="flex items-center gap-2.5 mr-4">
@@ -21,25 +22,24 @@ const NexusLogo = () => (
         <polygon
           points="18,1 32.5,9 32.5,27 18,35 3.5,27 3.5,9"
           fill="none"
-          stroke="hsl(252 95% 68%)"
+          stroke="var(--interactive)"
           strokeWidth="2"
           strokeLinejoin="round"
         />
         <polygon
           points="18,6 28,12 28,24 18,30 8,24 8,12"
-          fill="hsl(252 95% 68%)"
+          fill="var(--interactive)"
           fillOpacity="0.15"
-          stroke="hsl(252 95% 68%)"
+          stroke="var(--interactive)"
           strokeWidth="1"
           strokeLinejoin="round"
         />
-        <circle cx="18" cy="18" r="3" fill="hsl(252 95% 68%)" />
+        <circle cx="18" cy="18" r="3" fill="var(--interactive)" />
       </svg>
     </div>
     <div className="flex flex-col">
       <span
         className="text-[15px] font-extrabold tracking-[3px] leading-none text-primary"
-        style={{ textShadow: '0 0 12px hsl(252 95% 68% / 0.4)' }}
       >
         NEXUS
       </span>
@@ -66,7 +66,6 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
   const dashboardView = nexusViewFromPath(location.pathname);
   const [localSearch, setLocalSearch] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
-  const [darkMode, setDarkMode] = useState(() => document.documentElement.classList.contains('dark'));
   const [notesOpen, setNotesOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -103,30 +102,6 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  // Dark mode toggle
-  const toggleDarkMode = () => {
-    const next = !darkMode;
-    setDarkMode(next);
-    document.documentElement.classList.toggle('dark', next);
-    document.documentElement.style.colorScheme = next ? 'dark' : 'light';
-    localStorage.setItem('theme', next ? 'dark' : 'light');
-  };
-
-  // Init dark mode from localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('theme');
-    if (saved === 'light') {
-      document.documentElement.classList.remove('dark');
-      document.documentElement.style.colorScheme = 'light';
-      setDarkMode(false);
-    } else {
-      // Default to dark
-      document.documentElement.classList.add('dark');
-      document.documentElement.style.colorScheme = 'dark';
-      setDarkMode(true);
-      if (!saved) localStorage.setItem('theme', 'dark');
-    }
-  }, []);
 
 
 
@@ -501,27 +476,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
           </PopoverContent>
         </Popover>
 
-        {/* Settings with Dark Mode */}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon" className="hidden sm:flex h-9 w-9">
-              <Settings className="w-4 h-4" />
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-56 p-2 z-[9999]" align="end">
-            <div className="space-y-1">
-              <button
-                onClick={toggleDarkMode}
-                className="w-full flex items-center gap-3 px-3 py-2 rounded-md hover:bg-muted/50 transition-colors"
-              >
-                {darkMode ? <Sun className="w-4 h-4 text-warning" /> : <Moon className="w-4 h-4 text-muted-foreground" />}
-                <span className="text-sm text-foreground">
-                  {darkMode ? 'Modo día' : 'Modo noche'}
-                </span>
-              </button>
-            </div>
-          </PopoverContent>
-        </Popover>
+        <ThemeToggle />
 
         {/* Logout */}
         <Button 
