@@ -445,3 +445,37 @@ html[data-theme="caliza"] [class*="bg-warning/"][class*="text-warning"] { color:
 html[data-theme="caliza"] [style*="color-mix"] { background-color: var(--surface) !important; }
 html[data-theme="caliza"] [style*="color-mix"][style*="color: var(--interactive)"],
 html[data-theme="caliza"] [style*="color-mix"][style*="color: var(--t-accent)"] { color: var(--text) !important; }
+
+@keyframes nexus-intro-forward {
+  from { opacity: 0; transform: scale(0.6); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.nexus-daily-intro {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: grid;
+  place-items: center;
+  background: var(--bg);
+  cursor: pointer;
+  opacity: 1;
+  transition: opacity 200ms ease;
+}
+
+.nexus-daily-intro--leaving {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nexus-daily-intro__logo {
+  width: clamp(320px, 70vw, 900px);
+  max-width: calc(100vw - 32px);
+  height: auto;
+  animation: nexus-intro-forward 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nexus-daily-intro { transition: none; }
+  .nexus-daily-intro__logo { animation: none; opacity: 1; transform: none; }
+}

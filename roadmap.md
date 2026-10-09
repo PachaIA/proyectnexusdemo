@@ -1,5 +1,6 @@
 # Roadmap
 
+- [x] Añadir animación de entrada Nexus una vez al día, saltable y con movimiento reducido
 - [x] Unificar Trimestre con el layout principal y hacer que el escenario lea y actualice la etapa real de las oportunidades
 - [x] Unificar ficha de cliente y oportunidad en /clientes/:id; sustituir aperturas de detalle por enlaces
 - [x] Reducir navegación a Hoy, Clientes, Pipeline y Trimestre; integrar acciones/calendario en Hoy, informes en cliente y Trimestre, y retirar Triaje
