@@ -16,18 +16,31 @@ export function DailyIntro() {
     try { storedDate = localStorage.getItem(DAILY_INTRO_STORAGE_KEY); } catch { /* Storage may be blocked. */ }
     if (!shouldShowDailyIntro(storedDate, today)) return;
 
-    try { localStorage.setItem(DAILY_INTRO_STORAGE_KEY, today); } catch { /* Show once for this mounted session. */ }
-    setVisible(true);
+    let cancelled = false;
+    let displayTimer: number | undefined;
+    let removeTimer: number | undefined;
+    const logo = new Image();
+    const showIntro = () => {
+      if (cancelled) return;
+      try { localStorage.setItem(DAILY_INTRO_STORAGE_KEY, today); } catch { /* Show once for this mounted session. */ }
+      setVisible(true);
 
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const displayTimer = window.setTimeout(() => {
-      if (reducedMotion) dismiss();
-      else setLeaving(true);
-    }, reducedMotion ? 400 : 1200);
-    const removeTimer = reducedMotion ? undefined : window.setTimeout(dismiss, 1400);
+      const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      displayTimer = window.setTimeout(() => {
+        if (reducedMotion) dismiss();
+        else setLeaving(true);
+      }, reducedMotion ? 400 : 1200);
+      if (!reducedMotion) removeTimer = window.setTimeout(dismiss, 1400);
+    };
+
+    logo.addEventListener('load', showIntro, { once: true });
+    logo.src = '/nexus-lockup.png';
+    if (logo.complete && logo.naturalWidth > 0) showIntro();
 
     return () => {
-      window.clearTimeout(displayTimer);
+      cancelled = true;
+      logo.removeEventListener('load', showIntro);
+      if (displayTimer !== undefined) window.clearTimeout(displayTimer);
       if (removeTimer !== undefined) window.clearTimeout(removeTimer);
     };
   }, [dismiss]);

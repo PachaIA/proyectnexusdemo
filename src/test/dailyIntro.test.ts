@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { localCalendarDate, shouldShowDailyIntro } from '@/lib/dailyIntro';
+import { DAILY_INTRO_STORAGE_KEY, localCalendarDate, shouldShowDailyIntro } from '@/lib/dailyIntro';
 
 describe('entrada diaria de Nexus', () => {
+  it('usa el registro diario que espera a que el logo esté disponible', () => {
+    expect(DAILY_INTRO_STORAGE_KEY).toBe('nexus-intro-date-v2');
+  });
+
   it('usa la fecha del calendario local', () => {
     expect(localCalendarDate(new Date(2026, 9, 9, 23, 59))).toBe('2026-10-09');
   });
