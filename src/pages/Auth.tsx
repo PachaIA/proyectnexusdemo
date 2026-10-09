@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Zap, Mail, Lock, ArrowRight } from 'lucide-react';
+import { Mail, Lock, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 
 // Only allow same-origin relative paths as redirect targets.
@@ -97,9 +97,11 @@ const Auth = () => {
     <div className="min-h-screen bg-muted/30 flex items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <div className="w-14 h-14 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-4">
-            <Zap className="w-7 h-7 text-primary-foreground" />
-          </div>
+          <img
+            src="/nexus-lockup.png"
+            alt="Nexus"
+            className="mx-auto mb-4 w-full max-w-[420px] min-w-[160px]"
+          />
           <h1 className="text-2xl font-bold text-foreground">Grupo Enertel</h1>
           <p className="text-sm text-muted-foreground mt-1">Herramienta Comercial B2B</p>
         </div>
