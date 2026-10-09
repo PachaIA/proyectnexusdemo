@@ -320,6 +320,7 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
           </div>
         </div>
       )}
+      </>}
     </div>
   );
 };
