@@ -118,11 +118,11 @@ const Auth = () => {
 
   return (
     <main className="flex min-h-screen flex-col bg-background lg:grid lg:grid-cols-[40%_60%]">
-      <div className="order-1 flex min-h-[46vh] flex-col items-center justify-center px-6 py-10 lg:order-2 lg:min-h-screen lg:py-12">
-        <img src="/nexus-avatar.png" alt="Nexus" className="nexus-auth-mark" />
-        <h1 className="nexus-auth-wordmark mt-8 text-[44px] font-semibold text-foreground">NEXUS</h1>
-        <p className="nexus-auth-subtitle mt-4 text-[13px] uppercase text-primary">Inteligencia comercial</p>
-      </div>
+      <div
+        aria-hidden="true"
+        className="nexus-auth-hero order-1 aspect-video w-full lg:order-2 lg:aspect-auto lg:min-h-screen"
+      />
+
 
       <div className="order-2 flex items-center justify-center bg-background px-6 py-10 lg:order-1 lg:min-h-screen lg:py-16">
         <div className="w-full max-w-[360px]">
@@ -151,7 +151,7 @@ const Auth = () => {
                   placeholder="nombre@empresa.es"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="h-12 bg-card text-foreground placeholder:text-muted-foreground"
+                  className="h-12 border-[#253645] bg-[#16232D] text-[#EFE7D7] placeholder:text-[#8A8F94]"
                   required
                   autoComplete="email"
                   maxLength={254}
@@ -165,7 +165,7 @@ const Auth = () => {
                   placeholder="Contraseña"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="h-12 bg-card text-foreground placeholder:text-muted-foreground"
+                  className="h-12 border-[#253645] bg-[#16232D] text-[#EFE7D7] placeholder:text-[#8A8F94]"
                   required
                   minLength={8}
                   maxLength={72}
@@ -174,9 +174,10 @@ const Auth = () => {
               </div>
             </div>
 
+
             {formError && <p role="alert" className="text-sm text-destructive">{formError}</p>}
 
-            <Button type="submit" className="h-12 w-full font-semibold" disabled={loading}>
+            <Button type="submit" className="h-12 w-full bg-[#6FA3B8] font-semibold text-[#101A22] hover:bg-[#6FA3B8]/90" disabled={loading}>
               {loading ? 'Espera…' : 'Entrar'}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -187,7 +188,7 @@ const Auth = () => {
                 type="button"
                 onClick={handleReset}
                 disabled={loading}
-                className="h-auto w-full px-0 text-sm text-primary"
+                className="h-auto w-full px-0 text-sm text-[#6FA3B8]"
               >
                 ¿Olvidaste tu contraseña?
               </Button>
@@ -197,8 +198,9 @@ const Auth = () => {
               variant="ghost"
               type="button"
               onClick={() => { setIsLogin(!isLogin); setFormError(''); }}
-              className="w-full text-sm text-primary"
+              className="w-full text-sm text-[#6FA3B8]"
             >
+
               {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
             </Button>
           </form>
