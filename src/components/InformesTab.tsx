@@ -5,8 +5,6 @@ import { supabase } from '@/integrations/supabase/client';
 import { Company } from '@/data/companies';
 import { useCompanies } from '@/hooks/useCompanies';
 import { useLeads } from '@/hooks/useLeads';
-import { QuickReportModal } from '@/components/QuickReportModal';
-import { QuickActivityModal } from '@/components/QuickActivityModal';
 
 
 const T = {
@@ -76,8 +74,6 @@ export function InformesTab({ onCompanySelect, companyId, compact = false }: Inf
   const [motivoFilter, setMotivoFilter] = useState<'todos' | MotivoId>('todos');
   const [estadoFilter, setEstadoFilter] = useState<string>('todos');
   const [minScore, setMinScore] = useState<number>(0);
-  const [reportCompany, setReportCompany] = useState<Company | null>(null);
-  const [activityCompany, setActivityCompany] = useState<Company | null>(null);
 
 
   // Todas las actividades del usuario (solo lectura)
@@ -438,7 +434,7 @@ export function InformesTab({ onCompanySelect, companyId, compact = false }: Inf
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          setActivityCompany(item.company);
+                           onCompanySelect(item.company);
                         }}
                         style={{
                           ...mono,
@@ -462,7 +458,7 @@ export function InformesTab({ onCompanySelect, companyId, compact = false }: Inf
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          setReportCompany(item.company);
+                           onCompanySelect(item.company);
                         }}
                         style={{
                           ...mono,
@@ -493,44 +489,6 @@ export function InformesTab({ onCompanySelect, companyId, compact = false }: Inf
           );
         })}
       </div>
-
-      {/* Informe rápido directo */}
-      {reportCompany && (
-        <QuickReportModal
-          company={reportCompany}
-          estado={
-            (leads || []).find((l: any) => l.company_id === reportCompany.id)?.estado ||
-            interactions[reportCompany.id]?.estado ||
-            'lead'
-          }
-          proximoContacto={interactions[reportCompany.id]?.proximoContacto || null}
-          ultimoContacto={interactions[reportCompany.id]?.ultimoContacto || null}
-          onClose={() => setReportCompany(null)}
-        />
-      )}
-
-      {/* Registro rápido de actividad */}
-      {activityCompany && (
-        <QuickActivityModal
-          company={activityCompany}
-          onClose={() => setActivityCompany(null)}
-          onSaved={(nextDate) => {
-            if (!nextDate) return;
-            try {
-              const raw = localStorage.getItem('nexus_interactions');
-              const map = raw ? JSON.parse(raw) : {};
-              const prev = map[activityCompany.id] || {};
-              const current = prev.proximoContacto;
-              if (!current || nextDate > current) {
-                map[activityCompany.id] = { ...prev, proximoContacto: nextDate };
-                localStorage.setItem('nexus_interactions', JSON.stringify(map));
-              }
-            } catch {
-              /* ignore */
-            }
-          }}
-        />
-      )}
 
     </div>
   );

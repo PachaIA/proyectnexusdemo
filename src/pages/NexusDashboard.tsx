@@ -18,8 +18,8 @@ import { useCompanies } from "@/hooks/useCompanies";
 import { BriefingEditableBlock } from "@/components/BriefingEditableBlock";
 import { CompanyTopSummary } from "@/components/CompanyTopSummary";
 import { ActivitySection } from "@/components/ActivitySection";
-import { QuickReportModal } from "@/components/QuickReportModal";
 import { OpportunityLinesEditor } from '@/components/OpportunityLinesEditor';
+import { useLeads } from '@/hooks/useLeads';
 
 
 const BRIEFING_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nexus-briefing`;

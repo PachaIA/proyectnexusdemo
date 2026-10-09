@@ -2,7 +2,7 @@ import { Money } from '@/components/Money';
 import { useMemo, useState } from 'react';
 import { ArrowDown, ArrowUp, ArrowUpDown, ExternalLink, AlertTriangle } from 'lucide-react';
 import type { Lead } from '@/hooks/useLeads';
-import { useOpportunityLines, lineMargin, rollUp, fmtEur, fmtPct, type OpportunityLine } from '@/hooks/useOpportunityLines';
+import { useOpportunityLines, rollUp, fmtEur, fmtPct, type OpportunityLine } from '@/hooks/useOpportunityLines';
 import { STAGE_LABEL, normalizeStage, missingFields } from '@/lib/opportunity';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
