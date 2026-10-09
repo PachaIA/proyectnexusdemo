@@ -594,21 +594,19 @@ export default function NexusDashboard() {
     if (NEXUS_VIEW_PATHS[v] !== location.pathname) navigate(NEXUS_VIEW_PATHS[v]);
   }, [navigate, location.pathname]);
 
-  // La ficha vive en /clientes?company=<id>. Sobrevive a F5 y al botón atrás.
+  // Compatibilidad con enlaces antiguos: /clientes?company=<id> redirige a la ficha única.
   useEffect(() => {
     const state = location.state as { companyId?: string } | null;
     if (state?.companyId) {
-      navigate(`${NEXUS_VIEW_PATHS.clientes}?company=${encodeURIComponent(state.companyId)}`, { replace: true });
+      navigate(`/clientes/${encodeURIComponent(state.companyId)}`, { replace: true });
     }
   }, [location.state, navigate]);
 
   const urlCompanyId = new URLSearchParams(location.search).get('company');
   useEffect(() => {
     if (nexusView !== 'clientes' || !urlCompanyId) return;
-    if (selected?.id === urlCompanyId) return;
-    const comp = companies.find(c => c.id === urlCompanyId);
-    if (comp) setSelected(comp);
-  }, [nexusView, urlCompanyId, companies, selected?.id]);
+    navigate(`/clientes/${encodeURIComponent(urlCompanyId)}`, { replace: true });
+  }, [nexusView, urlCompanyId, navigate]);
 
   const openBriefing = useCallback((c: Company) => navigate(`/clientes/${encodeURIComponent(c.id)}`), [navigate]);
 

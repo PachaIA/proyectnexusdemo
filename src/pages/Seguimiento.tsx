@@ -1,10 +1,10 @@
 import { Money } from '@/components/Money';
 import { useMemo } from 'react';
-import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { useFollowUps } from '@/hooks/useFollowUps';
 import { useOpportunityLines, rollUp, fmtEur } from '@/hooks/useOpportunityLines';
-import { editOpportunity, STAGE_LABEL, normalizeStage } from '@/lib/opportunity';
+import { STAGE_LABEL, normalizeStage } from '@/lib/opportunity';
 import { nextActionLabel } from '@/lib/followUps';
 import type { Lead } from '@/hooks/useLeads';
 
@@ -13,6 +13,7 @@ const fmtDate = (d: string) => new Date(d + 'T00:00').toLocaleDateString('es-ES'
 const Seguimiento = () => {
   const { overdue, today, upcoming, isLoading } = useFollowUps();
   const { lines } = useOpportunityLines();
+  const navigate = useNavigate();
 
   const marginOf = useMemo(() => {
     const by = new Map<string, typeof lines>();
@@ -24,7 +25,7 @@ const Seguimiento = () => {
     };
   }, [lines]);
 
-  const open = (lead: Lead) => editOpportunity(lead).catch((e) => toast.error(e?.message || 'No se pudo guardar'));
+  const open = (lead: Lead) => navigate(`/clientes/${encodeURIComponent(lead.company_id)}`);
 
   const Section = ({ title, rows, tone }: { title: string; rows: Lead[]; tone: string }) => rows.length === 0 ? null : (
     <section className="mb-5">

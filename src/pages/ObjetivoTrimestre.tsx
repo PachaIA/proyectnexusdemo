@@ -244,7 +244,7 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
             </div>
           )}
         </section>
-        <section className="border-t border-border pt-6"><h2 className="text-lg font-semibold mb-4">Informe global</h2><InformesTab onCompanySelect={(company) => navigate(`/clientes?company=${encodeURIComponent(company.id)}`)} /></section>
+        <section className="border-t border-border pt-6"><h2 className="text-lg font-semibold mb-4">Informe global</h2><InformesTab onCompanySelect={(company) => navigate(`/clientes/${encodeURIComponent(company.id)}`)} /></section>
         <section className="border-t border-border pt-6"><Simulador embedded /></section>
       </main>
     </div>

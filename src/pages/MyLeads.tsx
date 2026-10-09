@@ -288,7 +288,7 @@ function DroppableColumn({ id, enabled, children }: { id: string; enabled: boole
   );
 }
 
-// (Editor inline eliminado — la ficha se abre con CompanyDetailPanel compartido)
+// La ficha completa vive en /clientes/:id.
 
 
 // ─── Main Component ─────────────────────────────────────────────────────
