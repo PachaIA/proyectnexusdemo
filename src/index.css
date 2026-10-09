@@ -432,3 +432,9 @@ html[data-theme] :is(.card-elevated, div.border.rounded-lg, div.border.rounded-x
 html[data-theme] .leaflet-popup-content-wrapper { background: var(--surface); }
 html[data-theme] .marker-cluster { background: var(--surface-2) !important; }
 html[data-theme] .marker-cluster div { background: var(--interactive) !important; color: hsl(var(--primary-foreground)) !important; }
+
+html[data-theme] .nexus-money * { color: var(--money-foreground) !important; font-family: inherit !important; }
+html[data-theme] [data-score-bucket] { background: var(--surface); color: var(--text); }
+html[data-theme] [data-score-bucket="hot"] { color: var(--alert-text); }
+html[data-theme] [data-score-bucket="warm"] { color: var(--warning-text); }
+html[data-theme] [data-score-bucket="cold"] { color: var(--muted-text-accessible); }

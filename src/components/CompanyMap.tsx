@@ -57,9 +57,9 @@ const createIcon = (score: number, color: string, isSelected: boolean = false) =
           width:${size}px;height:${size}px;border-radius:50%;
           background:${color};
           display:flex;align-items:center;justify-content:center;
-          color:white;font-weight:700;font-size:${isSelected ? 14 : 11}px;
+          color:hsl(var(--primary-foreground));font-weight:700;font-size:${isSelected ? 14 : 11}px;
           box-shadow:0 3px 12px rgba(0,0,0,0.35);
-          border:${borderWidth}px solid rgba(255,255,255,0.95);
+          border:${borderWidth}px solid var(--border);
           cursor:pointer;transition:transform 0.2s;
         " onmouseover="this.style.transform='scale(1.25)'" onmouseout="this.style.transform='scale(1)'">
           ${score}
@@ -73,7 +73,7 @@ const createIcon = (score: number, color: string, isSelected: boolean = false) =
 
 const createCsvIcon = (ncsScore: number) => {
   const size = 32;
-  const color = 'hsl(142, 55%, 42%)';
+  const color = 'var(--success-text)';
   return L.divIcon({
     className: 'custom-marker-icon',
     html: `
@@ -82,9 +82,9 @@ const createCsvIcon = (ncsScore: number) => {
           width:${size}px;height:${size}px;border-radius:50%;
           background:${color};
           display:flex;align-items:center;justify-content:center;
-          color:white;font-weight:700;font-size:11px;
+          color:hsl(var(--primary-foreground));font-weight:700;font-size:11px;
           box-shadow:0 3px 12px rgba(0,0,0,0.35);
-          border:2px solid rgba(255,255,255,0.95);
+          border:2px solid var(--border);
           cursor:pointer;transition:transform 0.2s;
         " onmouseover="this.style.transform='scale(1.25)'" onmouseout="this.style.transform='scale(1)'">
           ${ncsScore}
@@ -131,11 +131,11 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
     style.id = 'cluster-custom-css';
     style.textContent = `
       .marker-cluster-small, .marker-cluster-medium, .marker-cluster-large {
-        background: rgba(30, 58, 138, 0.15) !important;
+        background: var(--surface-2) !important;
       }
       .marker-cluster-small div, .marker-cluster-medium div, .marker-cluster-large div {
-        background: hsl(210, 70%, 50%) !important;
-        color: white !important;
+        background: var(--interactive) !important;
+        color: hsl(var(--primary-foreground)) !important;
         font-weight: 700 !important;
         font-size: 13px !important;
         width: 36px !important;
@@ -147,8 +147,8 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
         align-items: center !important;
         justify-content: center !important;
       }
-      .marker-cluster-medium div { background: hsl(38, 85%, 50%) !important; width: 40px !important; height: 40px !important; font-size: 14px !important; }
-      .marker-cluster-large div { background: hsl(0, 100%, 45%) !important; width: 44px !important; height: 44px !important; font-size: 15px !important; }
+      .marker-cluster-medium div { background: var(--warning-text) !important; width: 40px !important; height: 40px !important; font-size: 14px !important; }
+      .marker-cluster-large div { background: var(--alert-text) !important; width: 44px !important; height: 44px !important; font-size: 15px !important; }
     `;
     document.head.appendChild(style);
   }, []);
@@ -242,7 +242,7 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
 
       const pipelineSection = lead ? `
         <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--muted-text-accessible);">
-          <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:9999px;color:white;background:${statusColor};">${statusLabel}</span>
+          <span style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:9999px;color:hsl(var(--primary-foreground));background:${statusColor};">${statusLabel}</span>
         </div>` : '';
 
       const popup = `
@@ -252,7 +252,7 @@ export const CompanyMap = ({ companies, selectedCompany, onCompanySelect, leads 
           <p style="font-size:11px;color:var(--muted-text-accessible);margin:6px 0;">${company.address}</p>
           <div style="display:flex;align-items:center;justify-content:space-between;">
             <span style="font-size:11px;color:var(--muted-text-accessible);">${company.employees} emp.</span>
-            <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:9999px;color:white;background:${color};">Score ${company.opportunityScore}</span>
+            <span style="font-size:10px;font-weight:600;padding:3px 8px;border-radius:9999px;color:hsl(var(--primary-foreground));background:${color};">Score ${company.opportunityScore}</span>
           </div>
           ${waspSection}
           ${pipelineSection}

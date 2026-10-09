@@ -343,10 +343,7 @@ export default function Simulador() {
               </div>
               <div
                 className="mt-4 inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold"
-                style={{
-                  backgroundColor: bucketStyle.bg,
-                  color: bucketStyle.fg,
-                }}
+                data-score-bucket={result.bucket}
               >
                 {bucketStyle.label}
               </div>
