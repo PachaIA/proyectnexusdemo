@@ -1,3 +1,4 @@
+import { ClientDetailOverview } from '@/components/ClientDetailOverview';
 import { fmtEur } from '@/hooks/useOpportunityLines';
 import { Money } from '@/components/Money';
 import { requestOpportunityFields } from '@/lib/opportunity';
@@ -475,82 +476,6 @@ function InteractionRegistry({
         }}
       />
 
-      {/* Nota rápida */}
-      <div>
-        <div style={{ ...mono, fontSize: 9, color: T.textTertiary, letterSpacing: 2, marginBottom: 8 }}>NOTA RÁPIDA</div>
-
-        <textarea
-          value={noteText} onChange={e => setNoteText(e.target.value)}
-          placeholder="¿Qué pasó? Escribe aquí..."
-          rows={3}
-          style={{
-            width: "100%", background: T.card, border: `1px solid ${T.borderSubtle}`, borderRadius: 8,
-            padding: "8px 12px", color: T.textSecondary, fontSize: 12, outline: "none", resize: "none",
-            fontFamily: "'Inter', sans-serif",
-          }}
-        />
-        <button onClick={handleSaveNote} disabled={!noteText.trim()} style={{
-          marginTop: 6, padding: "6px 14px", borderRadius: 6, cursor: noteText.trim() ? "pointer" : "not-allowed",
-          background: noteText.trim() ? T.accent : T.card,
-          border: `1px solid ${noteText.trim() ? T.accent : T.borderSubtle}`,
-          color: "var(--text)", ...mono, fontSize: 9, letterSpacing: 1, opacity: noteText.trim() ? 1 : 0.4,
-          transition: "all 0.15s",
-        }}>GUARDAR NOTA</button>
-        {data.notas.map((n, i) => (
-          <div key={i} style={{ marginTop: 6, fontSize: 11, color: T.textTertiary, lineHeight: 1.5, display: "flex", alignItems: "flex-start", gap: 6 }}>
-            <div style={{ flex: 1 }}>
-              <span style={{ ...mono, fontSize: 9, color: T.textLabel }}>{n.fecha}</span> — {n.texto}
-            </div>
-            <button
-              onClick={() => setDeleteNoteIdx(i)}
-              style={{
-                background: "none", border: "none", color: T.textMuted, cursor: "pointer",
-                fontSize: 12, padding: "0 2px", flexShrink: 0, lineHeight: 1,
-              }}
-              title="Eliminar nota"
-            >✕</button>
-          </div>
-        ))}
-
-        {/* Confirmation dialog for note deletion */}
-        {deleteNoteIdx !== null && (
-          <div style={{
-            position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 9999,
-            display: "flex", alignItems: "center", justifyContent: "center", backdropFilter: "blur(4px)",
-          }}>
-            <div style={{
-              background: T.card, border: `1px solid ${T.border}`, borderRadius: 12,
-              padding: "24px 28px", maxWidth: 360, width: "90%",
-              boxShadow: "none",
-            }}>
-              <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, color: T.textPrimary, letterSpacing: 1, marginBottom: 10 }}>
-                ¿Eliminar esta nota?
-              </div>
-              <p style={{ fontSize: 12, color: T.textTertiary, marginBottom: 18, lineHeight: 1.5 }}>
-                Esta acción no se puede deshacer.
-              </p>
-              <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
-                <button onClick={() => setDeleteNoteIdx(null)} style={{
-                  padding: "7px 16px", borderRadius: 6, cursor: "pointer",
-                  background: "none", border: `1px solid ${T.borderSubtle}`, color: T.textTertiary,
-                  fontFamily: "'Inter', sans-serif", fontSize: 10, letterSpacing: 1,
-                }}>CANCELAR</button>
-                <button onClick={() => {
-                  const updated = [...data.notas];
-                  updated.splice(deleteNoteIdx, 1);
-                  update({ notas: updated });
-                  setDeleteNoteIdx(null);
-                }} style={{
-                  padding: "7px 16px", borderRadius: 6, cursor: "pointer",
-                  background: "var(--alert-text)", border: "none", color: "var(--text)",
-                  fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 1,
-                }}>ELIMINAR</button>
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-
       {/* Próximo contacto */}
       <div>
         <div style={{ ...mono, fontSize: 9, color: T.textTertiary, letterSpacing: 2, marginBottom: 8 }}>PRÓXIMO CONTACTO</div>
@@ -969,99 +894,9 @@ function DetailPanel({
   };
 
   return (
-    <div style={{ background: T.card, border: `1px solid ${T.borderSubtle}`, borderRadius: 16, overflow: "hidden" }}>
-      {/* Header */}
-      <div style={{
-        padding: "20px 24px", background: `linear-gradient(135deg, ${T.cardAlt} 0%, ${T.sidebar} 100%)`,
-        borderBottom: `1px solid ${T.borderSubtle}`, position: "relative", overflow: "hidden",
-      }}>
-        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, transparent, ${sectorColors[selected.sector] || T.accent}, transparent)` }} />
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
-          <div>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
-              <span style={{ fontSize: 24 }}>{sectorIcons[selected.sector] || "🏢"}</span>
-              <div>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
-                  <h2 style={{ fontSize: 18, fontWeight: 800, color: T.textPrimary, lineHeight: 1.2 }}>{selected.name}</h2>
-                  <span data-reference style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 11, padding: "2px 8px", borderRadius: 6, background: T.cardAlt, border: `1px solid ${T.borderSubtle}`, color: T.textSecondary, letterSpacing: 1 }}>
-                    CIF: {selected.cif || '—'}
-                  </span>
-                  {/* Mini cluster: hot · score · digitalización · rentabilidad */}
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: 6, padding: "2px 8px", borderRadius: 999, background: T.cardAlt, border: `1px solid ${T.borderSubtle}` }}>
-                    <button
-                      onClick={toggleHot}
-                      title={isHot ? "Quitar de calientes" : "Marcar como caliente"}
-                      style={{ background: "transparent", border: "none", padding: 0, cursor: "pointer", fontSize: 13, lineHeight: 1, filter: isHot ? "none" : "grayscale(1) opacity(0.4)" }}
-                    >🔥</button>
-                    {(() => {
-                      const s = selected.opportunityScore;
-                      const c = s >= 80 ? "var(--alert-text)" : s >= 60 ? "var(--warning-text)" : "var(--muted-text-accessible)";
-                      return (
-                        <span title={`Score ${s}`} style={{ width: 22, height: 22, borderRadius: "50%", display: "inline-flex", alignItems: "center", justifyContent: "center", border: `1.5px solid ${c}`, color: c, fontFamily: "'Inter', sans-serif", fontWeight: 800, fontSize: 10, lineHeight: 1 }}>{s}</span>
-                      );
-                    })()}
-                    {(() => {
-                      const lvl = selected.digitalizationLevel || 'medio';
-                      const bars = lvl === 'alto' ? 3 : lvl === 'medio' ? 2 : 1;
-                      const color = lvl === 'alto' ? "var(--success-text)" : lvl === 'medio' ? "var(--warning-text)" : "var(--muted-text-accessible)";
-                      const label = lvl === 'alto' ? 'Digitalización alta' : lvl === 'medio' ? 'Digitalización media' : 'Digitalización baja';
-                      return (
-                        <span title={label} style={{ display: "inline-flex", alignItems: "flex-end", gap: 1.5, height: 13 }}>
-                          {[4, 8, 12].map((h, i) => (
-                            <span key={i} style={{ width: 3, height: h, borderRadius: 1, background: i < bars ? color : T.borderSubtle }} />
-                          ))}
-                        </span>
-                      );
-                    })()}
-                    {editingRent ? (
-                      <span style={{ display: "inline-flex", alignItems: "center", gap: 3 }}>
-                        <input
-                          value={rentDraft}
-                          onChange={e => setRentDraft(e.target.value)}
-                          placeholder="0"
-                          autoFocus
-                          onKeyDown={e => { if (e.key === 'Enter') saveRentabilidad(); if (e.key === 'Escape') setEditingRent(false); }}
-                          style={{ width: 44, background: T.card, border: `1px solid ${T.border}`, borderRadius: 4, padding: "1px 4px", color: T.textSecondary, fontSize: 11, fontWeight: 700, outline: "none", fontFamily: "'Inter', sans-serif" }}
-                        />
-                        <button onClick={saveRentabilidad} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "var(--success-text)", padding: 0 }}>✓</button>
-                        <button onClick={() => setEditingRent(false)} style={{ background: "none", border: "none", cursor: "pointer", fontSize: 11, color: "var(--alert-text)", padding: 0 }}>✕</button>
-                      </span>
-                    ) : (
-                      <button
-                        onClick={() => setEditingRent(true)}
-                        title="Rentabilidad por línea"
-                        style={{ background: "none", border: "none", cursor: "pointer", padding: 0, fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, color: selected.rentabilidadLinea != null ? "var(--success-text)" : T.textMuted, lineHeight: 1 }}
-                      >
-                        {selected.rentabilidadLinea != null ? <Money>{fmtEur(selected.rentabilidadLinea)}</Money> : '—'}
-                      </button>
-                    )}
-                  </div>
-                </div>
-                <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, color: T.textLabel, letterSpacing: 2, marginTop: 4 }}>
-                  {selected.sector?.toUpperCase()} · {(selected.locationType || '').toUpperCase()} · {(selected.location || '').toUpperCase()}
-                </div>
-              </div>
-            </div>
-            {/* Resumen fijo NO editable: dirección principal (sede ⭐) + contacto principal (⭐) */}
-            <div style={{ marginTop: 12 }}>
-              <CompanyTopSummary company={selected} />
-            </div>
-            
-            {/* Big call button - mobile */}
-            {(() => {
-              const tel = (selected.contactInfo as any)?.telefono || selected.contactInfo?.phone || '';
-              return tel ? (
-                <a href={`tel:${tel}`} className="md:hidden flex items-center justify-center gap-2 mt-3 w-full py-3 rounded-xl bg-primary text-primary-foreground font-bold text-base no-underline active:opacity-80 transition-opacity" style={{ textDecoration: 'none' }}>
-                  📞 LLAMAR AHORA — {tel}
-                </a>
-              ) : null;
-            })()}
-          </div>
-        </div>
-      </div>
-
-
-      <div style={{ padding: "20px 24px", display: "flex", flexDirection: "column", gap: 20, maxHeight: "calc(100vh - 300px)", overflowY: "auto" }}>
+    <div className="max-w-3xl mx-auto min-w-0">
+      <ClientDetailOverview key={selected.id} company={selected}>
+      <div className="flex flex-col gap-5">
         {saving && (
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, color: T.accent, letterSpacing: 2, textAlign: "center" }}>GUARDANDO...</div>
         )}
@@ -1253,7 +1088,7 @@ function DetailPanel({
         </div>
 
         {/* Needs + Products — editable */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+        <div className="flex flex-col gap-4">
           <EditableTagList
             items={selected.detectedNeeds}
             label="NECESIDADES"
@@ -1380,6 +1215,7 @@ function DetailPanel({
         {/* Interaction Registry */}
         <InteractionRegistry company={selected} interactions={interactions} onUpdate={onUpdate} />
       </div>
+      </ClientDetailOverview>
     </div>
   );
 }
