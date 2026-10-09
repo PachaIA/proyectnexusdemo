@@ -1,5 +1,10 @@
 import { Money } from '@/components/Money';
-import { fmtEur } from '@/hooks/useOpportunityLines';
+import { fmtEur, useOpportunityLines } from '@/hooks/useOpportunityLines';
+import { opportunityMargin } from '@/lib/dashboardSummary';
+import { activityTone, daysSince, lastActivityByCompany, byMarginDesc } from '@/lib/pipelineBoard';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { Tooltip as UITooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { useEffect, useState, useMemo } from 'react';
 import { useLeads, Lead } from '@/hooks/useLeads';
 import { useCompanies } from '@/hooks/useCompanies';
@@ -110,8 +115,10 @@ function KPICard({ label, value, icon, accent = T.accent }: { label: string; val
 }
 
 // ─── Kanban Card ────────────────────────────────────────────────────────
-function KanbanCard({ lead, onAdvance, onWin, onLose, onArchive, onOpenDetail, onChangeStatus, dragHandleProps }: {
+function KanbanCard({ lead, margin, lastActivity, onAdvance, onWin, onLose, onArchive, onOpenDetail, onChangeStatus, dragHandleProps }: {
   lead: Lead;
+  margin: number | null;
+  lastActivity: string;
   onAdvance: () => void;
   onWin: () => void;
   onLose: () => void;
@@ -168,6 +175,19 @@ function KanbanCard({ lead, onAdvance, onWin, onLose, onArchive, onOpenDetail, o
           background: `color-mix(in srgb, ${scoreColor} 9.4%, transparent)`, padding: '2px 8px', borderRadius: 6,
           border: `1px solid color-mix(in srgb, ${scoreColor} 20.0%, transparent)`,
         }}>{lead.opportunity_score}</span>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8, marginBottom: 6 }}>
+        <span className="tabular-nums" style={{ fontSize: 13, fontWeight: 700 }}><Money>{fmtEur(margin)}</Money></span>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <span className="tabular-nums" style={{ fontSize: 10, color: T.textTertiary }} title="Cierre previsto">
+            {lead.fecha_cierre_prevista ? new Date(`${lead.fecha_cierre_prevista}T00:00:00`).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' }) : 'Sin cierre'}
+          </span>
+          {(() => { const d = daysSince(lastActivity); const tip = `Sin actividad desde hace ${d} ${d === 1 ? 'día' : 'días'}`; return (
+            <UITooltip><TooltipTrigger asChild>
+              <span role="img" aria-label={tip} onClick={e => e.stopPropagation()} style={{ width: 8, height: 8, borderRadius: '50%', background: `var(--${activityTone(d)})`, display: 'inline-block' }} />
+            </TooltipTrigger><TooltipContent>{tip}</TooltipContent></UITooltip>
+          ); })()}
+        </span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         <span style={{ fontSize: 10, color: T.textTertiary, textTransform: 'capitalize' }}>{lead.sector}</span>
@@ -277,6 +297,16 @@ const MyLeads = () => {
   const { leads, isLoading, updateLead, archiveLead, getLeadStats } = useLeads();
   const { companies } = useCompanies();
   const navigate = useNavigate();
+  const { lines } = useOpportunityLines();
+  const { data: activityRows = [] } = useQuery({
+    queryKey: ['company_activities', 'last-dates'],
+    queryFn: async () => {
+      const { data, error } = await supabase.from('company_activities').select('company_id, activity_date');
+      if (error) throw error;
+      return data as { company_id: string; activity_date: string }[];
+    },
+  });
+  const lastActivity = useMemo(() => lastActivityByCompany(activityRows), [activityRows]);
   const [archiveTarget, setArchiveTarget] = useState<string | null>(null);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [showProposal, setShowProposal] = useState(false);
@@ -479,7 +509,8 @@ const MyLeads = () => {
             marginBottom: 20, minHeight: 300,
           }}>
             {PIPELINE_COLUMNS.map(col => {
-              const stageLeads = activeLeads.filter(l => col.keys.includes(l.estado || 'lead'));
+              const stageLeads = byMarginDesc(activeLeads.filter(l => col.keys.includes(l.estado || 'lead')), l => opportunityMargin(l, lines));
+              const stageMargin = stageLeads.reduce((sum, l) => sum + (opportunityMargin(l, lines) ?? 0), 0);
               const colId = col.keys.join('-');
               return (
                 <DroppableColumn key={colId} id={colId} enabled={!isMobile}>
@@ -503,6 +534,7 @@ const MyLeads = () => {
                           background: `color-mix(in srgb, ${col.color} 9.4%, transparent)`, padding: '2px 8px', borderRadius: 6,
                         }}>{stageLeads.length}</span>
                       </div>
+                      <div className="tabular-nums" style={{ marginTop: 6, fontSize: 13, fontWeight: 700 }} aria-label={`Margen de ${col.label}`}><Money>{fmtEur(stageMargin)}</Money></div>
                     </div>
                     {/* Cards */}
                     <div style={{ flex: 1, padding: '10px 10px', overflowY: 'auto' }}>
@@ -514,6 +546,8 @@ const MyLeads = () => {
                             {(handle) => (
                               <KanbanCard
                                 lead={lead}
+                                margin={opportunityMargin(lead, lines)}
+                                lastActivity={lastActivity.get(lead.company_id) ?? lead.updated_at}
                                 onAdvance={() => handleNextStatus(lead)}
                                 onWin={() => handleStatusChange(lead.id, 'ganada')}
                                 onLose={() => handleStatusChange(lead.id, 'perdida')}
