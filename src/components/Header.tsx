@@ -317,7 +317,10 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
           variant="ghost" 
           size="icon" 
           className="h-9 w-9"
-          onClick={() => supabase.auth.signOut()}
+          onClick={async () => {
+            await supabase.auth.signOut();
+            navigate('/auth', { replace: true });
+          }}
           title="Cerrar sesión"
         >
           <LogOut className="w-4 h-4" />
