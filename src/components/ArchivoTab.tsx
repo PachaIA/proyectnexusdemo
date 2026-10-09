@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Archive, RotateCcw, Search } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { Link } from 'react-router-dom';
 
 interface ArchivoTabProps {
   onCompanySelect: (company: Company) => void;
@@ -77,9 +78,7 @@ export const ArchivoTab = ({ onCompanySelect }: ArchivoTabProps) => {
               {archived.map(c => (
                 <tr key={c.id} className="border-b border-border last:border-0 hover:bg-muted/20 transition-colors">
                   <td className="p-3">
-                    <button onClick={() => onCompanySelect(c)} className="text-foreground font-medium hover:text-primary transition-colors text-left">
-                      {c.name}
-                    </button>
+                     <Link to={`/clientes/${encodeURIComponent(c.id)}`} className="text-foreground font-medium hover:text-primary transition-colors text-left">{c.name}</Link>
                   </td>
                   <td className="p-3 text-muted-foreground">{c.cif || '—'}</td>
                   <td className="p-3">

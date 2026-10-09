@@ -18,7 +18,8 @@ import { useCompanies } from "@/hooks/useCompanies";
 import { BriefingEditableBlock } from "@/components/BriefingEditableBlock";
 import { CompanyTopSummary } from "@/components/CompanyTopSummary";
 import { ActivitySection } from "@/components/ActivitySection";
-import { QuickReportModal } from "@/components/QuickReportModal";
+import { OpportunityLinesEditor } from '@/components/OpportunityLinesEditor';
+import { useLeads } from '@/hooks/useLeads';
 
 
 const BRIEFING_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nexus-briefing`;
@@ -143,7 +144,7 @@ function ScoreBadge({ score }: { score: number }) {
 // ─── AI Briefing Modal ──────────────────────────────────────────────────
 interface AIMessage { role: "user" | "assistant"; content: string; }
 
-function AIBriefing({ company, onClose }: { company: Company; onClose: () => void }) {
+export function AIBriefing({ company, onClose }: { company: Company; onClose: () => void }) {
   const [messages, setMessages] = useState<AIMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -594,26 +595,21 @@ export default function NexusDashboard() {
     if (NEXUS_VIEW_PATHS[v] !== location.pathname) navigate(NEXUS_VIEW_PATHS[v]);
   }, [navigate, location.pathname]);
 
-  // La ficha vive en /clientes?company=<id>. Sobrevive a F5 y al botón atrás.
+  // Compatibilidad con enlaces antiguos: /clientes?company=<id> redirige a la ficha única.
   useEffect(() => {
     const state = location.state as { companyId?: string } | null;
     if (state?.companyId) {
-      navigate(`${NEXUS_VIEW_PATHS.clientes}?company=${encodeURIComponent(state.companyId)}`, { replace: true });
+      navigate(`/clientes/${encodeURIComponent(state.companyId)}`, { replace: true });
     }
   }, [location.state, navigate]);
 
   const urlCompanyId = new URLSearchParams(location.search).get('company');
   useEffect(() => {
     if (nexusView !== 'clientes' || !urlCompanyId) return;
-    if (selected?.id === urlCompanyId) return;
-    const comp = companies.find(c => c.id === urlCompanyId);
-    if (comp) setSelected(comp);
-  }, [nexusView, urlCompanyId, companies, selected?.id]);
+    navigate(`/clientes/${encodeURIComponent(urlCompanyId)}`, { replace: true });
+  }, [nexusView, urlCompanyId, navigate]);
 
-  const openBriefing = useCallback((c: Company) => {
-    setSelected(c);
-    navigate(`${NEXUS_VIEW_PATHS.clientes}?company=${encodeURIComponent(c.id)}`);
-  }, [navigate]);
+  const openBriefing = useCallback((c: Company) => navigate(`/clientes/${encodeURIComponent(c.id)}`), [navigate]);
 
   // Sync `selected` with refreshed companies (after edits trigger refetch)
   useEffect(() => {
@@ -813,18 +809,20 @@ function EditableTagList({
 }
 
 // ─── Detail Panel Component ─────────────────────────────────────────────
-function DetailPanel({
+export function DetailPanel({
   company: selected,
   interactions,
   onUpdate,
   onShowAI,
   onOpenArcGIS,
+  routeDetail = false,
 }: {
   company: Company;
   interactions: InteractionsMap;
   onUpdate: (m: InteractionsMap) => void;
   onShowAI: () => void;
   onOpenArcGIS: (c: Company) => void;
+  routeDetail?: boolean;
 }) {
   const [editingDM, setEditingDM] = useState(false);
   const [dmDraft, setDmDraft] = useState<DecisionMaker[]>(selected.decisionMakers || []);
@@ -832,7 +830,8 @@ function DetailPanel({
   const [editingRent, setEditingRent] = useState(false);
   const [rentDraft, setRentDraft] = useState<string>(selected.rentabilidadLinea != null ? String(selected.rentabilidadLinea) : '');
   const [isHot, setIsHot] = useState(selected.isHot || false);
-  const [showReport, setShowReport] = useState(false);
+  const { leads } = useLeads();
+  const currentOpportunity = leads.filter(lead => lead.company_id === selected.id && !lead.archived_at).sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0];
   const selectedActionType = getSafeActionType(selected.nextBestAction);
   const selectedActionPriority = getSafePriority(selected.nextBestAction);
 
@@ -900,6 +899,8 @@ function DetailPanel({
           <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 9, color: T.accent, letterSpacing: 2, textAlign: "center" }}>GUARDANDO...</div>
         )}
 
+        {routeDetail && <section className="border-y border-border py-4"><div className="text-xs font-semibold text-muted-foreground mb-2">BRIEFING DIARIO</div><p className="text-sm text-foreground">{selected.nextBestAction?.reason || 'Sin recomendación disponible'}</p></section>}
+
         {/* Recommended action */}
         <div style={{
           background: `color-mix(in srgb, ${priorityColors[selectedActionPriority]} 7.1%, transparent)`,
@@ -917,6 +918,7 @@ function DetailPanel({
 
         {/* Bloque editable unificado: identidad, dirección, sedes, perfil y venta del trimestre */}
         <BriefingEditableBlock company={selected} />
+        {currentOpportunity && <OpportunityLinesEditor lead={currentOpportunity} />}
 
 
         {/* Decision makers — editable */}
@@ -1194,22 +1196,7 @@ function DetailPanel({
             padding: "11px", borderRadius: 10, background: T.cardAlt, border: `1px solid ${T.border}`,
             color: T.textTertiary, cursor: "pointer", fontFamily: "'Inter', sans-serif", fontSize: 9, letterSpacing: 1, transition: "all 0.2s",
           }}>✉️ EMAIL</button>
-          <button className="nexus-action-btn" onClick={() => setShowReport(true)} style={{
-            gridColumn: "1 / -1", padding: "12px", borderRadius: 10, background: T.cardAlt,
-            border: `1px solid color-mix(in srgb, ${T.accent} 40.0%, transparent)`, color: T.accent, cursor: "pointer",
-            fontFamily: "'Inter', sans-serif", fontSize: 10, fontWeight: 700, letterSpacing: 2, transition: "all 0.2s",
-          }}>📄 INFORME RÁPIDO</button>
         </div>
-
-        {showReport && (
-          <QuickReportModal
-            company={selected}
-            estado={getInteraction(interactions, selected.id).estado}
-            proximoContacto={getInteraction(interactions, selected.id).proximoContacto}
-            ultimoContacto={getInteraction(interactions, selected.id).ultimoContacto}
-            onClose={() => setShowReport(false)}
-          />
-        )}
 
         {/* Interaction Registry */}
         <InteractionRegistry company={selected} interactions={interactions} onUpdate={onUpdate} />

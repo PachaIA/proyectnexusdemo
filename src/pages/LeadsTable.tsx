@@ -106,7 +106,7 @@ const LeadsTable = () => {
   };
 
   const goToMap = (companyId: string) => {
-    navigate(`/mapa?company=${encodeURIComponent(companyId)}`);
+    navigate(`/clientes/${encodeURIComponent(companyId)}`);
   };
 
   return (

@@ -1,7 +1,6 @@
 import { useState, useMemo, useEffect } from 'react';
 import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { MainLayout } from '@/components/layout/MainLayout';
-import { CompanyDetailPanel } from '@/components/layout/CompanyDetailPanel';
 import { CompanyMap } from '@/components/CompanyMap';
 import { MapFilterBar } from '@/components/MapFilterBar';
 import { BucketFilter } from '@/components/BucketFilter';
@@ -31,7 +30,6 @@ const Index = () => {
   const [onlyHot, setOnlyHot] = useState(false);
   const [origenSelected, setOrigenSelected] = useState<Origen[]>(ORIGEN_DEFAULT_SELECTED);
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  const [showDetail, setShowDetail] = useState(false);
   const [showProposal, setShowProposal] = useState(false);
   const [showSpeech, setShowSpeech] = useState(false);
   const [selectedContact, setSelectedContact] = useState<DecisionMaker | null>(null);
@@ -63,7 +61,7 @@ const Index = () => {
     const c = companies.find((x) => x.id === id);
     if (c) {
       setSelectedCompany(c);
-      setShowDetail(true);
+      navigate(`/clientes/${encodeURIComponent(c.id)}`, { replace: true });
     }
   }, [searchParams, companies]);
 
@@ -163,9 +161,7 @@ const Index = () => {
   const hasActiveFilters = sourceFilter.length > 0 || operatorFilter.length > 0 || scoreFilter.length > 0;
 
   const handleCompanySelect = (company: Company) => {
-    setSelectedCompany(company);
-    setShowDetail(true);
-    setShowUnifiedPanel(false);
+    navigate(`/clientes/${encodeURIComponent(company.id)}`);
   };
 
   const handleCsvCompanySelect = (csv: CsvCompany) => {
@@ -178,7 +174,6 @@ const Index = () => {
     };
     setUnifiedPanelCompany(unified);
     setShowUnifiedPanel(true);
-    setShowDetail(false);
   };
 
   const handleCreateLead = async () => {
@@ -249,7 +244,6 @@ const Index = () => {
         .update({ archived_at: new Date().toISOString(), archive_reason: reason || defaultReason })
         .eq('id', selectedCompany.id);
       if (error) throw error;
-      setShowDetail(false);
       refetchCompanies();
       toast.success(`${selectedCompany.name} archivada`);
     } catch {
@@ -257,21 +251,9 @@ const Index = () => {
     }
   };
 
-  const rightPanel = (
-    <CompanyDetailPanel
-      company={selectedCompany}
-      isOpen={showDetail}
-      onClose={() => setShowDetail(false)}
-      onGenerateProposal={() => setShowProposal(true)}
-      onCreateLead={handleCreateLead}
-      onOpenSpeech={(contact) => { setSelectedContact(contact); setShowSpeech(true); }}
-      onArchive={handleArchiveCompany}
-    />
-  );
-
   return (
     <MainLayout
-      rightPanel={rightPanel}
+      rightPanel={null}
       searchQuery={searchQuery}
       onSearchChange={setSearchQuery}
       onAddCompany={() => setShowAddCompany(true)}

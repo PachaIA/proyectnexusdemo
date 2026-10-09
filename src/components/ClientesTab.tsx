@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MobileClientCard } from "@/components/MobileClientCard";
+import { useNavigate } from 'react-router-dom';
 
 const ESTADOS_LABELS: Record<string, { label: string; color: string }> = {
   lead: { label: "Lead", color: "var(--muted-text-accessible)" },
@@ -37,6 +38,8 @@ interface ClientesTabProps {
 }
 
 export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
+  const navigate = useNavigate();
+  const openCompany = (company: Company) => navigate(`/clientes/${encodeURIComponent(company.id)}`);
   const { companies, isLoading } = useCompanies();
   const { leads } = useLeads();
   const isMobile = useIsMobile();
@@ -206,7 +209,7 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
 
       {v.vista === 'mapa' ? (
         <div className="relative h-[70vh] min-h-[420px] rounded-md overflow-hidden border border-border">
-          <CompanyMap companies={filtered.filter(c => c.lat && c.lng)} selectedCompany={null} onCompanySelect={onCompanySelect} leads={leads as any} />
+           <CompanyMap companies={filtered.filter(c => c.lat && c.lng)} selectedCompany={null} onCompanySelect={openCompany} leads={leads as any} />
           <p className="absolute top-2 left-2 z-[500] bg-card/90 px-2 py-1 rounded text-xs text-muted-foreground">{filtered.filter(c => c.lat && c.lng).length} de {filtered.length} empresas con ubicación</p>
         </div>
       ) : <>
@@ -222,7 +225,7 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
                 key={c.id}
                 company={c}
                 estado={estadoCfg}
-                onSelect={() => onCompanySelect(c)}
+                 onSelect={() => openCompany(c)}
               />
             );
           })}
@@ -257,7 +260,7 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
                   const tel = (c.contactInfo as any)?.telefono || c.contactInfo?.phone || "";
                   const contactName = (c.contactInfo as any)?.nombre || c.contactInfo?.contactPerson || "";
                   return (
-                    <tr key={c.id} className="hover:bg-muted/30 transition-colors cursor-pointer" onClick={() => onCompanySelect(c)}>
+                     <tr key={c.id} className="hover:bg-muted/30 transition-colors cursor-pointer" onClick={() => openCompany(c)}>
                       <td className={`${tdClass} font-medium text-primary hover:underline max-w-[200px] truncate`}>{c.name}</td>
                       <td className={`${tdClass} hidden lg:table-cell text-muted-foreground text-xs nexus-reference`}>{c.cif || "—"}</td>
                       <td className={`${tdClass} text-xs`}>{c.operadorActual || "—"}</td>

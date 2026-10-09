@@ -1,5 +1,6 @@
 # Roadmap
 
+- [x] Unificar ficha de cliente y oportunidad en /clientes/:id; sustituir aperturas de detalle por enlaces
 - [x] Reducir navegación a Hoy, Clientes, Pipeline y Trimestre; integrar acciones/calendario en Hoy, informes en cliente y Trimestre, y retirar Triaje
 
 - [x] Corregir gráficos del pipeline y simplificar navegación principal

@@ -1,7 +1,7 @@
 
 - Auth is temporarily disabled: routes are unguarded, `getEffectiveUser()` falls back to a shared open user ID, and "TEMP open" anon RLS policies grant access — remove all three together when login returns. Why: owner wants the app usable without login for now.
 - Map tiles use keyless Esri basemaps. Why: CARTO tiles now require an API key.
-- Primary navigation has exactly four URL routes: /hoy, /clientes, /pipeline and /trimestre; client detail uses /clientes?company=<id>, while secondary legacy tools may remain unlinked. Why: daily work stays concentrated without losing deep-linking.
+- Primary navigation has exactly four destinations: /hoy, /clientes, /pipeline and /trimestre; every client or opportunity detail opens at /clientes/:id. Why: one durable, shareable client workspace replaces competing modal detail surfaces.
 - Cross-component data refresh uses the shared queryClient helpers (refreshCompanies/refreshLeads) and router state, not window CustomEvents. Why: no lost events or mount races.
 - PWA: vite-plugin-pwa generateSW (/sw.js, autoUpdate, injectRegister:null); registration only via src/lib/registerSW.ts guarded wrapper (never in dev/preview/iframe, ?sw=off kills). Data offline = React Query persister (localStorage, 7d) + NetworkFirst runtime cache for /rest/v1 GETs; offline writes queued in src/lib/offlineQueue.ts and flushed on 'online'.
 - Opportunity stages live only in src/lib/opportunity.ts (STAGES, mirrors DB enum opportunity_stage); required opportunity fields are enforced both in OpportunityDialog and the leads_validate_required trigger. Why: one source of truth, no bypass.

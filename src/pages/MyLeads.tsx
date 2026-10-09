@@ -21,10 +21,7 @@ import {
   DndContext, PointerSensor, useSensor, useSensors,
   useDraggable, useDroppable, type DragEndEvent,
 } from '@dnd-kit/core';
-import { CompanyDetailPanel } from '@/components/layout/CompanyDetailPanel';
-import { ProposalModal } from '@/components/ProposalModal';
 import { OpportunityList } from '@/components/OpportunityList';
-import { SpeechModal } from '@/components/SpeechModal';
 
 // ─── Theme — CSS Variable Based ─────────────────────────────────────────
 const T = {
@@ -291,7 +288,7 @@ function DroppableColumn({ id, enabled, children }: { id: string; enabled: boole
   );
 }
 
-// (Editor inline eliminado — la ficha se abre con CompanyDetailPanel compartido)
+// La ficha completa vive en /clientes/:id.
 
 
 // ─── Main Component ─────────────────────────────────────────────────────
@@ -303,21 +300,11 @@ const MyLeads = () => {
   const lastActivity = useLastActivity();
   const [view, setView, viewQuery] = useUrlView(PIPELINE_DEFAULTS);
   const [archiveTarget, setArchiveTarget] = useState<string | null>(null);
-  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  const [showProposal, setShowProposal] = useState(false);
-  const [showSpeech, setShowSpeech] = useState(false);
-  const [selectedContact, setSelectedContact] = useState<DecisionMaker | null>(null);
-
-  useEffect(() => {
-    if (!selectedCompany) return;
-    const freshCompany = companies.find(c => c.id === selectedCompany.id);
-    if (freshCompany && freshCompany !== selectedCompany) setSelectedCompany(freshCompany);
-  }, [companies, selectedCompany?.id]);
 
   const handleOpenDetail = (lead: Lead) => {
     const comp = companies.find(c => c.id === lead.company_id);
     if (comp) {
-      setSelectedCompany(comp);
+      navigate(`/clientes/${encodeURIComponent(comp.id)}`);
     } else {
       toast.error('No encuentro la empresa asociada a este lead');
     }
@@ -658,19 +645,6 @@ const MyLeads = () => {
           </DialogFooter>
         </DialogContent>
       </Dialog>
-
-      {/* Ficha unificada de empresa (misma que Clientes / Mapa, modal centrado en escritorio) */}
-      <CompanyDetailPanel
-        company={selectedCompany}
-        isOpen={!!selectedCompany}
-        onClose={() => setSelectedCompany(null)}
-        onGenerateProposal={() => setShowProposal(true)}
-        onCreateLead={() => toast.info('Este cliente ya está en el pipeline')}
-        onOpenSpeech={(contact) => { setSelectedContact(contact); setShowSpeech(true); }}
-        variant="centered"
-      />
-      <ProposalModal company={selectedCompany} isOpen={showProposal} onClose={() => setShowProposal(false)} />
-      <SpeechModal company={selectedCompany} selectedContact={selectedContact} isOpen={showSpeech} onClose={() => setShowSpeech(false)} />
 
     </div>
   );
