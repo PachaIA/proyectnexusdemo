@@ -177,7 +177,7 @@ const Auth = () => {
 
             {formError && <p role="alert" className="text-sm text-destructive">{formError}</p>}
 
-            <Button type="submit" className="h-12 w-full font-semibold" disabled={loading}>
+            <Button type="submit" className="h-12 w-full bg-[#6FA3B8] font-semibold text-[#101A22] hover:bg-[#6FA3B8]/90" disabled={loading}>
               {loading ? 'Espera…' : 'Entrar'}
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -188,7 +188,7 @@ const Auth = () => {
                 type="button"
                 onClick={handleReset}
                 disabled={loading}
-                className="h-auto w-full px-0 text-sm text-primary"
+                className="h-auto w-full px-0 text-sm text-[#6FA3B8]"
               >
                 ¿Olvidaste tu contraseña?
               </Button>
@@ -198,8 +198,9 @@ const Auth = () => {
               variant="ghost"
               type="button"
               onClick={() => { setIsLogin(!isLogin); setFormError(''); }}
-              className="w-full text-sm text-primary"
+              className="w-full text-sm text-[#6FA3B8]"
             >
+
               {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
             </Button>
           </form>
