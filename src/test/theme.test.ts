@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { applyTheme, resolveTheme } from '@/lib/theme';
+import { fmtEur } from '@/hooks/useOpportunityLines';
 
 describe('Nexus theme preference', () => {
+  it('formats money with Spanish grouping, two decimals and trailing euro', () => {
+    expect(fmtEur(1234.56).replace(/\s/g, ' ')).toBe('1.234,56 €');
+  });
   it('defaults to Noche with a dark system preference', () => expect(resolveTheme(null, false)).toBe('noche'));
   it('respects a light system preference on first load', () => expect(resolveTheme(null, true)).toBe('caliza'));
   it('retains an explicit Noche choice over a light system preference', () => expect(resolveTheme('noche', true)).toBe('noche'));

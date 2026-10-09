@@ -231,7 +231,7 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
                   return (
                     <tr key={c.id} className="hover:bg-muted/30 transition-colors cursor-pointer" onClick={() => onCompanySelect(c)}>
                       <td className={`${tdClass} font-medium text-primary hover:underline max-w-[200px] truncate`}>{c.name}</td>
-                      <td className={`${tdClass} hidden lg:table-cell text-muted-foreground text-xs`}>{c.cif || "—"}</td>
+                      <td className={`${tdClass} hidden lg:table-cell text-muted-foreground text-xs nexus-reference`}>{c.cif || "—"}</td>
                       <td className={`${tdClass} text-xs`}>{c.operadorActual || "—"}</td>
                       <td className={`${tdClass} text-center tabular-nums`}>{c.lineasMovil || 0}</td>
                       <td className={`${tdClass} text-center tabular-nums`}>{c.lineasFijo || 0}</td>

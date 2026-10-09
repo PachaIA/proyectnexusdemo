@@ -361,7 +361,7 @@ export const BriefingEditableBlock = ({ company }: Props) => {
               onStartEdit={() => setEditField('snav')}
               onCancel={() => setEditField(null)}
               onSave={() => setEditField(null)}
-              display={<Money><BigNumber value={fmtEur(snavNum)} /></Money>}
+              display={<span className="text-lg font-semibold tabular-nums"><Money>{fmtEur(snavNum)}</Money></span>}
             >
               <NumInput value={snavStr} onChange={setSnavStr} autoFocus />
             </Tile>
