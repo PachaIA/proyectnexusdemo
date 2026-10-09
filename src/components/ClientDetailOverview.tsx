@@ -63,7 +63,7 @@ export function ClientDetailOverview({ company, children, headerAction }: { comp
         {headerAction}
       </div>
       <div className="flex flex-wrap items-baseline gap-x-6 gap-y-2">
-        <div><p className="text-xs text-muted-foreground mb-1">Margen total de oportunidades</p><Money className="text-xl font-semibold">{known.length ? fmtEur(known.reduce((s, m) => s + m, 0)) : '—'}</Money>{margins.some(m => m === null) && <p className="text-xs text-muted-foreground mt-1">Hay oportunidades sin margen registrado</p>}</div>
+        <div><p className="text-xs text-muted-foreground mb-1">Margen total de oportunidades</p><span className="text-xl font-semibold"><Money>{known.length ? fmtEur(known.reduce((s, m) => s + m, 0)) : '—'}</Money></span>{margins.some(m => m === null) && <p className="text-xs text-muted-foreground mt-1">Hay oportunidades sin margen registrado</p>}</div>
         <div><p className="text-xs text-muted-foreground mb-1">Etapa actual</p><span className="text-sm font-semibold">{stages.length > 1 ? stages.join(' · ') : current ? STAGE_LABEL[normalizeStage(current.estado)] : 'Sin oportunidad'}</span></div>
         {phone ? <a href={`tel:${phone.replace(/\s/g, '')}`} className="text-primary inline-flex items-center gap-2 text-sm"><Phone className="w-4 h-4" />{phone}</a> : <span className="text-xs text-muted-foreground">Sin teléfono</span>}
       </div>
