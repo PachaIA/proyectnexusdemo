@@ -9,13 +9,9 @@ import Auth from "./pages/Auth";
 import ResetPassword from "./pages/ResetPassword";
 import MyLeads from "./pages/MyLeads";
 import NexusDashboard from "./pages/NexusDashboard";
-import Simulador from "./pages/Simulador";
 import CallMode from "./pages/CallMode";
 import ObjetivoTrimestre from "./pages/ObjetivoTrimestre";
 import LeadsTable from "./pages/LeadsTable";
-import Triaje from "./pages/Triaje";
-import TriajeCola from "./pages/TriajeCola";
-import Seguimiento from "./pages/Seguimiento";
 import NotFound from "./pages/NotFound";
 import OAuthConsent from "./pages/OAuthConsent";
 import { OpportunityDialog } from "./components/OpportunityDialog";
@@ -42,21 +38,14 @@ const AppRoutes = () => {
         <Route path="/" element={<Navigate to="/hoy" replace />} />
         <Route path="/hoy" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
         <Route path="/clientes" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
-        <Route path="/informes" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
-        <Route path="/agenda" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
-        <Route path="/briefing" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
         <Route path="/archivo" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
-        <Route path="/pendientes" element={<ProtectedRoute><Seguimiento /></ProtectedRoute>} />
         <Route path="/mapa" element={<ProtectedRoute><Index /></ProtectedRoute>} />
         <Route path="/pipeline" element={<ProtectedRoute><MyLeads /></ProtectedRoute>} />
         <Route path="/map" element={<LegacyRedirect to="/mapa" />} />
         <Route path="/my-leads" element={<Navigate to="/pipeline" replace />} />
         <Route path="/llamada/:companyId" element={<CallMode />} />
-        <Route path="/simulador" element={<ProtectedRoute><Simulador /></ProtectedRoute>} />
-        <Route path="/objetivo" element={<ProtectedRoute><ObjetivoTrimestre /></ProtectedRoute>} />
+        <Route path="/trimestre" element={<ProtectedRoute><ObjetivoTrimestre /></ProtectedRoute>} />
         <Route path="/leads" element={<ProtectedRoute><LeadsTable /></ProtectedRoute>} />
-        <Route path="/triaje" element={<ProtectedRoute><Triaje /></ProtectedRoute>} />
-        <Route path="/triaje/cola" element={<ProtectedRoute><TriajeCola /></ProtectedRoute>} />
         <Route path="/chat" element={<Navigate to="/hoy" replace />} />
         <Route path="/nexus" element={<Navigate to="/hoy" replace />} />
         <Route path="*" element={<NotFound />} />

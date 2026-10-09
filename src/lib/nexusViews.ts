@@ -1,13 +1,10 @@
 // Vistas del dashboard Nexus mapeadas a URLs propias (fuente de verdad: la ruta).
-export type NexusView = 'hoy' | 'clientes' | 'briefing' | 'archivo' | 'informes' | 'agenda';
+export type NexusView = 'hoy' | 'clientes' | 'archivo';
 
 export const NEXUS_VIEW_PATHS: Record<NexusView, string> = {
   hoy: '/hoy',
   clientes: '/clientes',
-  briefing: '/briefing',
   archivo: '/archivo',
-  informes: '/informes',
-  agenda: '/agenda',
 };
 
 export const nexusViewFromPath = (pathname: string): NexusView | null => {
