@@ -18,6 +18,7 @@ import ClientDetailPage from "./pages/ClientDetailPage";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import { OpportunityDialog } from './components/OpportunityDialog';
 import { FloatingChatWidget } from "./components/FloatingChatWidget";
+import { DailyIntro } from "./components/DailyIntro";
 
 // Auth desactivada temporalmente: la app abre directo sin login.
 // Para reactivarla, volver a envolver las rutas con un guard de sesión.
@@ -52,6 +53,7 @@ const AppRoutes = () => {
         <Route path="/nexus" element={<Navigate to="/hoy" replace />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
+      <DailyIntro />
       <MobileBottomNav />
       <FloatingChatWidget />
     </>
