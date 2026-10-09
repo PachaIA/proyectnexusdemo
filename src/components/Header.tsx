@@ -14,6 +14,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { NotesDrawer } from '@/components/NotesDrawer';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { ThemeToggle } from '@/components/ThemeToggle';
+import { queryClient, persister } from '@/lib/queryClient';
 
 const NexusLogo = () => (
   <div className="flex items-center gap-2.5 mr-4">
@@ -319,6 +320,8 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
           className="h-9 w-9"
           onClick={async () => {
             await supabase.auth.signOut();
+            queryClient.clear();
+            await persister.removeClient();
             navigate('/auth', { replace: true });
           }}
           title="Cerrar sesión"
