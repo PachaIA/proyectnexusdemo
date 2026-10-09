@@ -479,3 +479,18 @@ html[data-theme="caliza"] [style*="color-mix"][style*="color: var(--t-accent)"] 
   .nexus-daily-intro { transition: none; }
   .nexus-daily-intro__logo { animation: none; opacity: 1; transform: none; }
 }
+
+/* Access screen: the circular mark owns the right column. */
+.nexus-auth-mark {
+  width: min(58vw, 40vh);
+  height: auto;
+}
+
+@media (min-width: 1024px) {
+  .nexus-auth-mark {
+    width: max(360px, min(38vw, 70vh));
+  }
+}
+
+html[data-theme] .nexus-auth-wordmark { letter-spacing: 0.08em !important; }
+html[data-theme] .nexus-auth-subtitle { letter-spacing: 0.3em !important; }
