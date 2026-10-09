@@ -1,6 +1,10 @@
 import { Money } from '@/components/Money';
 import { fmtEur } from '@/hooks/useOpportunityLines';
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
+import { useUrlView, useLastActivity } from "@/hooks/useUrlView";
+import { ViewToolbar } from "@/components/ViewToolbar";
+import { CompanyMap } from "@/components/CompanyMap";
+import { daysSince } from "@/lib/pipelineBoard";
 import { Company } from "@/data/companies";
 import { useCompanies } from "@/hooks/useCompanies";
 import { useLeads } from "@/hooks/useLeads";
@@ -26,6 +30,8 @@ const PAGE_SIZE = 50;
 type SortKey = "name" | "operadorActual" | "lineasMovil" | "lineasFijo" | "permanencia" | "penalizacion" | "opportunityScore" | "contactName";
 type SortDir = "asc" | "desc";
 
+const CLIENTES_DEFAULTS = { vista: 'tabla', q: '', operador: 'todos', score: 'todos', estado: 'todos', fuente: 'todos', filtro: 'todos', orden: 'opportunityScore', dir: 'desc', pagina: '1' };
+
 interface ClientesTabProps {
   onCompanySelect: (company: Company) => void;
 }
@@ -35,14 +41,17 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
   const { leads } = useLeads();
   const isMobile = useIsMobile();
 
-  const [search, setSearch] = useState("");
-  const [operadorFilter, setOperadorFilter] = useState("todos");
-  const [scoreFilter, setScoreFilter] = useState("todos");
-  const [estadoFilter, setEstadoFilter] = useState("todos");
-  const [fuenteFilter, setFuenteFilter] = useState("todos");
-  const [sortKey, setSortKey] = useState<SortKey>("opportunityScore");
-  const [sortDir, setSortDir] = useState<SortDir>("desc");
-  const [page, setPage] = useState(1);
+  // Vista, filtros, orden y página viven en la URL (recargar o compartir reproduce la vista).
+  const [v, setV, query] = useUrlView(CLIENTES_DEFAULTS);
+  const lastActivity = useLastActivity();
+  const search = v.q, operadorFilter = v.operador, scoreFilter = v.score, estadoFilter = v.estado, fuenteFilter = v.fuente, actividadFilter = v.filtro;
+  const sortKey = v.orden as SortKey, sortDir = v.dir as SortDir, page = Number(v.pagina) || 1;
+  const setSearch = (q: string) => setV({ q, pagina: '1' });
+  const setOperadorFilter = (operador: string) => setV({ operador });
+  const setScoreFilter = (score: string) => setV({ score });
+  const setEstadoFilter = (estado: string) => setV({ estado });
+  const setFuenteFilter = (fuente: string) => setV({ fuente });
+  const setPage = (p: number | ((n: number) => number)) => setV({ pagina: String(typeof p === 'function' ? p(page) : p) });
 
   const leadMap = useMemo(() => {
     const m: Record<string, string> = {};
@@ -87,6 +96,10 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
       });
     }
 
+    if (actividadFilter === 'sin-actividad') {
+      list = list.filter(c => { const d = lastActivity.get(c.id); return !d || daysSince(d) > 14; });
+    }
+
     // Sort
     list = [...list].sort((a, b) => {
       let av: any, bv: any;
@@ -107,15 +120,15 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
     });
 
     return list;
-  }, [activeCompanies, search, operadorFilter, scoreFilter, estadoFilter, fuenteFilter, sortKey, sortDir, leadMap]);
+  }, [activeCompanies, search, operadorFilter, scoreFilter, estadoFilter, fuenteFilter, sortKey, sortDir, leadMap, actividadFilter, lastActivity]);
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
   const paginated = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
 
   const handleSort = (key: SortKey) => {
-    if (sortKey === key) setSortDir(d => d === "asc" ? "desc" : "asc");
-    else { setSortKey(key); setSortDir("desc"); }
+    if (sortKey === key) setV({ dir: sortDir === "asc" ? "desc" : "asc" });
+    else setV({ orden: key, dir: "desc" });
   };
 
   const SortIcon = ({ col }: { col: SortKey }) => {
@@ -143,19 +156,19 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
           <Input
             placeholder="Buscar por nombre o CIF..."
             value={search}
-            onChange={e => { setSearch(e.target.value); setPage(1); }}
+            onChange={e => setSearch(e.target.value)}
             className="pl-9 h-9 text-sm"
           />
         </div>
         <div className="hidden md:contents">
-          <Select value={operadorFilter} onValueChange={v => { setOperadorFilter(v); setPage(1); }}>
+          <Select value={operadorFilter} onValueChange={x => setV({ operador: x, pagina: "1" })}>
             <SelectTrigger className="w-[140px] h-9 text-xs"><SelectValue placeholder="Operador" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="todos">Todos operadores</SelectItem>
               {OPERATORS.map(op => <SelectItem key={op} value={op}>{op}</SelectItem>)}
             </SelectContent>
           </Select>
-          <Select value={scoreFilter} onValueChange={v => { setScoreFilter(v); setPage(1); }}>
+          <Select value={scoreFilter} onValueChange={x => setV({ score: x, pagina: "1" })}>
             <SelectTrigger className="w-[120px] h-9 text-xs"><SelectValue placeholder="Score" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="todos">Todos scores</SelectItem>
@@ -164,14 +177,14 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
               <SelectItem value="bajo">Bajo (&lt;60)</SelectItem>
             </SelectContent>
           </Select>
-          <Select value={estadoFilter} onValueChange={v => { setEstadoFilter(v); setPage(1); }}>
+          <Select value={estadoFilter} onValueChange={x => setV({ estado: x, pagina: "1" })}>
             <SelectTrigger className="w-[140px] h-9 text-xs"><SelectValue placeholder="Estado" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="todos">Todos estados</SelectItem>
               {Object.entries(ESTADOS_LABELS).map(([k, v]) => <SelectItem key={k} value={k}>{v.label}</SelectItem>)}
             </SelectContent>
           </Select>
-          <Select value={fuenteFilter} onValueChange={v => { setFuenteFilter(v); setPage(1); }}>
+          <Select value={fuenteFilter} onValueChange={x => setV({ fuente: x, pagina: "1" })}>
             <SelectTrigger className="w-[120px] h-9 text-xs"><SelectValue placeholder="Fuente" /></SelectTrigger>
             <SelectContent>
               <SelectItem value="todos">Todas fuentes</SelectItem>
@@ -179,9 +192,24 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
               <SelectItem value="places">Places</SelectItem>
             </SelectContent>
           </Select>
+          <Select value={actividadFilter} onValueChange={x => setV({ filtro: x, pagina: "1" })}>
+            <SelectTrigger className="w-[170px] h-9 text-xs"><SelectValue placeholder="Actividad" /></SelectTrigger>
+            <SelectContent>
+              <SelectItem value="todos">Toda actividad</SelectItem>
+              <SelectItem value="sin-actividad">Sin actividad (+14 días)</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
         <span className="text-xs text-muted-foreground ml-auto">{filtered.length} empresas</span>
+        <ViewToolbar page="clientes" views={[{ id: 'tabla', label: 'Tabla' }, { id: 'mapa', label: 'Mapa' }]} current={v.vista} onChange={vista => setV({ vista })} query={query} />
       </div>
+
+      {v.vista === 'mapa' ? (
+        <div className="relative h-[70vh] min-h-[420px] rounded-md overflow-hidden border border-border">
+          <CompanyMap companies={filtered.filter(c => c.lat && c.lng)} selectedCompany={null} onCompanySelect={onCompanySelect} leads={leads as any} />
+          <p className="absolute top-2 left-2 z-[500] bg-card/90 px-2 py-1 rounded text-xs text-muted-foreground">{filtered.filter(c => c.lat && c.lng).length} de {filtered.length} empresas con ubicación</p>
+        </div>
+      ) : <>
 
       {/* Mobile: Card list */}
       {isMobile ? (
