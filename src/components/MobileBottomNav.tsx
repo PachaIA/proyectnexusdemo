@@ -7,10 +7,10 @@ import { NEXUS_VIEW_PATHS } from '@/lib/nexusViews';
 // Cada pestaña tiene su propia URL: el estado vive en el router (F5, atrás y enlaces directos funcionan).
 const tabs = [
   { path: NEXUS_VIEW_PATHS.hoy, icon: LayoutDashboard, label: 'Hoy' },
-  { path: '/hoy', icon: BellRing, label: 'Pendientes' },
+  { path: '/pendientes', icon: BellRing, label: 'Pendientes' },
   { path: NEXUS_VIEW_PATHS.clientes, icon: Users, label: 'Clientes' },
-  { path: '/map', icon: Map, label: 'Mapa' },
-  { path: '/my-leads', icon: Kanban, label: 'Pipeline' },
+  { path: '/mapa', icon: Map, label: 'Mapa' },
+  { path: '/pipeline', icon: Kanban, label: 'Pipeline' },
   { path: NEXUS_VIEW_PATHS.informes, icon: FileText, label: 'Informes' },
   { path: NEXUS_VIEW_PATHS.agenda, icon: CalendarClock, label: 'Agenda' },
   { path: '/simulador', icon: Calculator, label: 'Simulador' },
@@ -39,7 +39,7 @@ export const MobileBottomNav = () => {
           >
             <span className="relative">
               <Icon className="w-5 h-5" />
-              {tab.path === '/hoy' && urgentCount > 0 && (
+              {tab.path === '/pendientes' && urgentCount > 0 && (
                 <span aria-label={`${urgentCount} pendientes`} className="absolute -top-1.5 -right-2.5 min-w-4 h-4 px-1 rounded-full bg-destructive text-destructive-foreground text-[9px] font-bold leading-4 text-center">{urgentCount}</span>
               )}
             </span>
