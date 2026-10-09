@@ -1,5 +1,5 @@
 import { useState, type ReactNode } from 'react';
-import { Phone, Send, ChevronDown } from 'lucide-react';
+import { Phone, Send, ChevronDown, FileText, History } from 'lucide-react';
 import { useLeads } from '@/hooks/useLeads';
 import { useOpportunityLines, fmtEur } from '@/hooks/useOpportunityLines';
 import { useCompanyActivities, ACTIVITY_TYPES } from '@/hooks/useCompanyActivities';
@@ -11,6 +11,7 @@ import { Money } from '@/components/Money';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
+import { InformesTab } from '@/components/InformesTab';
 
 type LegacyNote = { fecha: string; texto: string };
 function legacyNotes(companyId: string): LegacyNote[] {
@@ -27,6 +28,7 @@ export function ClientDetailOverview({ company, children, headerAction }: { comp
   const { sales } = useSales(company.id);
   const [note, setNote] = useState('');
   const [error, setError] = useState('');
+  const [tab, setTab] = useState<'historial' | 'informes'>('historial');
   const ownLeads = leads.filter(l => l.company_id === company.id);
   const margins = ownLeads.filter(l => !l.archived_at).map(l => opportunityMargin(l, lines));
   const known = margins.filter((m): m is number => m !== null);
@@ -68,7 +70,8 @@ export function ClientDetailOverview({ company, children, headerAction }: { comp
         {phone ? <a href={`tel:${phone.replace(/\s/g, '')}`} className="text-primary inline-flex items-center gap-2 text-sm"><Phone className="w-4 h-4" />{phone}</a> : <span className="text-xs text-muted-foreground">Sin teléfono</span>}
       </div>
     </header>
-    <section className="py-4">
+    <div className="flex gap-1 border-b border-border pt-3"><Button variant={tab === 'historial' ? 'default' : 'ghost'} size="sm" onClick={() => setTab('historial')}><History className="w-4 h-4 mr-2" />Historial</Button><Button variant={tab === 'informes' ? 'default' : 'ghost'} size="sm" onClick={() => setTab('informes')}><FileText className="w-4 h-4 mr-2" />Informes</Button></div>
+    {tab === 'historial' ? <section className="py-4">
       <h3 className="font-semibold mb-3">Historial</h3>
       <form onSubmit={saveNote} className="sticky top-0 z-10 bg-card py-2 flex gap-2">
         <Input aria-label="Añadir nota" placeholder="Añadir una nota…" value={note} onChange={e => setNote(e.target.value)} disabled={createActivity.isPending} />
@@ -83,7 +86,7 @@ export function ClientDetailOverview({ company, children, headerAction }: { comp
           <p className="text-sm break-words" title={event.text}>{event.text}</p>
         </li>)}
       </ol>
-    </section>
+    </section> : <section className="py-4"><InformesTab companyId={company.id} compact onCompanySelect={() => undefined} /></section>}
     <details className="border-t border-border py-3 group">
       <summary className="cursor-pointer flex items-center justify-between font-semibold text-sm py-2">Datos<ChevronDown className="w-4 h-4 group-open:rotate-180" /></summary>
       <div className="pt-4 min-w-0">{children}</div>

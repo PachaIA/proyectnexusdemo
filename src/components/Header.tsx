@@ -4,8 +4,8 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useNavigate, useLocation, NavLink } from 'react-router-dom';
-import { NEXUS_VIEW_PATHS, nexusViewFromPath } from '@/lib/nexusViews';
+import { useNavigate, NavLink } from 'react-router-dom';
+import { NEXUS_VIEW_PATHS } from '@/lib/nexusViews';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useCompanies } from '@/hooks/useCompanies';
@@ -48,9 +48,7 @@ interface HeaderProps {
 import { useFollowUps } from '@/hooks/useFollowUps';
 export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, onAddCompany, onCompanyNavigate }: HeaderProps) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { urgentCount } = useFollowUps();
-  const dashboardView = nexusViewFromPath(location.pathname);
   const [localSearch, setLocalSearch] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [notesOpen, setNotesOpen] = useState(false);
