@@ -1,13 +1,13 @@
 import { Money } from '@/components/Money';
 import { useMemo, useState } from 'react';
-import { ArrowDown, ArrowUp, ArrowUpDown, Pencil, ListPlus, Trash2, AlertTriangle } from 'lucide-react';
-import { toast } from 'sonner';
+import { ArrowDown, ArrowUp, ArrowUpDown, ExternalLink, ListPlus, Trash2, AlertTriangle } from 'lucide-react';
 import type { Lead } from '@/hooks/useLeads';
 import { useOpportunityLines, lineMargin, rollUp, fmtEur, fmtPct, type OpportunityLine } from '@/hooks/useOpportunityLines';
-import { STAGE_LABEL, normalizeStage, editOpportunity, missingFields } from '@/lib/opportunity';
+import { STAGE_LABEL, normalizeStage, missingFields } from '@/lib/opportunity';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Link } from 'react-router-dom';
 
 type OppLead = Lead & { fecha_cierre_prevista?: string | null; importe_mensual_eur?: number | null; margen_estimado_eur?: number | null };
 type SortKey = 'empresa' | 'estado' | 'cierre' | 'ingreso' | 'margen' | 'pct';
@@ -134,9 +134,7 @@ export const OpportunityList = ({ leads }: { leads: OppLead[] }) => {
               <td className={`px-2 text-right tabular-nums ${ls.length && margin_eur < 0 ? 'text-destructive' : ''}`}><Money>{ls.length ? fmtEur(margin_eur) : '—'}</Money></td>
               <td className="px-2 text-right tabular-nums">{fmtPct(margin_pct)}</td>
               <td className="px-2 text-right whitespace-nowrap">
-                <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => editOpportunity(lead).catch((e) => toast.error(e?.message || 'No se pudo guardar'))}>
-                  <Pencil className="w-3.5 h-3.5 mr-1" />Editar
-                </Button>
+                <Button asChild size="sm" variant="ghost" className="h-7 px-2"><Link to={`/clientes/${encodeURIComponent(lead.company_id)}`}><ExternalLink className="w-3.5 h-3.5 mr-1" />Abrir</Link></Button>
                 <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => setEditingLines(lead)}>
                   <ListPlus className="w-3.5 h-3.5 mr-1" />Líneas ({ls.length})
                 </Button>

@@ -14,6 +14,7 @@ import ObjetivoTrimestre from "./pages/ObjetivoTrimestre";
 import LeadsTable from "./pages/LeadsTable";
 import NotFound from "./pages/NotFound";
 import OAuthConsent from "./pages/OAuthConsent";
+import ClientDetailPage from "./pages/ClientDetailPage";
 import { OpportunityDialog } from "./components/OpportunityDialog";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import { FloatingChatWidget } from "./components/FloatingChatWidget";
@@ -38,6 +39,7 @@ const AppRoutes = () => {
         <Route path="/" element={<Navigate to="/hoy" replace />} />
         <Route path="/hoy" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
         <Route path="/clientes" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
+        <Route path="/clientes/:id" element={<ProtectedRoute><ClientDetailPage /></ProtectedRoute>} />
         <Route path="/archivo" element={<ProtectedRoute><NexusDashboard /></ProtectedRoute>} />
         <Route path="/mapa" element={<ProtectedRoute><Index /></ProtectedRoute>} />
         <Route path="/pipeline" element={<ProtectedRoute><MyLeads /></ProtectedRoute>} />

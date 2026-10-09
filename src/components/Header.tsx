@@ -97,8 +97,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
   const handleSelectCompany = (companyId: string) => {
     setSearchOpen(false);
     setActiveSearch('');
-    // Navigate to dashboard with company detail open
-    navigate(`${NEXUS_VIEW_PATHS.clientes}?company=${encodeURIComponent(companyId)}`);
+    navigate(`/clientes/${encodeURIComponent(companyId)}`);
     onCompanyNavigate?.(companyId);
   };
 

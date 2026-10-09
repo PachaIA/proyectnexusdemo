@@ -610,10 +610,7 @@ export default function NexusDashboard() {
     if (comp) setSelected(comp);
   }, [nexusView, urlCompanyId, companies, selected?.id]);
 
-  const openBriefing = useCallback((c: Company) => {
-    setSelected(c);
-    navigate(`${NEXUS_VIEW_PATHS.clientes}?company=${encodeURIComponent(c.id)}`);
-  }, [navigate]);
+  const openBriefing = useCallback((c: Company) => navigate(`/clientes/${encodeURIComponent(c.id)}`), [navigate]);
 
   // Sync `selected` with refreshed companies (after edits trigger refetch)
   useEffect(() => {
@@ -813,18 +810,20 @@ function EditableTagList({
 }
 
 // ─── Detail Panel Component ─────────────────────────────────────────────
-function DetailPanel({
+export function DetailPanel({
   company: selected,
   interactions,
   onUpdate,
   onShowAI,
   onOpenArcGIS,
+  routeDetail = false,
 }: {
   company: Company;
   interactions: InteractionsMap;
   onUpdate: (m: InteractionsMap) => void;
   onShowAI: () => void;
   onOpenArcGIS: (c: Company) => void;
+  routeDetail?: boolean;
 }) {
   const [editingDM, setEditingDM] = useState(false);
   const [dmDraft, setDmDraft] = useState<DecisionMaker[]>(selected.decisionMakers || []);
