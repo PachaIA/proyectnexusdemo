@@ -1,4 +1,4 @@
-export const DAILY_INTRO_STORAGE_KEY = 'nexus-intro-date';
+export const DAILY_INTRO_STORAGE_KEY = 'nexus-intro-date-v2';
 
 export function localCalendarDate(date = new Date()) {
   const year = date.getFullYear();
