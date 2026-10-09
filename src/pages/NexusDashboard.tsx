@@ -19,8 +19,6 @@ import { BriefingEditableBlock } from "@/components/BriefingEditableBlock";
 import { CompanyTopSummary } from "@/components/CompanyTopSummary";
 import { ActivitySection } from "@/components/ActivitySection";
 import { QuickReportModal } from "@/components/QuickReportModal";
-import { InformesTab } from "@/components/InformesTab";
-import { AgendaTab } from "@/components/AgendaTab";
 
 
 const BRIEFING_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/nexus-briefing`;
@@ -590,24 +588,23 @@ export default function NexusDashboard() {
   const [showAI, setShowAI] = useState(false);
   const [interactions, setInteractions] = useState<InteractionsMap>(loadInteractions);
   const navigate = useNavigate();
-  // La vista activa sale de la URL (/clientes, /informes, /agenda…), no de eventos globales.
+  // La vista activa sale de la URL, no de eventos globales.
   const nexusView: NexusView = nexusViewFromPath(location.pathname) ?? 'hoy';
   const setNexusView = useCallback((v: NexusView) => {
     if (NEXUS_VIEW_PATHS[v] !== location.pathname) navigate(NEXUS_VIEW_PATHS[v]);
   }, [navigate, location.pathname]);
 
-  // Ficha abierta = /briefing?company=<id>. Sobrevive a F5 y al botón atrás.
-  // Compatibilidad: navegación antigua con state { companyId } (p. ej. desde Pipeline).
+  // La ficha vive en /clientes?company=<id>. Sobrevive a F5 y al botón atrás.
   useEffect(() => {
     const state = location.state as { companyId?: string } | null;
     if (state?.companyId) {
-      navigate(`${NEXUS_VIEW_PATHS.briefing}?company=${encodeURIComponent(state.companyId)}`, { replace: true });
+      navigate(`${NEXUS_VIEW_PATHS.clientes}?company=${encodeURIComponent(state.companyId)}`, { replace: true });
     }
   }, [location.state, navigate]);
 
   const urlCompanyId = new URLSearchParams(location.search).get('company');
   useEffect(() => {
-    if (nexusView !== 'briefing' || !urlCompanyId) return;
+    if (nexusView !== 'clientes' || !urlCompanyId) return;
     if (selected?.id === urlCompanyId) return;
     const comp = companies.find(c => c.id === urlCompanyId);
     if (comp) setSelected(comp);
@@ -615,7 +612,7 @@ export default function NexusDashboard() {
 
   const openBriefing = useCallback((c: Company) => {
     setSelected(c);
-    navigate(`${NEXUS_VIEW_PATHS.briefing}?company=${encodeURIComponent(c.id)}`);
+    navigate(`${NEXUS_VIEW_PATHS.clientes}?company=${encodeURIComponent(c.id)}`);
   }, [navigate]);
 
   // Sync `selected` with refreshed companies (after edits trigger refetch)
@@ -660,23 +657,25 @@ export default function NexusDashboard() {
 
         {nexusView === 'hoy' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <HoyTab />
+            <HoyTab
+              companies={companies}
+              selected={selected}
+              onSelect={openBriefing}
+              detail={selected ? <DetailPanel company={selected} interactions={interactions} onUpdate={handleInteractionUpdate} onShowAI={() => setShowAI(true)} onOpenArcGIS={openArcGIS} /> : undefined}
+            />
           </div>
         ) : nexusView === 'clientes' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <ClientesTab onCompanySelect={openBriefing} />
+            {selected ? (
+              <div className="max-w-4xl mx-auto">
+                <button onClick={() => { setSelected(null); navigate('/clientes'); }} className="text-xs text-muted-foreground hover:text-foreground mb-3">← Volver a clientes</button>
+                <DetailPanel company={selected} interactions={interactions} onUpdate={handleInteractionUpdate} onShowAI={() => setShowAI(true)} onOpenArcGIS={openArcGIS} />
+              </div>
+            ) : <ClientesTab onCompanySelect={openBriefing} />}
           </div>
         ) : nexusView === 'archivo' ? (
           <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
             <ArchivoTab onCompanySelect={openBriefing} />
-          </div>
-        ) : nexusView === 'informes' ? (
-          <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <InformesTab onCompanySelect={openBriefing} />
-          </div>
-        ) : nexusView === 'agenda' ? (
-          <div style={{ maxWidth: 1280, margin: "0 auto" }} className="px-4 md:px-6 pt-3 pb-24 md:pb-7">
-            <AgendaTab onCompanySelect={openBriefing} />
           </div>
         ) : (
 
