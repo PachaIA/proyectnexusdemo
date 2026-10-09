@@ -1,3 +1,5 @@
+import { fmtEur } from '@/hooks/useOpportunityLines';
+import { Money } from '@/components/Money';
 import { useState, useCallback, memo } from 'react';
 import { useSales, type Sale } from '@/hooks/useSales';
 import { Input } from '@/components/ui/input';
@@ -63,14 +65,14 @@ const SaleRow = memo(({ sale, onDelete }: SaleRowProps) => {
         <div className="flex items-center gap-2">
           <span className="font-mono text-muted-foreground">{sale.fecha}</span>
           {sale.producto_estrategico && (
-            <Star className="w-3 h-3 text-amber-500 fill-amber-500" />
+            <Star className="w-3 h-3 text-warning fill-warning" />
           )}
           {sale.producto && <span className="text-foreground truncate">{sale.producto}</span>}
         </div>
         <div className="flex gap-3 mt-1 text-[11px] text-muted-foreground">
           <span>📱{sale.lineas_movil} 🌐{sale.lineas_fibra} ({lineas})</span>
-          <span>SNAV {Number(sale.snav).toFixed(0)}€</span>
-          <span>Margen {Number(sale.margen).toFixed(0)}€</span>
+          <span>SNAV <Money>{fmtEur(Number(sale.snav))}</Money></span>
+          <span>Margen <Money>{fmtEur(Number(sale.margen))}</Money></span>
         </div>
       </div>
       <button
@@ -171,7 +173,7 @@ export const SalesSection = ({ companyId }: SalesSectionProps) => {
               onChange={(e) => set('producto_estrategico', e.target.checked)}
               className="rounded border-border"
             />
-            <Star className="w-3.5 h-3.5 text-amber-500" />
+            <Star className="w-3.5 h-3.5 text-warning" />
             <span className="text-foreground">Producto estratégico</span>
           </label>
           <Button onClick={handleSubmit} disabled={saving} size="sm" className="w-full">

@@ -93,7 +93,7 @@ const ConvertToLeadButton = ({ company, isLead, onConverted }: ConvertToLeadButt
         >
           <Button
             variant="outline"
-            className="bg-green-500/20 border-green-500/50 text-green-400 hover:bg-green-500/30 cursor-default"
+            className="bg-success/20 border-success/50 text-success hover:bg-success/30 cursor-default"
             disabled
           >
             <Check className="w-4 h-4 mr-2" />
@@ -110,7 +110,7 @@ const ConvertToLeadButton = ({ company, isLead, onConverted }: ConvertToLeadButt
           <Button
             onClick={handleConvert}
             disabled={loading}
-            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white shadow-lg"
+            className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-primary-foreground shadow-lg"
           >
             {loading ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />

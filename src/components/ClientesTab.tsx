@@ -10,12 +10,12 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { MobileClientCard } from "@/components/MobileClientCard";
 
 const ESTADOS_LABELS: Record<string, { label: string; color: string }> = {
-  lead: { label: "Lead", color: "#6b7280" },
-  contactado: { label: "Contactado", color: "#3b82f6" },
-  propuesta: { label: "Propuesta", color: "#f97316" },
-  negociacion: { label: "Negociación", color: "#eab308" },
-  ganada: { label: "Ganada", color: "#8b5cf6" },
-  perdida: { label: "Perdida", color: "#ef4444" },
+  lead: { label: "Lead", color: "var(--muted-text-accessible)" },
+  contactado: { label: "Contactado", color: "var(--interactive)" },
+  propuesta: { label: "Propuesta", color: "var(--alert-text)" },
+  negociacion: { label: "Negociación", color: "var(--warning-text)" },
+  ganada: { label: "Ganada", color: "var(--interactive)" },
+  perdida: { label: "Perdida", color: "var(--alert-text)" },
 };
 
 const OPERATORS = ["Orange", "Movistar", "Vodafone", "MásMóvil", "Otro", "Sin dato"];
@@ -123,7 +123,7 @@ export const ClientesTab = ({ onCompanySelect }: ClientesTabProps) => {
 
   const scoreBadge = (score: number) => {
     if (score >= 80) return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-destructive/15 text-destructive">{score}</span>;
-    if (score >= 60) return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-orange-500/15 text-orange-600 dark:text-orange-400">{score}</span>;
+    if (score >= 60) return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-warning/15 text-warning dark:text-warning">{score}</span>;
     return <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-muted text-muted-foreground">{score}</span>;
   };
 

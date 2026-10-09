@@ -216,8 +216,8 @@ const EditableContacts = ({ companyId, contacts, onUpdate, localStorageKey }: Ed
                       <p className="text-xs font-medium text-foreground flex items-center gap-1.5">
                         <span className="truncate">{contact.name}</span>
                         {contact.principal && (
-                          <span className="inline-flex items-center gap-0.5 text-[9px] font-bold uppercase tracking-wider text-amber-500">
-                            <Star className="w-2.5 h-2.5 fill-amber-500" /> Principal
+                          <span className="inline-flex items-center gap-0.5 text-[9px] font-bold uppercase tracking-wider text-warning">
+                            <Star className="w-2.5 h-2.5 fill-warning" /> Principal
                           </span>
                         )}
                       </p>
@@ -227,10 +227,10 @@ const EditableContacts = ({ companyId, contacts, onUpdate, localStorageKey }: Ed
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       onClick={() => handleSetPrincipal(index)}
-                      className={`p-1 rounded transition-colors ${contact.principal ? 'text-amber-500' : 'text-muted-foreground hover:text-amber-500 hover:bg-amber-500/10'}`}
+                      className={`p-1 rounded transition-colors ${contact.principal ? 'text-warning' : 'text-muted-foreground hover:text-warning hover:bg-warning/10'}`}
                       title={contact.principal ? 'Es el contacto principal' : 'Marcar como contacto principal'}
                     >
-                      <Star className={`w-3.5 h-3.5 ${contact.principal ? 'fill-amber-500' : ''}`} />
+                      <Star className={`w-3.5 h-3.5 ${contact.principal ? 'fill-warning' : ''}`} />
                     </button>
                     {contact.linkedin_url && (
                       <button

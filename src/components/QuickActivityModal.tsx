@@ -17,12 +17,12 @@ const T = {
   textMuted: 'var(--t-text-muted)',
 };
 
-const mono: React.CSSProperties = { fontFamily: "'Space Mono', monospace" };
+const mono: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
 
 const inputStyle: React.CSSProperties = {
   width: '100%', background: T.card, border: `1px solid ${T.borderSubtle}`, borderRadius: 6,
   padding: '6px 10px', color: T.textSecondary, fontSize: 11, outline: 'none',
-  fontFamily: "'DM Sans', sans-serif", colorScheme: 'var(--t-color-scheme)' as any,
+  fontFamily: "'Inter', sans-serif", colorScheme: 'var(--t-color-scheme)' as any,
 };
 
 const labelStyle: React.CSSProperties = {
@@ -205,7 +205,7 @@ export function QuickActivityModal({ company, onClose, onSaved }: Props) {
             type="button" onClick={handleSave} disabled={!canSave}
             style={{
               padding: '7px 16px', borderRadius: 7, cursor: canSave ? 'pointer' : 'not-allowed',
-              background: T.accent, border: `1px solid ${T.accent}`, color: '#fff',
+              background: T.accent, border: `1px solid ${T.accent}`, color: 'var(--text)',
               ...mono, fontSize: 9, letterSpacing: 1, opacity: canSave ? 1 : 0.4,
             }}
           >

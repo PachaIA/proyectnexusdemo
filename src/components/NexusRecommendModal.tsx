@@ -157,7 +157,7 @@ export const NexusRecommendModal = ({ open, onClose, onCompanySelect }: Props) =
               <span className={cn(
                 "text-sm font-bold px-3 py-1 rounded-full shrink-0",
                 current.opportunityScore >= 80 ? "bg-destructive/15 text-destructive" :
-                current.opportunityScore >= 60 ? "bg-orange-500/15 text-orange-600" :
+                current.opportunityScore >= 60 ? "bg-warning/15 text-warning" :
                 "bg-muted text-muted-foreground"
               )}>
                 {current.opportunityScore} pts
@@ -203,8 +203,8 @@ export const NexusRecommendModal = ({ open, onClose, onCompanySelect }: Props) =
                 <p className="text-[10px] text-muted-foreground">Líneas móvil</p>
               </div>
               <div className="rounded-lg border border-border bg-muted/30 p-3 text-center">
-                <Shield className="w-4 h-4 mx-auto text-green-500 mb-1" />
-                <p className="text-lg font-bold text-green-500">0</p>
+                <Shield className="w-4 h-4 mx-auto text-success mb-1" />
+                <p className="text-lg font-bold text-success">0</p>
                 <p className="text-[10px] text-muted-foreground">Permanencia</p>
               </div>
               <div className="rounded-lg border border-border bg-muted/30 p-3 text-center">
@@ -229,7 +229,7 @@ export const NexusRecommendModal = ({ open, onClose, onCompanySelect }: Props) =
                 disabled={loading}
                 className="gap-2"
               >
-                <Flame className="w-4 h-4 text-orange-500" /> Caliente
+                <Flame className="w-4 h-4 text-warning" /> Caliente
               </Button>
               <Button
                 variant="ghost"

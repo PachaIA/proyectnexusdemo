@@ -40,29 +40,29 @@ const T = {
 
 // Merged: Contactado + Cualificado into one column
 const PIPELINE_COLUMNS = [
-  { keys: ['lead'], label: 'Lead', color: '#6b7280', icon: '⚪' },
-  { keys: ['contactado'], label: 'Contactado', color: '#3b82f6', icon: '📞' },
-  { keys: ['propuesta'], label: 'Propuesta', color: '#f97316', icon: '📋' },
-  { keys: ['negociacion'], label: 'Negociación', color: '#eab308', icon: '🤝' },
-  { keys: ['ganada'], label: 'Ganada', color: '#8b5cf6', icon: '🏆' },
-  { keys: ['perdida'], label: 'Perdida', color: '#ef4444', icon: '❌' },
+  { keys: ['lead'], label: 'Lead', color: 'var(--muted-text-accessible)', icon: '⚪' },
+  { keys: ['contactado'], label: 'Contactado', color: 'var(--interactive)', icon: '📞' },
+  { keys: ['propuesta'], label: 'Propuesta', color: 'var(--alert-text)', icon: '📋' },
+  { keys: ['negociacion'], label: 'Negociación', color: 'var(--warning-text)', icon: '🤝' },
+  { keys: ['ganada'], label: 'Ganada', color: 'var(--interactive)', icon: '🏆' },
+  { keys: ['perdida'], label: 'Perdida', color: 'var(--alert-text)', icon: '❌' },
 ];
 
 const ALL_STATES = [
-  { key: 'lead', label: 'Lead', color: '#6b7280', icon: '⚪' },
-  { key: 'contactado', label: 'Contactado', color: '#3b82f6', icon: '📞' },
-  { key: 'propuesta', label: 'Propuesta', color: '#f97316', icon: '📋' },
-  { key: 'negociacion', label: 'Negociación', color: '#eab308', icon: '🤝' },
-  { key: 'ganada', label: 'Ganada', color: '#8b5cf6', icon: '🏆' },
-  { key: 'perdida', label: 'Perdida', color: '#ef4444', icon: '❌' },
+  { key: 'lead', label: 'Lead', color: 'var(--muted-text-accessible)', icon: '⚪' },
+  { key: 'contactado', label: 'Contactado', color: 'var(--interactive)', icon: '📞' },
+  { key: 'propuesta', label: 'Propuesta', color: 'var(--alert-text)', icon: '📋' },
+  { key: 'negociacion', label: 'Negociación', color: 'var(--warning-text)', icon: '🤝' },
+  { key: 'ganada', label: 'Ganada', color: 'var(--interactive)', icon: '🏆' },
+  { key: 'perdida', label: 'Perdida', color: 'var(--alert-text)', icon: '❌' },
 ];
 
 const statusFlow = ['lead', 'contactado', 'propuesta', 'negociacion', 'ganada'];
 
 const SECTOR_COLORS: Record<string, string> = {
-  salud: '#ef4444', industria: '#f59e0b', logistica: '#3b82f6',
-  tecnologia: '#8b5cf6', retail: '#ec4899', turismo: '#14b8a6',
-  educacion: '#22c55e', servicios: '#f97316',
+  salud: 'var(--alert-text)', industria: 'var(--warning-text)', logistica: 'var(--interactive)',
+  tecnologia: 'var(--interactive)', retail: 'var(--alert-text)', turismo: 'var(--success-text)',
+  educacion: 'var(--success-text)', servicios: 'var(--alert-text)',
 };
 
 const sectorIcons: Record<string, string> = {
@@ -70,7 +70,7 @@ const sectorIcons: Record<string, string> = {
   retail: '🛒', turismo: '🏨', educacion: '🎓', servicios: '🔧',
 };
 
-const mono: React.CSSProperties = { fontFamily: "'Space Mono', monospace" };
+const mono: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
 
 // ─── Interactions storage (shared with NexusDashboard) ──────────────────
 const INTERACTIONS_KEY = 'nexus_interactions';
@@ -119,9 +119,9 @@ function KanbanCard({ lead, onAdvance, onWin, onLose, onArchive, onOpenDetail, o
   dragHandleProps?: { listeners?: any; attributes?: any };
 }) {
   const [showStatusMenu, setShowStatusMenu] = useState(false);
-  const scoreColor = lead.opportunity_score >= 80 ? '#ef4444' : lead.opportunity_score >= 60 ? '#f59e0b' : '#6b7280';
+  const scoreColor = lead.opportunity_score >= 80 ? 'var(--alert-text)' : lead.opportunity_score >= 60 ? 'var(--warning-text)' : 'var(--muted-text-accessible)';
   const canAdvance = statusFlow.indexOf(lead.estado || 'lead') < statusFlow.length - 1 && lead.estado !== 'perdida';
-  const stageColor = ALL_STATES.find(s => s.key === lead.estado)?.color || '#6b7280';
+  const stageColor = ALL_STATES.find(s => s.key === lead.estado)?.color || 'var(--muted-text-accessible)';
   const subState = null as { label: string; color: string } | null;
 
   return (
@@ -209,14 +209,14 @@ function KanbanCard({ lead, onAdvance, onWin, onLose, onArchive, onOpenDetail, o
         </div>
         {lead.estado !== 'ganada' && lead.estado !== 'perdida' && (
           <button onClick={onWin} title="Ganada" style={{
-            background: '#8b5cf618', border: '1px solid #8b5cf644', borderRadius: 5,
-            padding: '3px 7px', cursor: 'pointer', color: '#8b5cf6', fontSize: 11,
+            background: 'color-mix(in srgb, var(--interactive) 9.4%, transparent)', border: '1px solid color-mix(in srgb, var(--interactive) 26.7%, transparent)', borderRadius: 5,
+            padding: '3px 7px', cursor: 'pointer', color: 'var(--interactive)', fontSize: 11,
           }}>🏆</button>
         )}
         {lead.estado !== 'perdida' && lead.estado !== 'ganada' && (
           <button onClick={onLose} title="Perdida" style={{
-            background: '#ef444418', border: '1px solid #ef444444', borderRadius: 5,
-            padding: '3px 7px', cursor: 'pointer', color: '#ef4444', fontSize: 11,
+            background: 'color-mix(in srgb, var(--alert-text) 9.4%, transparent)', border: '1px solid color-mix(in srgb, var(--alert-text) 26.7%, transparent)', borderRadius: 5,
+            padding: '3px 7px', cursor: 'pointer', color: 'var(--alert-text)', fontSize: 11,
           }}>✕</button>
         )}
         <button onClick={onArchive} title="Archivar" style={{
@@ -330,7 +330,7 @@ const MyLeads = () => {
       map[s] = (map[s] || 0) + 1;
     });
     return Object.entries(map)
-      .map(([name, count]) => ({ name, count, fill: SECTOR_COLORS[name] || '#6b7280' }))
+      .map(([name, count]) => ({ name, count, fill: SECTOR_COLORS[name] || 'var(--muted-text-accessible)' }))
       .sort((a, b) => b.count - a.count);
   }, [activeLeads]);
 
@@ -420,7 +420,7 @@ const MyLeads = () => {
     const content = lines.join('\n');
     const printWindow = window.open('', '_blank');
     if (printWindow) {
-      printWindow.document.write(`<html><head><title>Informe ${monthName}</title><style>body{font-family:monospace;white-space:pre-wrap;padding:40px;font-size:13px;line-height:1.6;color:#1a1a2a;}</style></head><body>${content}</body></html>`);
+      printWindow.document.write(`<html><head><title>Informe ${monthName}</title><style>body{font-family:monospace;white-space:pre-wrap;padding:40px;font-size:13px;line-height:1.6;color:var(--muted-text-accessible);}</style></head><body>${content}</body></html>`);
       printWindow.document.close();
       printWindow.print();
     }
@@ -430,13 +430,13 @@ const MyLeads = () => {
   const maxFunnel = Math.max(...funnelData.map(d => d.count), 1);
 
   return (
-    <div style={{ minHeight: '100vh', background: T.bg, fontFamily: "'DM Sans', sans-serif", color: T.textPrimary, display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', background: T.bg, fontFamily: "'Inter', sans-serif", color: T.textPrimary, display: 'flex', flexDirection: 'column' }}>
       <div style={{ position: 'sticky', top: 0, zIndex: 50 }}>
         <Header />
       </div>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700;800&display=swap');
+        700&family=DM+Sans:wght@300;400;500;700;800&display=swap');
         .leads-page ::-webkit-scrollbar { width: 4px; }
         .leads-page ::-webkit-scrollbar-track { background: ${T.card}; }
         .leads-page ::-webkit-scrollbar-thumb { background: ${T.border}; border-radius: 2px; }
@@ -464,10 +464,10 @@ const MyLeads = () => {
 
         {/* ROW 1: KPI Cards */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 14, marginBottom: 20 }}>
-          <KPICard label="PIPELINE TOTAL" value={`€${(pipelineTotal / 1000).toFixed(0)}k`} icon="💶" accent="#22c55e" />
-          <KPICard label="LEADS ESTE MES" value={String(thisMonth)} icon="📊" accent="#7c5cfc" />
-          <KPICard label="TASA CONVERSIÓN" value={`${conversionRate}%`} icon="🎯" accent="#f59e0b" />
-          <KPICard label="TICKET MEDIO" value={`€${ticketMedio.toLocaleString()}`} icon="💰" accent="#9b7dff" />
+          <KPICard label="PIPELINE TOTAL" value={`€${(pipelineTotal / 1000).toFixed(0)}k`} icon="💶" accent="var(--success-text)" />
+          <KPICard label="LEADS ESTE MES" value={String(thisMonth)} icon="📊" accent="var(--interactive)" />
+          <KPICard label="TASA CONVERSIÓN" value={`${conversionRate}%`} icon="🎯" accent="var(--warning-text)" />
+          <KPICard label="TICKET MEDIO" value={`€${ticketMedio.toLocaleString()}`} icon="💰" accent="var(--interactive)" />
         </div>
 
         {/* ROW 2: Kanban Pipeline — 6 columns (Contactado+Cualificado merged) */}
@@ -548,7 +548,7 @@ const MyLeads = () => {
               <ResponsiveContainer width="100%" height={200}>
                 <BarChart data={sectorData} layout="vertical" margin={{ left: 0, right: 20, top: 0, bottom: 0 }}>
                   <XAxis type="number" hide />
-                  <YAxis type="category" dataKey="name" width={80} tick={{ fill: T.textTertiary, fontSize: 10, fontFamily: "'Space Mono', monospace" }} axisLine={false} tickLine={false} />
+                  <YAxis type="category" dataKey="name" width={80} tick={{ fill: T.textTertiary, fontSize: 10, fontFamily: "'Inter', sans-serif" }} axisLine={false} tickLine={false} />
                   <Tooltip
                     contentStyle={{ background: T.cardAlt, border: `1px solid ${T.border}`, borderRadius: 8, color: T.textPrimary, fontSize: 12 }}
                     cursor={{ fill: `${T.accent}11` }}
@@ -588,7 +588,7 @@ const MyLeads = () => {
                           transition: 'width 0.5s ease',
                           minWidth: 36,
                         }}>
-                          <span style={{ ...mono, fontSize: 12, fontWeight: 800, color: '#fff' }}>{stage.count}</span>
+                          <span style={{ ...mono, fontSize: 12, fontWeight: 800, color: 'var(--text)' }}>{stage.count}</span>
                         </div>
                       </div>
                     </div>

@@ -16,12 +16,12 @@ const T = {
   textMuted: 'var(--t-text-muted)',
 };
 
-const mono: React.CSSProperties = { fontFamily: "'Space Mono', monospace" };
+const mono: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
 
 const inputStyle: React.CSSProperties = {
   width: '100%', background: T.card, border: `1px solid ${T.borderSubtle}`, borderRadius: 6,
   padding: '6px 10px', color: T.textSecondary, fontSize: 11, outline: 'none',
-  fontFamily: "'DM Sans', sans-serif", colorScheme: 'var(--t-color-scheme)' as any,
+  fontFamily: "'Inter', sans-serif", colorScheme: 'var(--t-color-scheme)' as any,
 };
 
 const labelStyle: React.CSSProperties = { ...mono, fontSize: 8, color: T.textMuted, letterSpacing: 1, marginBottom: 4, display: 'block' };
@@ -107,7 +107,7 @@ function ActivityForm({ value, onChange, onSave, onCancel, saving }: FormProps) 
         <button type="button" onClick={onSave} disabled={saving || !value.summary.trim()} style={{
           padding: '6px 14px', borderRadius: 6,
           cursor: saving || !value.summary.trim() ? 'not-allowed' : 'pointer',
-          background: T.accent, border: `1px solid ${T.accent}`, color: '#fff',
+          background: T.accent, border: `1px solid ${T.accent}`, color: 'var(--text)',
           ...mono, fontSize: 9, letterSpacing: 1, opacity: saving || !value.summary.trim() ? 0.4 : 1,
         }}>GUARDAR</button>
       </div>
@@ -242,7 +242,7 @@ export function ActivitySection({ companyId, onNextActionDate }: Props) {
                     {a.outcome && <span style={{ ...mono, fontSize: 9, color: T.textTertiary }}>RESULTADO: {a.outcome}</span>}
                     {a.next_step && <span style={{ ...mono, fontSize: 9, color: T.textTertiary }}>SIGUIENTE: {a.next_step}</span>}
                     {a.next_action_date && (
-                      <span style={{ ...mono, fontSize: 9, color: '#f97316' }}>
+                      <span style={{ ...mono, fontSize: 9, color: 'var(--alert-text)' }}>
                         📅 {new Date(a.next_action_date + 'T00:00:00').toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' })}
                       </span>
                     )}
@@ -275,8 +275,8 @@ export function ActivitySection({ companyId, onNextActionDate }: Props) {
                 border: `1px solid ${T.borderSubtle}`, color: T.textTertiary, ...mono, fontSize: 10, letterSpacing: 1,
               }}>CANCELAR</button>
               <button onClick={confirmDelete} style={{
-                padding: '7px 16px', borderRadius: 6, cursor: 'pointer', background: '#ef4444',
-                border: 'none', color: '#fff', ...mono, fontSize: 10, fontWeight: 700, letterSpacing: 1,
+                padding: '7px 16px', borderRadius: 6, cursor: 'pointer', background: 'var(--alert-text)',
+                border: 'none', color: 'var(--text)', ...mono, fontSize: 10, fontWeight: 700, letterSpacing: 1,
               }}>ELIMINAR</button>
             </div>
           </div>

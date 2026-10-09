@@ -190,7 +190,7 @@ export const FloatingChatWidget = () => {
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-20 md:bottom-6 right-4 z-[9998] w-14 h-14 rounded-full bg-destructive text-white shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center"
+          className="fixed bottom-20 md:bottom-6 right-4 z-[9998] w-14 h-14 rounded-full bg-destructive text-primary-foreground shadow-lg hover:shadow-xl hover:scale-105 transition-all flex items-center justify-center"
           title="Agente Comercial IA"
         >
           <MessageCircle className="w-6 h-6" />
@@ -210,8 +210,8 @@ export const FloatingChatWidget = () => {
               {currentCompany ? (
                 <div className="flex items-center gap-1.5 text-[11px] mt-0.5">
                   <span className="text-muted-foreground truncate">{currentCompany}</span>
-                  {nexusStatus === "found" && <span className="text-emerald-500 font-medium">● NEXUS</span>}
-                  {nexusStatus === "not_found" && <span className="text-amber-500 font-medium">○ NUEVA</span>}
+                  {nexusStatus === "found" && <span className="text-success font-medium">● NEXUS</span>}
+                  {nexusStatus === "not_found" && <span className="text-warning font-medium">○ NUEVA</span>}
                 </div>
               ) : (
                 <p className="text-[11px] text-muted-foreground mt-0.5">Búsqueda + IA comercial</p>

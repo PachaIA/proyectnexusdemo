@@ -496,8 +496,8 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
               {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
             <div className="flex items-center gap-1.5 justify-end mt-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_6px_theme(colors.green.500)]" />
-              <span className="text-[9px] font-mono text-green-500 tracking-[2px]">SISTEMA ACTIVO</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_6px_theme(colors.green.500)]" />
+              <span className="text-[9px] font-mono text-success tracking-[2px]">SISTEMA ACTIVO</span>
             </div>
           </div>
         </div>

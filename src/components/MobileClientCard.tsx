@@ -19,7 +19,7 @@ export const MobileClientCard = ({ company, estado, onSelect }: MobileClientCard
       {/* Score badge */}
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold shrink-0 ${
         company.opportunityScore >= 80 ? 'bg-destructive/15 text-destructive' :
-        company.opportunityScore >= 60 ? 'bg-orange-500/15 text-orange-500' :
+        company.opportunityScore >= 60 ? 'bg-warning/15 text-warning' :
         'bg-muted text-muted-foreground'
       }`}>
         {company.opportunityScore}

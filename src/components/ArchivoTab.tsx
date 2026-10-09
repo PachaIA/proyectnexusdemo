@@ -84,7 +84,7 @@ export const ArchivoTab = ({ onCompanySelect }: ArchivoTabProps) => {
                   <td className="p-3 text-muted-foreground">{c.cif || '—'}</td>
                   <td className="p-3">
                     <span className={`text-xs px-2 py-0.5 rounded-full ${
-                      c.archiveReason === 'GG.CC.' ? 'bg-red-500/10 text-red-400' :
+                      c.archiveReason === 'GG.CC.' ? 'bg-destructive/10 text-destructive' :
                       c.archiveReason === 'Descartado' ? 'bg-muted text-muted-foreground' :
                       'bg-muted text-muted-foreground'
                     }`}>

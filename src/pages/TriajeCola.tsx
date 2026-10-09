@@ -286,7 +286,7 @@ const TriajeCola = () => {
             </Button>
             <Button
               size="lg"
-              className="h-14 gap-2 flex-col bg-blue-600 hover:bg-blue-700 text-white"
+              className="h-14 gap-2 flex-col bg-primary hover:bg-primary text-primary-foreground"
               onClick={() => handleDecision('revisado')}
               disabled={busy}
             >
@@ -295,8 +295,8 @@ const TriajeCola = () => {
             </Button>
             <Button
               size="lg"
-              className="h-14 gap-2 flex-col text-white hover:opacity-90"
-              style={{ background: '#E60000' }}
+              className="h-14 gap-2 flex-col text-primary-foreground hover:opacity-90"
+              style={{ background: 'var(--alert-text)' }}
               onClick={() => handleDecision('interesante')}
               disabled={busy}
             >

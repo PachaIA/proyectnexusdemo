@@ -92,7 +92,7 @@ const BigNumber = ({ value, suffix }: { value: string | number; suffix?: string 
 const Pill = ({ children, tone = 'neutral' }: { children: React.ReactNode; tone?: 'neutral' | 'on' | 'off' }) => (
   <span className={[
     'inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold',
-    tone === 'on' ? 'bg-emerald-500/15 text-emerald-400 ring-1 ring-emerald-500/30' :
+    tone === 'on' ? 'bg-success/15 text-success ring-1 ring-success/30' :
     tone === 'off' ? 'bg-muted/50 text-muted-foreground ring-1 ring-border' :
     'bg-foreground/10 text-foreground ring-1 ring-border',
   ].join(' ')}>{children}</span>
@@ -284,7 +284,7 @@ export const BriefingEditableBlock = ({ company }: Props) => {
             display={<Pill tone={company.isMultiSite ? 'on' : 'off'}>{company.isMultiSite ? 'SÍ' : 'NO'}</Pill>}
           >
             <div className="flex gap-2 pt-1">
-              <button onClick={() => setMulti(true)} className={`flex-1 h-10 rounded-lg text-sm font-semibold transition-colors ${multi ? 'bg-emerald-500/20 text-emerald-400 ring-1 ring-emerald-500/40' : 'bg-muted/40 text-muted-foreground'}`}>SÍ</button>
+              <button onClick={() => setMulti(true)} className={`flex-1 h-10 rounded-lg text-sm font-semibold transition-colors ${multi ? 'bg-success/20 text-success ring-1 ring-success/40' : 'bg-muted/40 text-muted-foreground'}`}>SÍ</button>
               <button onClick={() => setMulti(false)} className={`flex-1 h-10 rounded-lg text-sm font-semibold transition-colors ${!multi ? 'bg-foreground/10 text-foreground ring-1 ring-border' : 'bg-muted/40 text-muted-foreground'}`}>NO</button>
             </div>
           </Tile>

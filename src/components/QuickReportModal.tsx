@@ -28,7 +28,7 @@ const T = {
   textLabel: 'var(--t-text-label)',
 };
 
-const mono: React.CSSProperties = { fontFamily: "'Space Mono', monospace" };
+const mono: React.CSSProperties = { fontFamily: "'Inter', sans-serif" };
 
 const fmtDate = (d?: string | null) => {
   if (!d) return null;
@@ -280,19 +280,19 @@ export function QuickReportModal({
 <style>
   @page { size: A4; margin: 18mm; }
   * { box-sizing: border-box; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; background: #fff; color: #1a1a1a; margin: 0; font-size: 12px; line-height: 1.5; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: var(--text); color: var(--muted-text-accessible); margin: 0; font-size: 12px; line-height: 1.5; }
   h1 { font-size: 18px; margin: 0 0 2px; }
-  .meta { color: #555; font-size: 11px; margin-bottom: 16px; }
-  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #333; padding-bottom: 4px; margin: 18px 0 8px; page-break-after: avoid; }
+  .meta { color: var(--muted-text-accessible); font-size: 11px; margin-bottom: 16px; }
+  h2 { font-size: 13px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid var(--muted-text-accessible); padding-bottom: 4px; margin: 18px 0 8px; page-break-after: avoid; }
   table { width: 100%; border-collapse: collapse; page-break-inside: avoid; }
-  td { padding: 3px 6px; vertical-align: top; border-bottom: 1px solid #eee; }
-  td.lbl { width: 150px; font-weight: 600; color: #444; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+  td { padding: 3px 6px; vertical-align: top; border-bottom: 1px solid var(--text); }
+  td.lbl { width: 150px; font-weight: 600; color: var(--muted-text-accessible); font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
   ul { margin: 4px 0; padding-left: 18px; }
   li { margin-bottom: 2px; }
-  .warn { color: #b91c1c; }
-  .ok { color: #15803d; }
-  .act { border-left: 3px solid #ccc; padding-left: 8px; margin-bottom: 6px; }
-  .act .d { font-size: 10px; color: #666; text-transform: uppercase; }
+  .warn { color: var(--alert-text); }
+  .ok { color: var(--success-text); }
+  .act { border-left: 3px solid var(--muted-text-accessible); padding-left: 8px; margin-bottom: 6px; }
+  .act .d { font-size: 10px; color: var(--muted-text-accessible); text-transform: uppercase; }
 </style></head><body>
 <h1>Informe rápido del cliente — ${esc(company.name)}</h1>
 <div class="meta">Generado el ${esc(generado)} · Grupo Enertel</div>
@@ -325,8 +325,8 @@ ${row('Decisores', contactos.map((c: any) => `${c.name || '—'} (${c.role || '�
 ${row('Última actividad', lastActivity ? `${fmtDate(lastActivity.activity_date)} · ${typeLabel(lastActivity.activity_type)} · ${lastActivity.summary}` : fmtDate(ultimoContacto) || '')}
 </table>
 ${recent.length
-    ? recent.map((a) => `<div class="act"><div class="d">${esc(fmtDate(a.activity_date) || '')} · ${esc(typeLabel(a.activity_type))}</div>${esc(a.summary)}${a.outcome ? `<div style="font-size:11px;color:#555">Resultado: ${esc(a.outcome)}</div>` : ''}</div>`).join('')
-    : '<p style="color:#666">Sin actividades registradas</p>'}
+    ? recent.map((a) => `<div class="act"><div class="d">${esc(fmtDate(a.activity_date) || '')} · ${esc(typeLabel(a.activity_type))}</div>${esc(a.summary)}${a.outcome ? `<div style="font-size:11px;color:var(--muted-text-accessible)">Resultado: ${esc(a.outcome)}</div>` : ''}</div>`).join('')
+    : '<p style="color:var(--muted-text-accessible)">Sin actividades registradas</p>'}
 
 <h2>4. Próximos pasos</h2>
 <table>
@@ -567,9 +567,9 @@ ${pendientes.length
                       letterSpacing: 1,
                       padding: '4px 8px',
                       borderRadius: 6,
-                      background: '#ef444418',
-                      border: '1px solid #ef444440',
-                      color: '#ef4444',
+                      background: 'color-mix(in srgb, var(--alert-text) 9.4%, transparent)',
+                      border: '1px solid color-mix(in srgb, var(--alert-text) 25.1%, transparent)',
+                      color: 'var(--alert-text)',
                     }}
                   >
                     ⚠ {p.toUpperCase()}
@@ -577,7 +577,7 @@ ${pendientes.length
                 ))}
               </div>
             ) : (
-              <span style={{ fontSize: 12, color: '#22c55e' }}>✓ Ficha completa</span>
+              <span style={{ fontSize: 12, color: 'var(--success-text)' }}>✓ Ficha completa</span>
             )}
           </Section>
         </div>

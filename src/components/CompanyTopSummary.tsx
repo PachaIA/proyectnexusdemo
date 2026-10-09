@@ -67,7 +67,7 @@ export const CompanyTopSummary = ({ company }: CompanyTopSummaryProps) => {
                 </span>
               )}
               {principalSede?.principal && (
-                <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                <Star className="w-3 h-3 text-warning fill-warning" />
               )}
             </div>
             <p className="text-sm text-foreground font-medium leading-snug break-words mt-0.5">
@@ -87,7 +87,7 @@ export const CompanyTopSummary = ({ company }: CompanyTopSummaryProps) => {
                 Contacto principal
               </span>
               {contactoPrincipal?.principal && (
-                <Star className="w-3 h-3 text-amber-400 fill-amber-400" />
+                <Star className="w-3 h-3 text-warning fill-warning" />
               )}
             </div>
             {contactoPrincipal ? (
@@ -102,7 +102,7 @@ export const CompanyTopSummary = ({ company }: CompanyTopSummaryProps) => {
                   {contactoPrincipal.mobile && (
                     <a
                       href={`tel:${String(contactoPrincipal.mobile).replace(/\s/g, '')}`}
-                      className="inline-flex items-center gap-1 text-emerald-400 hover:underline"
+                      className="inline-flex items-center gap-1 text-success hover:underline"
                     >
                       <Phone className="w-3 h-3" /> {contactoPrincipal.mobile}
                     </a>

@@ -1,3 +1,4 @@
+import { Money } from '@/components/Money';
 import { useMemo, useState } from 'react';
 import { ArrowDown, ArrowUp, ArrowUpDown, Pencil, ListPlus, Trash2, AlertTriangle } from 'lucide-react';
 import { toast } from 'sonner';
@@ -44,16 +45,16 @@ const LinesEditor = ({ lead, lines, onClose }: { lead: OppLead; lines: Opportuni
             {lines.map((l) => { const m = lineMargin(l); return (
               <tr key={l.id} className="border-t border-border">
                 <td className="py-1">{l.producto}</td><td className="text-right">{l.cantidad}</td>
-                <td className="text-right tabular-nums">{fmtEur(Number(l.monthly_revenue))}</td>
-                <td className="text-right tabular-nums">{fmtEur(Number(l.monthly_cost))}</td>
-                <td className={`text-right tabular-nums ${m.margin_eur < 0 ? 'text-destructive' : ''}`}>{fmtEur(m.margin_eur)}</td>
+                <td className="text-right tabular-nums"><Money>{fmtEur(Number(l.monthly_revenue))}</Money></td>
+                <td className="text-right tabular-nums"><Money>{fmtEur(Number(l.monthly_cost))}</Money></td>
+                <td className={`text-right tabular-nums ${m.margin_eur < 0 ? 'text-destructive' : ''}`}><Money>{fmtEur(m.margin_eur)}</Money></td>
                 <td className="text-right tabular-nums">{fmtPct(m.margin_pct)}</td>
                 <td className="text-right"><button aria-label="Eliminar línea" onClick={() => deleteLine(l.id)}><Trash2 className="w-3.5 h-3.5 text-muted-foreground" /></button></td>
               </tr>); })}
             <tr className="border-t border-border font-semibold">
               <td className="py-1">Total</td><td />
-              <td className="text-right tabular-nums">{fmtEur(total.monthly_revenue)}</td><td />
-              <td className="text-right tabular-nums">{fmtEur(total.margin_eur)}</td>
+              <td className="text-right tabular-nums"><Money>{fmtEur(total.monthly_revenue)}</Money></td><td />
+              <td className="text-right tabular-nums"><Money>{fmtEur(total.margin_eur)}</Money></td>
               <td className="text-right tabular-nums">{fmtPct(total.margin_pct)}</td><td />
             </tr>
           </tbody>
@@ -129,8 +130,8 @@ export const OpportunityList = ({ leads }: { leads: OppLead[] }) => {
               </td>
               <td className="px-2">{STAGE_LABEL[normalizeStage(lead.estado)]}</td>
               <td className="px-2 tabular-nums">{lead.fecha_cierre_prevista ? new Date(lead.fecha_cierre_prevista + 'T00:00').toLocaleDateString('es-ES') : '—'}</td>
-              <td className="px-2 text-right tabular-nums">{ls.length ? fmtEur(monthly_revenue) : '—'}</td>
-              <td className={`px-2 text-right tabular-nums ${ls.length && margin_eur < 0 ? 'text-destructive' : ''}`}>{ls.length ? fmtEur(margin_eur) : '—'}</td>
+              <td className="px-2 text-right tabular-nums"><Money>{ls.length ? fmtEur(monthly_revenue) : '—'}</Money></td>
+              <td className={`px-2 text-right tabular-nums ${ls.length && margin_eur < 0 ? 'text-destructive' : ''}`}><Money>{ls.length ? fmtEur(margin_eur) : '—'}</Money></td>
               <td className="px-2 text-right tabular-nums">{fmtPct(margin_pct)}</td>
               <td className="px-2 text-right whitespace-nowrap">
                 <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => editOpportunity(lead).catch((e) => toast.error(e?.message || 'No se pudo guardar'))}>

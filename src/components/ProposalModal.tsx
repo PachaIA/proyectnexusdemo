@@ -96,7 +96,7 @@ export const ProposalModal = ({ company, isOpen, onClose }: ProposalModalProps) 
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4"
+        className="fixed inset-0 bg-background/50 z-[9999] flex items-center justify-center p-4"
         onClick={onClose}
       >
         <motion.div
@@ -110,7 +110,7 @@ export const ProposalModal = ({ company, isOpen, onClose }: ProposalModalProps) 
           <div className="bg-primary text-primary-foreground p-8 relative">
             <button 
               onClick={onClose}
-              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"
+              className="absolute top-4 right-4 w-8 h-8 rounded-full bg-card/10 flex items-center justify-center hover:bg-card/20 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>

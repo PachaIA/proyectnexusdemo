@@ -16,8 +16,8 @@ export const CsvCompanyPanel = ({ company, isOpen, onClose }: CsvCompanyPanelPro
   const datosCifUrl = `https://www.datoscif.es/empresas/${encodeURIComponent(company.name)}`;
   const telUrl = company.phone ? `tel:${company.phone.replace(/\s/g, '')}` : null;
 
-  const scoreColor = company.ncsScore >= 80 ? 'text-red-500' : company.ncsScore >= 60 ? 'text-amber-500' : 'text-muted-foreground';
-  const scoreBg = company.ncsScore >= 80 ? 'bg-red-500/10' : company.ncsScore >= 60 ? 'bg-amber-500/10' : 'bg-muted/50';
+  const scoreColor = company.ncsScore >= 80 ? 'text-destructive' : company.ncsScore >= 60 ? 'text-warning' : 'text-muted-foreground';
+  const scoreBg = company.ncsScore >= 80 ? 'bg-destructive/10' : company.ncsScore >= 60 ? 'bg-warning/10' : 'bg-muted/50';
 
   return (
     <AnimatePresence>
@@ -32,10 +32,10 @@ export const CsvCompanyPanel = ({ company, isOpen, onClose }: CsvCompanyPanelPro
           {/* Header */}
           <div className="sticky top-0 z-10 bg-card border-b border-border p-4 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                <Building2 className="w-4 h-4 text-emerald-400" />
+              <div className="w-8 h-8 rounded-full bg-success/20 flex items-center justify-center">
+                <Building2 className="w-4 h-4 text-success" />
               </div>
-              <span className="text-xs font-medium text-emerald-400 uppercase tracking-wider">Google Sheets</span>
+              <span className="text-xs font-medium text-success uppercase tracking-wider">Google Sheets</span>
             </div>
             <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-muted transition-colors">
               <X className="w-4 h-4 text-muted-foreground" />
@@ -118,7 +118,7 @@ export const CsvCompanyPanel = ({ company, isOpen, onClose }: CsvCompanyPanelPro
               )}
               {company.rating > 0 && (
                 <div className="flex items-start gap-3">
-                  <Star className="w-4 h-4 text-amber-400 mt-0.5" />
+                  <Star className="w-4 h-4 text-warning mt-0.5" />
                   <div>
                     <p className="text-xs text-muted-foreground">Rating</p>
                     <p className="text-sm text-foreground">
@@ -144,7 +144,7 @@ export const CsvCompanyPanel = ({ company, isOpen, onClose }: CsvCompanyPanelPro
             {/* Action Buttons */}
             <div className="space-y-2 pt-3 border-t border-border">
               {telUrl ? (
-                <Button asChild className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
+                <Button asChild className="w-full bg-success hover:bg-success text-primary-foreground">
                   <a href={telUrl}>
                     <Phone className="w-4 h-4 mr-2" />
                     Llamar

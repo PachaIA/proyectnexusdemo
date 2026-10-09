@@ -66,7 +66,7 @@ export const RightPanel = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/30 z-[9998]"
+            className="fixed inset-0 bg-background/30 z-[9998]"
           />
           
           {/* Panel */}
@@ -87,7 +87,7 @@ export const RightPanel = ({
                 variant="ghost"
                 size="icon"
                 onClick={onClose}
-                className="text-primary-foreground hover:bg-white/20"
+                className="text-primary-foreground hover:bg-card/20"
               >
                 <X className="w-5 h-5" />
               </Button>
@@ -193,9 +193,9 @@ export const RightPanel = ({
                               className={cn(
                                 "px-2.5 py-1 rounded-full text-xs font-medium transition-all border",
                                 opportunityFilter.includes(level.id)
-                                  ? level.id === 'alta' ? "bg-green-500 text-white border-green-500" :
-                                    level.id === 'media' ? "bg-yellow-500 text-white border-yellow-500" :
-                                    "bg-red-500 text-white border-red-500"
+                                  ? level.id === 'alta' ? "bg-success text-primary-foreground border-success" :
+                                    level.id === 'media' ? "bg-warning text-primary-foreground border-warning" :
+                                    "bg-destructive text-primary-foreground border-destructive"
                                   : "bg-background border-border hover:border-primary/50"
                               )}
                             >

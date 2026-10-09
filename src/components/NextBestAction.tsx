@@ -64,13 +64,13 @@ const getActionConfig = (type: string) => {
 const getPriorityConfig = (priority: string) => {
   switch (priority) {
     case 'alta':
-      return { label: 'Prioridad Alta', color: 'text-red-400', bg: 'bg-red-500/20', border: 'border-red-500/50' };
+      return { label: 'Prioridad Alta', color: 'text-destructive', bg: 'bg-destructive/20', border: 'border-destructive/50' };
     case 'media':
-      return { label: 'Prioridad Media', color: 'text-yellow-400', bg: 'bg-yellow-500/20', border: 'border-yellow-500/50' };
+      return { label: 'Prioridad Media', color: 'text-warning', bg: 'bg-warning/20', border: 'border-warning/50' };
     case 'baja':
-      return { label: 'Prioridad Baja', color: 'text-slate-400', bg: 'bg-slate-500/20', border: 'border-slate-500/50' };
+      return { label: 'Prioridad Baja', color: 'text-muted-foreground', bg: 'bg-muted-foreground/20', border: 'border-muted-foreground/50' };
     default:
-      return { label: priority, color: 'text-slate-400', bg: 'bg-slate-500/20', border: 'border-slate-500/50' };
+      return { label: priority, color: 'text-muted-foreground', bg: 'bg-muted-foreground/20', border: 'border-muted-foreground/50' };
   }
 };
 
@@ -94,26 +94,26 @@ const NextBestAction = ({ action, companyName }: NextBestActionProps) => {
             <span className={`px-2 py-0.5 rounded text-xs font-medium ${priorityConfig.bg} ${priorityConfig.color}`}>
               {priorityConfig.label}
             </span>
-            <span className="text-xs text-slate-400">Next Best Action</span>
+            <span className="text-xs text-muted-foreground">Next Best Action</span>
           </div>
           
           <div className="flex items-center gap-3 mb-2">
             <div className={`w-10 h-10 rounded-lg bg-gradient-to-br ${actionConfig.gradient} flex items-center justify-center shadow-lg`}>
-              <IconComponent className="w-5 h-5 text-white" />
+              <IconComponent className="w-5 h-5 text-primary-foreground" />
             </div>
             <div>
-              <p className="text-lg font-semibold text-white">{actionConfig.label}</p>
-              <p className="text-sm text-slate-300">{companyName}</p>
+              <p className="text-lg font-semibold text-primary-foreground">{actionConfig.label}</p>
+              <p className="text-sm text-muted-foreground">{companyName}</p>
             </div>
           </div>
           
-          <p className="text-sm text-slate-400 mb-3">
+          <p className="text-sm text-muted-foreground mb-3">
             💡 {action.reason}
           </p>
         </div>
         
         <Button
-          className={`bg-gradient-to-r ${actionConfig.gradient} hover:opacity-90 text-white shadow-lg`}
+          className={`bg-gradient-to-r ${actionConfig.gradient} hover:opacity-90 text-primary-foreground shadow-lg`}
         >
           {actionConfig.buttonText}
           <ArrowRight className="w-4 h-4 ml-2" />
