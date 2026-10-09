@@ -1,7 +1,7 @@
 import { Money } from '@/components/Money';
-import { useMemo } from 'react';
+import { useMemo, useState, type ReactNode } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, PhoneCall, CalendarClock, Layers3, TrendingUp, Clock3, CheckCircle2, Circle, FileText, Handshake, XCircle } from 'lucide-react';
+import { ArrowRight, PhoneCall, CalendarClock, Layers3, TrendingUp, Clock3, CheckCircle2, Circle, FileText, Handshake, XCircle, BriefcaseBusiness, UserRoundSearch } from 'lucide-react';
 import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
@@ -11,9 +11,11 @@ import { useOpportunityLines, fmtEur } from '@/hooks/useOpportunityLines';
 import { editOpportunity, STAGE_LABEL, normalizeStage } from '@/lib/opportunity';
 import { localDateStr, nextActionLabel } from '@/lib/followUps';
 import { summarizePipeline, summarizeClosedMonths, pendingActions, opportunityMargin } from '@/lib/dashboardSummary';
+import type { Company } from '@/data/companies';
 
-export const HoyTab = () => {
+export const HoyTab = ({ companies, selected, onSelect, detail }: { companies: Company[]; selected: Company | null; onSelect: (company: Company) => void; detail?: ReactNode }) => {
   const navigate = useNavigate();
+  const [actionsView, setActionsView] = useState<'lista' | 'calendario'>('lista');
   const { leads, isLoading, error } = useLeads();
   const { sales, isLoading: salesLoading } = useSales();
   const { lines } = useOpportunityLines();
@@ -33,11 +35,19 @@ export const HoyTab = () => {
 
   return (
     <div className="space-y-7 text-foreground motion-safe:animate-fade-in">
+      <section aria-labelledby="dashboard-briefing">
+        <div className="flex items-center gap-3 mb-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"><BriefcaseBusiness className="h-5 w-5" /></span><div><h1 id="dashboard-briefing" className="text-xl font-semibold">Briefing diario</h1><p className="text-xs text-muted-foreground">Elige el cliente que vas a trabajar ahora</p></div></div>
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {companies.filter(c => !c.archivedAt).slice(0, 8).map(company => <Button key={company.id} variant={selected?.id === company.id ? 'default' : 'outline'} size="sm" onClick={() => onSelect(company)} className="shrink-0">{company.name}</Button>)}
+        </div>
+      </section>
+
       <section aria-labelledby="dashboard-hoy">
         <div className="flex items-center justify-between gap-3 mb-3">
           <div className="flex items-center gap-3 min-w-0"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary"><CalendarClock className="h-5 w-5" /></span><div><h1 id="dashboard-hoy" className="text-xl font-semibold">Hoy</h1><p className="text-xs text-muted-foreground">Próximas acciones pendientes</p></div></div>
-          <Button asChild variant="ghost" size="sm"><Link to="/pendientes">Seguimiento <ArrowRight /></Link></Button>
+          <div className="flex border border-border rounded-md p-1"><Button variant={actionsView === 'lista' ? 'default' : 'ghost'} size="sm" onClick={() => setActionsView('lista')}>Lista</Button><Button variant={actionsView === 'calendario' ? 'default' : 'ghost'} size="sm" onClick={() => setActionsView('calendario')}>Calendario</Button></div>
         </div>
+        {actionsView === 'calendario' ? <div className="border-y border-border divide-y divide-border">{Object.entries(pending.reduce<Record<string, typeof pending>>((groups, lead) => { const date = lead.next_action_date; if (date) (groups[date] ||= []).push(lead); return groups; }, {})).map(([date, rows]) => <div key={date} className="grid grid-cols-[7rem_1fr] gap-4 py-3"><time className="text-sm font-semibold tabular-nums" dateTime={date}>{dateLabel(date)}</time><div className="space-y-2">{rows.map(lead => <button key={lead.id} onClick={() => editOpportunity(lead).catch(e => toast.error(e?.message || 'No se pudo guardar'))} className="w-full text-left flex justify-between gap-3 rounded-md bg-card p-3 hover:bg-muted"><span><strong className="block text-sm">{lead.empresa}</strong><span className="text-xs text-muted-foreground">{nextActionLabel(lead.next_action)}</span></span><Money>{fmtEur(opportunityMargin(lead, lines))}</Money></button>)}</div></div>)}{pending.length === 0 && <p className="py-6 text-sm text-muted-foreground">Nada pendiente hoy</p>}</div> : <>
         <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4">
           {[{ label: 'Vencidas', count: overdueCount, tone: 'text-destructive', icon: Clock3 }, { label: 'Hoy', count: todayCount, tone: 'text-primary', icon: CalendarClock }, { label: 'Próximas', count: laterCount, tone: 'text-info', icon: ArrowRight }].map(item => <div key={item.label} className="rounded-md bg-card p-3 sm:p-4"><div className={`flex items-center justify-between gap-2 ${item.tone}`}><span className="text-xs sm:text-sm font-medium">{item.label}</span><item.icon className="h-4 w-4 shrink-0" /></div><p className={`mt-2 text-3xl font-semibold tabular-nums ${item.tone}`}>{isLoading ? '—' : item.count}</p></div>)}
         </div>
@@ -59,7 +69,7 @@ export const HoyTab = () => {
               })}</tbody>
             </table>
           </div>
-        )}
+        )}</>}
       </section>
 
       <section aria-labelledby="dashboard-pipeline" className="border-t border-border pt-5">
@@ -68,6 +78,11 @@ export const HoyTab = () => {
           const Icon = stageIcons[s.stage];
           return <div key={s.stage} className="rounded-md bg-card p-4 min-w-0"><div className="flex items-center gap-2"><span className={`flex h-7 w-7 items-center justify-center rounded-md shrink-0 ${stageTones[s.stage]}`}><Icon className="h-4 w-4" /></span><h3 className="text-sm font-medium">{STAGE_LABEL[s.stage]}</h3></div><p className="text-3xl font-semibold tabular-nums mt-4">{s.leads.length}</p><p className="text-xs text-muted-foreground mt-1">Oportunidades</p><Progress aria-label={`Proporción de oportunidades en ${STAGE_LABEL[s.stage]}`} value={s.leads.length / Math.max(pipeline.reduce((sum, stage) => sum + stage.leads.length, 0), 1) * 100} className={`h-1 mt-3 ${barTones[s.stage]}`} /><div className="border-t border-border mt-4 pt-3"><p className="text-xs text-muted-foreground">Margen €</p><p className="text-base font-semibold tabular-nums break-words mt-1"><Money>{fmtEur(s.margin)}</Money></p><p className="text-xs text-muted-foreground mt-1 min-h-4">{s.missing > 0 ? `${s.missing} sin margen` : '\u00a0'}</p></div></div>;
         })}</div>}
+      </section>
+
+      <section aria-labelledby="dashboard-client" className="border-t border-border pt-5">
+        <div className="flex items-center gap-3 mb-4"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-info/10 text-info"><UserRoundSearch className="h-5 w-5" /></span><div><h2 id="dashboard-client" className="text-lg font-semibold">Cliente / Oportunidad</h2><p className="text-xs text-muted-foreground">Ficha de trabajo y briefing comercial</p></div></div>
+        {detail ?? <p className="text-sm text-muted-foreground py-6">Selecciona un cliente en el briefing para abrir su oportunidad.</p>}
       </section>
 
       <section aria-labelledby="dashboard-margen" className="border-t border-border pt-5">

@@ -1,5 +1,7 @@
 # Roadmap
 
+- [x] Reducir navegación a Hoy, Clientes, Pipeline y Trimestre; integrar acciones/calendario en Hoy, informes en cliente y Trimestre, y retirar Triaje
+
 - [x] Corregir gráficos del pipeline y simplificar navegación principal
 - [x] Ficha de cliente en una columna con historial existente, nota directa y Datos plegados; cambios de etapa históricos no disponibles, sin inventarlos
 

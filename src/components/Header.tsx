@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
-import { Search, Bell, Settings, Menu, LogOut, Users, Plus, Building2, Sun, Moon, StickyNote, Table as TableIcon, Inbox, ChevronDown } from 'lucide-react';
+import { Search, Bell, Settings, Menu, LogOut, Users, Plus, Building2, Sun, Moon, StickyNote } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useNavigate, useLocation, NavLink } from 'react-router-dom';
-import { NEXUS_VIEW_PATHS, nexusViewFromPath } from '@/lib/nexusViews';
+import { useNavigate, NavLink } from 'react-router-dom';
+import { NEXUS_VIEW_PATHS } from '@/lib/nexusViews';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { useCompanies } from '@/hooks/useCompanies';
@@ -48,16 +48,12 @@ interface HeaderProps {
 import { useFollowUps } from '@/hooks/useFollowUps';
 export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, onAddCompany, onCompanyNavigate }: HeaderProps) => {
   const navigate = useNavigate();
-  const location = useLocation();
   const { urgentCount } = useFollowUps();
-  const dashboardView = nexusViewFromPath(location.pathname);
   const [localSearch, setLocalSearch] = useState('');
   const [searchOpen, setSearchOpen] = useState(false);
   const [notesOpen, setNotesOpen] = useState(false);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const moreRef = useRef<HTMLDivElement>(null);
-  const [moreOpen, setMoreOpen] = useState(false);
 
   const { companies } = useCompanies();
   const { leads } = useLeads();
@@ -92,17 +88,6 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
 
 
 
-  // Close "More" dropdown on outside click
-  useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
-        setMoreOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
-  }, []);
-
   // Recent lead activity for notifications
   const recentLeads = leads
     .filter(l => l.created_at)
@@ -113,7 +98,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
     setSearchOpen(false);
     setActiveSearch('');
     // Navigate to dashboard with company detail open
-    navigate(`${NEXUS_VIEW_PATHS.briefing}?company=${encodeURIComponent(companyId)}`);
+    navigate(`${NEXUS_VIEW_PATHS.clientes}?company=${encodeURIComponent(companyId)}`);
     onCompanyNavigate?.(companyId);
   };
 
@@ -150,10 +135,10 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
       <div className="flex-1 flex items-center gap-4 max-w-2xl">
         <nav className="hidden md:flex items-center gap-1 bg-muted/50 rounded-full p-1 border border-border shrink-0">
           {[
-            { to: '/hoy', label: '📋 Hoy' },
-            { to: '/pendientes', label: '🔔 Pendientes', badge: true },
-            { to: '/clientes', label: '👥 Clientes' },
-            { to: '/pipeline', label: '📊 Pipeline' },
+            { to: '/hoy', label: 'Hoy', badge: true },
+            { to: '/clientes', label: 'Clientes' },
+            { to: '/pipeline', label: 'Pipeline' },
+            { to: '/trimestre', label: 'Trimestre' },
           ].map(item => (
             <NavLink
               key={item.to}
@@ -169,96 +154,6 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
               )}
             </NavLink>
           ))}
-          <div className="relative" ref={moreRef}>
-            <Button variant="ghost" size="sm"
-              aria-expanded={moreOpen}
-              onClick={() => setMoreOpen(!moreOpen)}
-              className={cn(
-                'px-3 py-1.5 rounded-full text-xs font-medium transition-all inline-flex items-center gap-1 whitespace-nowrap',
-                (
-                  location.pathname === '/leads' ||
-                  location.pathname.startsWith('/triaje') ||
-                  location.pathname === '/simulador' ||
-                  ['/mapa', '/informes', '/agenda', '/objetivo'].includes(location.pathname) ||
-                  (dashboardView === 'briefing' || dashboardView === 'archivo')
-                )
-                  ? 'bg-primary text-primary-foreground'
-                  : 'text-muted-foreground hover:text-foreground'
-              )}
-            >
-              Más <ChevronDown className={cn('w-3 h-3 transition-transform', moreOpen && 'rotate-180')} />
-            </Button>
-            {moreOpen && (
-              <div className="absolute top-full right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-50 py-1 min-w-[180px]">
-                {[
-                  { to: '/mapa', label: 'Mapa' },
-                  { to: '/informes', label: 'Informes' },
-                  { to: '/agenda', label: 'Agenda' },
-                  { to: '/objetivo', label: 'Cierre de trimestre' },
-                ].map(item => (
-                  <NavLink key={item.to} to={item.to} onClick={() => setMoreOpen(false)}
-                    className={({ isActive }) => cn('block px-3 py-2 text-xs font-medium', isActive ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50')}>
-                    {item.label}
-                  </NavLink>
-                ))}
-                <button
-                  onClick={() => { setMoreOpen(false); navigate(NEXUS_VIEW_PATHS.briefing); }}
-                  className={cn(
-                    'w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2',
-                    dashboardView === 'briefing'
-                      ? 'text-primary bg-primary/10'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                  )}
-                >
-                  ⬡ Briefing Diario
-                </button>
-                <button
-                  onClick={() => { setMoreOpen(false); navigate('/leads'); }}
-                  className={cn(
-                    'w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2',
-                    location.pathname === '/leads'
-                      ? 'text-primary bg-primary/10'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                  )}
-                >
-                  <TableIcon className="w-3 h-3" /> Leads
-                </button>
-                <button
-                  onClick={() => { setMoreOpen(false); navigate('/triaje'); }}
-                  className={cn(
-                    'w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2',
-                    location.pathname.startsWith('/triaje')
-                      ? 'text-primary bg-primary/10'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                  )}
-                >
-                  <Inbox className="w-3 h-3" /> Triaje
-                </button>
-                <button
-                  onClick={() => { setMoreOpen(false); navigate('/simulador'); }}
-                  className={cn(
-                    'w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2',
-                    location.pathname === '/simulador'
-                      ? 'text-primary bg-primary/10'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                  )}
-                >
-                  🧮 Simulador
-                </button>
-                <button
-                  onClick={() => { setMoreOpen(false); navigate(NEXUS_VIEW_PATHS.archivo); }}
-                  className={cn(
-                    'w-full text-left px-3 py-2 text-xs font-medium transition-colors flex items-center gap-2',
-                    dashboardView === 'archivo'
-                      ? 'text-primary bg-primary/10'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
-                  )}
-                >
-                  🗄️ Archivo
-                </button>
-              </div>
-            )}
-          </div>
         </nav>
 
         {/* Search with dropdown */}

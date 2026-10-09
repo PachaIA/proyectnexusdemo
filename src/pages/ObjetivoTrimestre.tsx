@@ -13,6 +13,9 @@ import { computeQuarterKpis, rentLabel } from '@/lib/salesKpis';
 import { getVodafoneFiscalQuarterLabel } from '@/lib/vodafoneFiscalQuarter';
 import type { Sale } from '@/hooks/useSales';
 import { cn } from '@/lib/utils';
+import { InformesTab } from '@/components/InformesTab';
+import Simulador from '@/pages/Simulador';
+import { Header } from '@/components/Header';
 
 const fmt = (n: number) => n.toLocaleString('es-ES', { maximumFractionDigits: 0 });
 
@@ -128,18 +131,10 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
 
   return (
     <div className="min-h-screen bg-background text-foreground pb-24 md:pb-8">
-      <header className="h-14 px-4 border-b border-border bg-card flex items-center gap-3 sticky top-0 z-10">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/hoy')} className="-ml-2" aria-label="Volver">
-          <ArrowLeft className="w-5 h-5" />
-        </Button>
-        <div>
-          <h1 className="text-base font-semibold leading-tight">Cierre de trimestre</h1>
-          <p className="text-[11px] text-muted-foreground">{getVodafoneFiscalQuarterLabel()}</p>
-        </div>
-        <div className="ml-auto"><ThemeToggle /></div>
-      </header>
+      <Header />
 
-      <main className="max-w-3xl mx-auto p-4 space-y-6">
+      <main className="max-w-6xl mx-auto p-4 space-y-6">
+        <div><h1 className="text-xl font-semibold">Trimestre</h1><p className="text-xs text-muted-foreground">{getVodafoneFiscalQuarterLabel()}</p></div>
         {/* Dónde estoy */}
         <section className="rounded-lg border border-border bg-card p-4 space-y-4">
           <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Dónde estoy</h2>
@@ -249,6 +244,8 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
             </div>
           )}
         </section>
+        <section className="border-t border-border pt-6"><h2 className="text-lg font-semibold mb-4">Informe global</h2><InformesTab onCompanySelect={(company) => navigate(`/clientes?company=${encodeURIComponent(company.id)}`)} /></section>
+        <section className="border-t border-border pt-6"><Simulador embedded /></section>
       </main>
     </div>
   );

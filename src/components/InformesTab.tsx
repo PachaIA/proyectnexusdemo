@@ -66,9 +66,11 @@ interface CompanyAttention {
 
 interface InformesTabProps {
   onCompanySelect: (company: Company) => void;
+  companyId?: string;
+  compact?: boolean;
 }
 
-export function InformesTab({ onCompanySelect }: InformesTabProps) {
+export function InformesTab({ onCompanySelect, companyId, compact = false }: InformesTabProps) {
   const { companies } = useCompanies();
   const { leads } = useLeads();
   const [motivoFilter, setMotivoFilter] = useState<'todos' | MotivoId>('todos');
@@ -113,6 +115,7 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
     });
 
     return (companies || [])
+      .filter((c) => !companyId || c.id === companyId)
       .filter((c) => !(c as any).archivedAt)
       .map((c) => {
         const lead = (leads || []).find((l: any) => l.company_id === c.id);
@@ -159,7 +162,7 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
         return { company: c, estado, motivos };
       })
       .filter((i) => i.motivos.length > 0);
-  }, [companies, leads, allActivities, interactions]);
+  }, [companies, leads, allActivities, interactions, companyId]);
 
   const filtered = useMemo(
     () =>
@@ -205,14 +208,14 @@ export function InformesTab({ onCompanySelect }: InformesTabProps) {
   return (
     <div>
       {/* Cabecera */}
-      <div style={{ marginBottom: 14 }}>
+      {!compact && <div style={{ marginBottom: 14 }}>
         <div style={{ ...mono, fontSize: 12, fontWeight: 700, letterSpacing: 2, color: T.textPrimary }}>
           📑 PANEL DE SEGUIMIENTO DE INFORMES
         </div>
         <div style={{ ...mono, fontSize: 9, color: T.textMuted, letterSpacing: 1, marginTop: 4 }}>
           {filtered.length} CLIENTES REQUIEREN ATENCIÓN · SOLO LECTURA
         </div>
-      </div>
+      </div>}
 
       {/* Filtros */}
       <div

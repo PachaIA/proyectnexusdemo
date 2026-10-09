@@ -125,7 +125,7 @@ function buildExportText(
   ].join('\n');
 }
 
-export default function Simulador() {
+export default function Simulador({ embedded = false }: { embedded?: boolean }) {
   const [sector, setSector] = useState<Sector>('servicios');
   const [empleados, setEmpleados] = useState(28);
   const [antiguedad, setAntiguedad] = useState(9);
@@ -212,10 +212,10 @@ export default function Simulador() {
   };
 
   return (
-    <div className="h-screen flex flex-col overflow-hidden bg-muted/30">
-      <Header />
-      <div className="flex-1 overflow-auto">
-        <div className="max-w-6xl mx-auto px-4 py-8 pb-24 md:pb-8">
+    <div className={embedded ? "bg-background" : "h-screen flex flex-col overflow-hidden bg-muted/30"}>
+      {!embedded && <Header />}
+      <div className={embedded ? "" : "flex-1 overflow-auto"}>
+        <div className={embedded ? "py-4" : "max-w-6xl mx-auto px-4 py-8 pb-24 md:pb-8"}>
           <div className="mb-8">
             <h1 className="text-2xl font-semibold text-foreground">Simulador NCS</h1>
             <p className="text-sm text-muted-foreground mt-1">
