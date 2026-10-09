@@ -1,6 +1,6 @@
 # Roadmap
 
-- [x] Añadir animación de entrada Nexus una vez al día, saltable y con movimiento reducido
+- [x] Sustituir la animación diaria por una pantalla Nexus de acceso, registro y recuperación antes del CRM
 - [x] Unificar Trimestre con el layout principal y hacer que el escenario lea y actualice la etapa real de las oportunidades
 - [x] Unificar ficha de cliente y oportunidad en /clientes/:id; sustituir aperturas de detalle por enlaces
 - [x] Reducir navegación a Hoy, Clientes, Pipeline y Trimestre; integrar acciones/calendario en Hoy, informes en cliente y Trimestre, y retirar Triaje
@@ -12,13 +12,13 @@
 
 - [x] Desacoplar compensación: esquema MR PRO en Cloud, cálculos desde esquema activo, pruebas de igualdad e informe de archivos/líneas
 
-- [x] Remove login requirement (app opens directly) — TEMPORARY, re-close later
+- [x] Acceso temporalmente abierto durante la preparación inicial
 - [x] Secrets already set; no update needed
 - [x] Drizzle migrations empty (fresh journal)
 - [x] Fix map (tiles + data access)
 - [x] 14 sample clients across all 7 pipeline stages
 - [x] Project URL for OpenClaw
-- [ ] Re-enable login and remove open access (when user decides)
+- [x] Reactivar acceso por correo y contraseña y retirar el acceso anónimo
 - [x] Modo Llamada (/llamada/:companyId): pantalla a pantalla completa, resultados con fecha, encadenado de llamadas, sin barras de navegación
 - [x] PWA instalable y offline: SW, caché de datos SWR, indicador offline, cola de escrituras, manifest iOS
 - [x] Cierre de trimestre (/objetivo): estado actual, qué falta, simulador de escenarios con pipeline
