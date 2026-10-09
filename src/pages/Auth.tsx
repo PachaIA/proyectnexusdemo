@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Mail, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { z } from 'zod';
+import nexusAccess from '@/assets/nexus-access.png';
 
 const credentialsSchema = z.object({
   email: z.string().trim().email('Introduce un correo electrónico válido').max(254, 'El correo es demasiado largo'),
@@ -110,19 +111,11 @@ const Auth = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background p-4 sm:p-8">
-      <div className="w-full max-w-md">
-        <div className="mb-8 text-center">
-          <img
-            src="/nexus-lockup.png"
-            alt="Nexus"
-            className="mx-auto w-full min-w-[160px] max-w-[420px]"
-          />
-          <p className="mt-4 text-sm text-muted-foreground">Inteligencia comercial B2B para telecomunicaciones</p>
-        </div>
-
+    <main className="grid min-h-screen bg-background lg:grid-cols-[minmax(400px,0.85fr)_minmax(0,1.4fr)]">
+      <div className="order-2 flex items-center justify-center bg-card px-6 py-10 sm:px-12 lg:order-1 lg:min-h-screen lg:py-16">
+      <div className="w-full max-w-sm">
         {confirmationSent ? (
-          <div className="space-y-4 border-t border-border bg-card p-6 text-center">
+          <div className="space-y-4 text-center">
             <CheckCircle2 className="mx-auto h-8 w-8 text-success" />
             <h1 className="text-xl font-semibold text-foreground">Confirma tu cuenta</h1>
             <p className="text-sm text-muted-foreground">Revisa tu correo y pulsa el enlace para entrar en Nexus.</p>
@@ -131,34 +124,38 @@ const Auth = () => {
             </Button>
           </div>
         ) : (
-        <form onSubmit={handleAuth} className="space-y-5 border-t border-border bg-card p-6">
+        <form onSubmit={handleAuth} className="space-y-6">
           <div>
-            <h1 className="text-xl font-semibold text-foreground">{isLogin ? 'Iniciar sesión' : 'Crear cuenta'}</h1>
+            <h1 className="text-3xl font-semibold text-foreground">{isLogin ? 'Iniciar sesión' : 'Crear cuenta'}</h1>
             <p className="mt-1 text-sm text-muted-foreground">{isLogin ? 'Accede a tu espacio comercial.' : 'Regístrate con tu correo profesional.'}</p>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-5">
+            <label htmlFor="auth-email" className="block text-sm font-medium text-foreground">Correo electrónico</label>
             <div className="relative">
               <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
+                id="auth-email"
                 type="email"
-                placeholder="Email"
+                placeholder="nombre@empresa.es"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="pl-10"
+                className="h-12 bg-background pl-10"
                 required
                 autoComplete="email"
                 maxLength={254}
               />
             </div>
+            <label htmlFor="auth-password" className="block text-sm font-medium text-foreground">Contraseña</label>
             <div className="relative">
               <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
+                id="auth-password"
                 type="password"
                 placeholder="Contraseña"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="pl-10"
+                className="h-12 bg-background pl-10"
                 required
                 minLength={8}
                 maxLength={72}
@@ -169,7 +166,7 @@ const Auth = () => {
 
           {formError && <p role="alert" className="text-sm text-destructive">{formError}</p>}
 
-          <Button type="submit" className="w-full" disabled={loading}>
+          <Button type="submit" className="h-12 w-full" disabled={loading}>
             {loading ? 'Espera…' : isLogin ? 'Entrar' : 'Registrarse'}
             <ArrowRight className="w-4 h-4 ml-2" />
           </Button>
@@ -197,7 +194,14 @@ const Auth = () => {
         </form>
         )}
       </div>
-    </div>
+      </div>
+      <div className="order-1 flex min-w-0 flex-col items-center justify-center px-6 py-8 lg:order-2 lg:min-h-screen lg:px-12 lg:py-12">
+        <img src={nexusAccess} alt="Nexus" className="w-full max-w-[300px] object-contain lg:max-w-[660px]" />
+        <h2 className="mt-2 text-4xl font-semibold text-foreground lg:text-6xl">NEXUS</h2>
+        <p className="mt-3 text-center text-sm font-medium uppercase text-primary lg:text-base">Inteligencia comercial</p>
+        <p className="mt-3 text-center text-sm text-muted-foreground">B2B · Telecomunicaciones</p>
+      </div>
+    </main>
   );
 };
 
