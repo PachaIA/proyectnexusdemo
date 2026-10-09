@@ -33,7 +33,7 @@ export function ClientDetailOverview({ company, children, headerAction }: { comp
   const current = ownLeads.filter(l => !l.archived_at).sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0];
   const stages = [...new Set(ownLeads.filter(l => !l.archived_at).map(l => STAGE_LABEL[normalizeStage(l.estado)]))];
   const contact = company.contactInfo as Record<string, unknown>;
-  const principal = company.decisionMakers?.find(c => c.principal);
+  const principal = company.decisionMakers?.find(c => 'principal' in c && c.principal);
   const phone = String(principal?.mobile || contact?.telefono || contact?.phone || company.decisionMakers?.find(c => c.mobile)?.mobile || '');
   const events = [
     ...activities.map(a => ({ id: a.id, date: a.activity_date, time: a.created_at, type: ACTIVITY_TYPES.find(t => t.id === a.activity_type)?.label || 'Actividad', text: [a.summary, a.outcome].filter(Boolean).join(' · ') })),

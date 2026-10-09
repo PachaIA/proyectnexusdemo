@@ -578,7 +578,7 @@ const MyLeads = () => {
         {view.vista === 'tabla' && <OpportunityList leads={viewLeads as any} />}
 
         {/* ROW 3: Charts */}
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 items-start">
           {/* Bar chart: leads by sector */}
           <div style={{
             background: T.card, border: `1px solid ${T.border}`, borderRadius: 14,
