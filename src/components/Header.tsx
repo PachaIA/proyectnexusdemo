@@ -153,11 +153,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             { to: '/hoy', label: '📋 Hoy' },
             { to: '/pendientes', label: '🔔 Pendientes', badge: true },
             { to: '/clientes', label: '👥 Clientes' },
-            { to: '/mapa', label: '🗺️ Mapa' },
             { to: '/pipeline', label: '📊 Pipeline' },
-            { to: '/informes', label: '📑 Informes' },
-            { to: '/agenda', label: '🗓️ Agenda' },
-            { to: '/simulador', label: '🧮 Simulador' },
           ].map(item => (
             <NavLink
               key={item.to}
@@ -174,7 +170,8 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             </NavLink>
           ))}
           <div className="relative" ref={moreRef}>
-            <button
+            <Button variant="ghost" size="sm"
+              aria-expanded={moreOpen}
               onClick={() => setMoreOpen(!moreOpen)}
               className={cn(
                 'px-3 py-1.5 rounded-full text-xs font-medium transition-all inline-flex items-center gap-1 whitespace-nowrap',
@@ -182,6 +179,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
                   location.pathname === '/leads' ||
                   location.pathname.startsWith('/triaje') ||
                   location.pathname === '/simulador' ||
+                  ['/mapa', '/informes', '/agenda', '/objetivo'].includes(location.pathname) ||
                   (dashboardView === 'briefing' || dashboardView === 'archivo')
                 )
                   ? 'bg-primary text-primary-foreground'
@@ -189,9 +187,20 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
               )}
             >
               Más <ChevronDown className={cn('w-3 h-3 transition-transform', moreOpen && 'rotate-180')} />
-            </button>
+            </Button>
             {moreOpen && (
               <div className="absolute top-full right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-50 py-1 min-w-[180px]">
+                {[
+                  { to: '/mapa', label: 'Mapa' },
+                  { to: '/informes', label: 'Informes' },
+                  { to: '/agenda', label: 'Agenda' },
+                  { to: '/objetivo', label: 'Cierre de trimestre' },
+                ].map(item => (
+                  <NavLink key={item.to} to={item.to} onClick={() => setMoreOpen(false)}
+                    className={({ isActive }) => cn('block px-3 py-2 text-xs font-medium', isActive ? 'text-primary bg-primary/10' : 'text-muted-foreground hover:text-foreground hover:bg-muted/50')}>
+                    {item.label}
+                  </NavLink>
+                ))}
                 <button
                   onClick={() => { setMoreOpen(false); navigate(NEXUS_VIEW_PATHS.briefing); }}
                   className={cn(
