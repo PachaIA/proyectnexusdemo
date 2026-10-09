@@ -1,9 +1,8 @@
 import { fmtEur } from '@/hooks/useOpportunityLines';
 import { Money } from '@/components/Money';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Target, TrendingUp, Euro, Zap, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
+import { Target, TrendingUp, Euro, Zap, CheckCircle2, Loader2, Sparkles, LockKeyhole } from 'lucide-react';
 import { useSales } from '@/hooks/useSales';
 import { useLeads } from '@/hooks/useLeads';
 import { useCompScheme } from '@/hooks/useCompScheme';
@@ -16,12 +15,15 @@ import { cn } from '@/lib/utils';
 import { InformesTab } from '@/components/InformesTab';
 import Simulador from '@/pages/Simulador';
 import { Header } from '@/components/Header';
+import { isLockedQuarterScenarioOpportunity, isQuarterScenarioOpportunity } from '@/lib/quarterScenario';
+import { STAGE_LABEL, normalizeStage } from '@/lib/opportunity';
 
 const fmt = (n: number) => n.toLocaleString('es-ES', { maximumFractionDigits: 0 });
 
 interface Opp {
   id: string;
   empresa: string;
+  estado: string;
   score: number;
   altas: number; // líneas estimadas
   snav: number; // SNAV estimado
@@ -54,16 +56,25 @@ const oppToSale = (o: Opp): Sale => ({
 
 export default function ObjetivoTrimestre() {
   const { data: scheme, isPending, error } = useCompScheme();
-  if (isPending) return <div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
-  if (!scheme) return <div role="alert" className="p-4 text-destructive">{error?.message ?? 'No hay un esquema de compensación activo.'}</div>;
-  return <ObjetivoConEsquema scheme={scheme} />;
+  return (
+    <div className="min-h-screen bg-background text-foreground pb-24 md:pb-8">
+      <div className="sticky top-0 z-50"><Header /></div>
+      {isPending ? (
+        <div className="min-h-[50vh] flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>
+      ) : !scheme ? (
+        <div role="alert" className="max-w-6xl mx-auto p-4 text-destructive">{error?.message ?? 'No hay un esquema de compensación activo.'}</div>
+      ) : (
+        <ObjetivoConEsquema scheme={scheme} />
+      )}
+    </div>
+  );
 }
 
 function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
   const navigate = useNavigate();
   const { sales, isLoading: loadingSales } = useSales();
-  const { leads, isLoading: loadingLeads } = useLeads();
-  const [closed, setClosed] = useState<Set<string>>(new Set());
+  const { leads, isLoading: loadingLeads, updateLeadAsync } = useLeads();
+  const [closingId, setClosingId] = useState<string | null>(null);
 
   const target = scheme.target_units;
   const config = scheme.config;
@@ -72,37 +83,40 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
   const lastTier = tiers[tiers.length - 1];
   const actual = useMemo(() => computeQuarterKpis(sales, scheme), [sales, scheme]);
 
-  // Oportunidades abiertas del pipeline, ordenadas por probabilidad (NCS score)
+  // Una única fuente: propuesta/negociación son accionables y ganada queda bloqueada.
   const opps = useMemo<Opp[]>(() =>
     leads
-      .filter((l) => !l.archived_at && !['ganada', 'perdida'].includes(l.estado))
+      .filter(isQuarterScenarioOpportunity)
       .map((l) => {
         const s = config.simulation;
         const altas = Math.max(s.minimum_units, Math.round((l.tamano || s.fallback_employees) * s.units_per_employee));
         const margen = (l.arpu_estimado || s.fallback_margin_per_unit) * altas;
-        return { id: l.id, empresa: l.empresa, score: l.opportunity_score || s.fallback_probability, altas, snav: margen * s.snav_margin_factor, margen };
+        return { id: l.id, empresa: l.empresa, estado: l.estado, score: l.opportunity_score || s.fallback_probability, altas, snav: margen * s.snav_margin_factor, margen };
       })
-      .sort((a, b) => b.score - a.score),
+      .sort((a, b) => Number(b.estado === 'ganada') - Number(a.estado === 'ganada') || b.score - a.score),
    [leads, config]);
 
+  const wonOpps = useMemo(() => opps.filter((o) => o.estado === 'ganada'), [opps]);
+  const actionableOpps = useMemo(() => opps.filter((o) => o.estado !== 'ganada'), [opps]);
   const simulated = useMemo(() => {
-    const extra = opps.filter((o) => closed.has(o.id)).map(oppToSale);
+    const extra = wonOpps.map(oppToSale);
     return computeQuarterKpis([...sales, ...extra], scheme);
-  }, [sales, opps, closed, scheme]);
+  }, [sales, wonOpps, scheme]);
 
   // Sugerencia de mínimo esfuerzo: menor número de cierres (mayor probabilidad primero) que cumple objetivo
   const suggestion = useMemo(() => {
     const picked: Opp[] = [];
-    for (const o of opps) {
-      const kpis = computeQuarterKpis([...sales, ...picked.map(oppToSale), oppToSale(o)], scheme);
+    const baseSales = [...sales, ...wonOpps.map(oppToSale)];
+    for (const o of actionableOpps) {
+      const kpis = computeQuarterKpis([...baseSales, ...picked.map(oppToSale), oppToSale(o)], scheme);
       picked.push(o);
       if (kpis.altas >= target && kpis.multiplicador > actual.multiplicador) break;
       if (kpis.altas >= target && kpis.multiplicador >= config.multiplier_goal) break;
     }
-    const kpis = computeQuarterKpis([...sales, ...picked.map(oppToSale)], scheme);
+    const kpis = computeQuarterKpis([...baseSales, ...picked.map(oppToSale)], scheme);
     const ok = picked.length > 0 && kpis.altas >= target;
     return { picked, ok, kpis };
-  }, [opps, sales, target, actual.multiplicador, scheme, config]);
+  }, [actionableOpps, wonOpps, sales, target, actual.multiplicador, scheme, config]);
 
   // Qué falta
   const faltanAltas = Math.max(0, target - actual.altas);
@@ -117,12 +131,19 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
   const rentaEnRiesgo = actual.altas > 0 && actual.rentabilidadMedia - bandFloor < config.rent_risk_buffer;
 
   if (loadingSales || loadingLeads) {
-    return <div className="min-h-screen flex items-center justify-center bg-background"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
+    return <div className="min-h-[50vh] flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   }
 
-  const toggle = (id: string) => setClosed((s) => { const n = new Set(s); n.has(id) ? n.delete(id) : n.add(id); return n; });
+  const closeOpportunity = async (id: string) => {
+    setClosingId(id);
+    try {
+      await updateLeadAsync({ id, updates: { estado: 'ganada' } });
+    } finally {
+      setClosingId(null);
+    }
+  };
 
-  const kpis = simulated; // lo mostrado refleja los cierres marcados
+  const kpis = simulated; // refleja las etapas reales de las oportunidades
   const insight = suggestion.ok
     ? `Cerrando ${suggestion.picked.length === 1 ? 'esta operación' : `estas ${suggestion.picked.length} operaciones`} llegas al objetivo${suggestion.kpis.multiplicador > actual.multiplicador ? ' y subes el multiplicador' : ''}.`
     : faltanAltas > 0
@@ -130,9 +151,6 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
       : 'Objetivo de altas cubierto. El reto ahora es el multiplicador.';
 
   return (
-    <div className="min-h-screen bg-background text-foreground pb-24 md:pb-8">
-      <Header />
-
       <main className="max-w-6xl mx-auto p-4 space-y-6">
         <div><h1 className="text-xl font-semibold">Trimestre</h1><p className="text-xs text-muted-foreground">{getVodafoneFiscalQuarterLabel()}</p></div>
         {/* Dónde estoy */}
@@ -196,7 +214,6 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
         <section className="rounded-lg border border-border bg-card p-4 space-y-3">
           <div className="flex items-center justify-between gap-2">
             <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">Simulador de escenarios</h2>
-            {closed.size > 0 && <Button variant="link" size="sm" onClick={() => setClosed(new Set())}>Limpiar</Button>}
           </div>
 
           <div className="rounded-md bg-primary/10 border border-primary/30 p-3 flex gap-2">
@@ -205,27 +222,26 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
           </div>
 
           {opps.length === 0 ? (
-            <p className="text-sm text-muted-foreground">No hay oportunidades abiertas en el pipeline.</p>
+            <p className="text-sm text-muted-foreground">No hay oportunidades en propuesta, negociación o ganadas.</p>
           ) : (
             <ul className="divide-y divide-border">
               {opps.map((o) => {
-                const on = closed.has(o.id);
+                const locked = isLockedQuarterScenarioOpportunity(o);
+                const isClosing = closingId === o.id;
                 return (
                   <li key={o.id} className="py-2.5 flex items-center gap-3">
                     <Button
-                      variant="outline"
-                      onClick={() => toggle(o.id)}
-                      className={cn(
-                        'shrink-0 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors',
-                        on ? 'bg-primary text-primary-foreground border-primary' : 'border-border text-muted-foreground hover:bg-muted'
-                      )}
+                      variant={locked ? 'secondary' : 'outline'}
+                      onClick={() => closeOpportunity(o.id)}
+                      disabled={locked || isClosing}
+                      className="shrink-0 min-w-24 rounded-md border px-3 py-1.5 text-xs font-medium"
                     >
-                      {on ? 'La cierro' : 'No la cierro'}
+                      {isClosing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : locked ? <><LockKeyhole className="w-3.5 h-3.5 mr-1" />Ganada</> : 'La cierro'}
                     </Button>
                     <div className="min-w-0 flex-1">
                       <div className="text-sm font-medium truncate">{o.empresa}</div>
                       <div className="text-[11px] text-muted-foreground">
-                        ~{o.altas} líneas · ~<Money>{fmtEur(o.snav)}</Money> SNAV · probabilidad {o.score}%
+                        {STAGE_LABEL[normalizeStage(o.estado)]} · ~{o.altas} líneas · ~<Money>{fmtEur(o.snav)}</Money> SNAV · probabilidad {o.score}%
                       </div>
                     </div>
                   </li>
@@ -234,9 +250,9 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
             </ul>
           )}
 
-          {closed.size > 0 && (
+          {wonOpps.length > 0 && (
             <div className="rounded-md bg-muted p-3 text-sm space-y-1">
-              <div className="font-medium">Con {closed.size} cierre{closed.size > 1 ? 's' : ''} marcado{closed.size > 1 ? 's' : ''}:</div>
+              <div className="font-medium">Con {wonOpps.length} oportunidad{wonOpps.length > 1 ? 'es' : ''} ganada{wonOpps.length > 1 ? 's' : ''}:</div>
               <div className="text-muted-foreground">
                 {kpis.altas}/{target} altas · <Money>{fmtEur(kpis.snav)}</Money> SNAV · <Money>{fmtEur(kpis.rentabilidadMedia)}</Money>/línea · multiplicador ×{kpis.multiplicador.toFixed(1)}
                 {kpis.multiplicador > actual.multiplicador && <span className="text-primary font-medium"> (sube de ×{actual.multiplicador.toFixed(1)})</span>}
@@ -247,6 +263,5 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
         <section className="border-t border-border pt-6"><h2 className="text-lg font-semibold mb-4">Informe global</h2><InformesTab onCompanySelect={(company) => navigate(`/clientes/${encodeURIComponent(company.id)}`)} /></section>
         <section className="border-t border-border pt-6"><Simulador embedded /></section>
       </main>
-    </div>
   );
 }

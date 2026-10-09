@@ -182,6 +182,7 @@ export const useLeads = () => {
     error,
     createLead: createLeadMutation.mutateAsync,
     updateLead: updateLeadMutation.mutate,
+    updateLeadAsync: updateLeadMutation.mutateAsync,
     archiveLead: archiveLeadMutation.mutate,
     isCompanyLead,
     getLeadByCompanyId,
