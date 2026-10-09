@@ -60,7 +60,7 @@ const Tile = ({ label, display, editing, onStartEdit, onCancel, onSave, saving, 
       'backdrop-blur-xl border',
       editing ? 'p-3' : 'p-2.5',
       accent
-        ? 'bg-gradient-to-br from-accent/10 via-accent/5 to-transparent border-accent/25 shadow-[0_0_18px_-10px_hsl(var(--accent)/0.5)]'
+        ? 'bg-gradient-to-br from-accent/10 via-accent/5 to-transparent border-accent/25'
         : 'bg-card/40 border-border/50 hover:border-border',
       editing ? 'ring-2 ring-primary/40 bg-card/70' : 'cursor-pointer hover:bg-card/60',
     ].join(' ')}
@@ -297,7 +297,7 @@ export const BriefingEditableBlock = ({ company }: Props) => {
       <section className="relative">
         {/* halo glow */}
         <div aria-hidden className="pointer-events-none absolute -inset-2 rounded-3xl bg-accent/5 blur-2xl" />
-        <div className="relative rounded-3xl border border-accent/25 bg-gradient-to-br from-accent/[0.08] via-card/40 to-transparent backdrop-blur-xl p-5 shadow-[0_8px_32px_-12px_hsl(var(--accent)/0.35)]">
+        <div className="relative rounded-3xl border border-accent/25 bg-gradient-to-br from-accent/[0.08] via-card/40 to-transparent backdrop-blur-xl p-5">
           <header className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <Sparkles className="w-4 h-4 text-accent" />
@@ -306,7 +306,7 @@ export const BriefingEditableBlock = ({ company }: Props) => {
                 <p className="text-[10px] uppercase tracking-[0.14em] text-accent/80">Trimestre actual · alimenta KPIs</p>
               </div>
             </div>
-            <Button size="sm" onClick={saveSale} disabled={savingField === 'sale'} className="h-8 px-3 text-xs bg-accent text-accent-foreground hover:bg-accent/90 shadow-[0_0_16px_-4px_hsl(var(--accent)/0.6)]">
+            <Button size="sm" onClick={saveSale} disabled={savingField === 'sale'} className="h-8 px-3 text-xs bg-accent text-accent-foreground hover:bg-accent/90">
               {savingField === 'sale' ? <Loader2 className="w-3 h-3 mr-1.5 animate-spin" /> : <Check className="w-3 h-3 mr-1.5" />}
               {existingSaleId ? 'Actualizar' : 'Guardar'}
             </Button>

@@ -92,7 +92,7 @@ export function QuickActivityModal({ company, onClose, onSaved }: Props) {
         style={{
           background: T.cardAlt, border: `1px solid ${T.border}`, borderRadius: 14,
           width: '100%', maxWidth: 460, maxHeight: '88vh', overflowY: 'auto',
-          boxShadow: '0 20px 60px rgba(0,0,0,0.5)',
+          boxShadow: "none",
         }}
       >
         {/* Header */}

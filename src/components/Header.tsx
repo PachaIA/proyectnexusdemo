@@ -18,7 +18,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 const NexusLogo = () => (
   <div className="flex items-center gap-2.5 mr-4">
     <div className="relative flex items-center justify-center w-9 h-9">
-      <svg viewBox="0 0 36 36" className="w-9 h-9 drop-shadow-[0_0_8px_rgba(124,92,252,0.5)]">
+      <svg viewBox="0 0 36 36" className="w-9 h-9">
         <polygon
           points="18,1 32.5,9 32.5,27 18,35 3.5,27 3.5,9"
           fill="none"
@@ -167,7 +167,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             className={cn(
               'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
               dashboardView === 'hoy'
-                ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
+                ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
@@ -178,7 +178,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             className={cn(
               'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap inline-flex items-center gap-1.5',
               location.pathname === '/hoy'
-                ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
+                ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
@@ -192,7 +192,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             className={cn(
               'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
               dashboardView === 'clientes'
-                ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
+                ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
@@ -203,7 +203,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             className={cn(
               'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
               location.pathname === '/map'
-                ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
+                ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
@@ -214,7 +214,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             className={cn(
               'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
               location.pathname === '/my-leads'
-                ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
+                ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
@@ -225,7 +225,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             className={cn(
               'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
               dashboardView === 'informes'
-                ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
+                ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
@@ -236,7 +236,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             className={cn(
               'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
               dashboardView === 'agenda'
-                ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
+                ? 'bg-primary text-primary-foreground'
                 : 'text-muted-foreground hover:text-foreground'
             )}
           >
@@ -253,7 +253,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
                   location.pathname === '/simulador' ||
                   (dashboardView === 'briefing' || dashboardView === 'archivo')
                 )
-                  ? 'bg-primary text-primary-foreground shadow-[0_0_12px_rgba(124,92,252,0.4)]'
+                  ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground hover:text-foreground'
               )}
             >
@@ -490,13 +490,13 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
         </Button>
 
         {/* Date & Status */}
-        <div className="hidden lg:flex items-center gap-3 text-right">
+        <div className="hidden 2xl:flex items-center gap-3 text-right">
           <div>
             <p className="text-[11px] font-mono text-muted-foreground tracking-wider leading-none">
               {new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
             </p>
             <div className="flex items-center gap-1.5 justify-end mt-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-success shadow-[0_0_6px_theme(colors.green.500)]" />
+              <span className="w-1.5 h-1.5 rounded-full bg-success" />
               <span className="text-[9px] font-mono text-success tracking-[2px]">SISTEMA ACTIVO</span>
             </div>
           </div>
@@ -507,7 +507,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
           <Avatar className="h-8 w-8">
             <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">AG</AvatarFallback>
           </Avatar>
-          <div className="hidden sm:block">
+          <div className="hidden xl:block">
             <p className="text-sm font-medium text-foreground leading-none">Alejandro Glez</p>
             <p className="text-[10px] text-muted-foreground">Senior Strategic Consultant</p>
           </div>

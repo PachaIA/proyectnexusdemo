@@ -422,3 +422,13 @@ html[data-theme] input::placeholder, html[data-theme] textarea::placeholder { co
 html[data-theme] [class*="text-muted-foreground/"] { color: var(--muted-text-accessible); }
 html[data-theme] :focus-visible { outline: 2px solid var(--interactive); outline-offset: 3px; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+
+html[data-theme] .nexus-money { font-family: inherit !important; }
+html[data-theme] :is(code, .nexus-reference, [data-reference]) { font-family: 'JetBrains Mono', monospace !important; }
+html[data-theme="caliza"] :is(.bg-primary\/10, .bg-primary\/20, .bg-accent\/10, .bg-accent\/20)[class*="text-primary"],
+html[data-theme="caliza"] :is(.bg-primary\/10, .bg-primary\/20, .bg-accent\/10, .bg-accent\/20)[class*="text-accent"] { color: var(--text); }
+html[data-theme] nav { border-width: 0; background: transparent; }
+html[data-theme] :is(.card-elevated, div.border.rounded-lg, div.border.rounded-xl, div.border.rounded-md) { border-width: 0; }
+html[data-theme] .leaflet-popup-content-wrapper { background: var(--surface); }
+html[data-theme] .marker-cluster { background: var(--surface-2) !important; }
+html[data-theme] .marker-cluster div { background: var(--interactive) !important; color: hsl(var(--primary-foreground)) !important; }

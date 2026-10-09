@@ -194,7 +194,7 @@ function KanbanCard({ lead, onAdvance, onWin, onLose, onArchive, onOpenDetail, o
             <div style={{
               position: 'absolute', top: '100%', left: 0, zIndex: 50, marginTop: 4,
               background: T.card, border: `1px solid ${T.border}`, borderRadius: 8,
-              padding: 4, minWidth: 140, boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+              padding: 4, minWidth: 140, boxShadow: "none",
             }}>
               {ALL_STATES.map(s => (
                 <button key={s.key} onClick={() => { onChangeStatus(s.key); setShowStatusMenu(false); }} style={{

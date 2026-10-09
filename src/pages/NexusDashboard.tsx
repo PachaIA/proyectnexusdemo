@@ -131,7 +131,7 @@ function ScoreBadge({ score }: { score: number }) {
         width: 52, height: 52, borderRadius: "50%",
         border: `3px solid ${color}`, display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center",
-        boxShadow: `0 0 16px color-mix(in srgb, ${color} 33.3%, transparent)`, background: `color-mix(in srgb, ${color} 9.4%, transparent)`,
+        boxShadow: "none", background: `color-mix(in srgb, ${color} 9.4%, transparent)`,
       }}>
         <span style={{ fontSize: 15, fontWeight: 900, color, fontFamily: "'Inter', sans-serif", lineHeight: 1 }}>{score}</span>
         <span style={{ fontSize: 8, color: `color-mix(in srgb, ${color} 66.7%, transparent)`, letterSpacing: 1 }}>SCORE</span>
@@ -250,7 +250,7 @@ function AIBriefing({ company, onClose }: { company: Company; onClose: () => voi
         width: "min(680px, 95vw)", height: "80vh",
         background: T.card, border: `1px solid ${T.border}`,
         borderRadius: 16, display: "flex", flexDirection: "column",
-        boxShadow: `0 0 60px color-mix(in srgb, ${T.accent} 13.3%, transparent), 0 24px 80px color-mix(in srgb, var(--bg) 53.3%, transparent)`, overflow: "hidden",
+        boxShadow: "none", overflow: "hidden",
       }}>
         <div style={{
           padding: "16px 20px", borderBottom: `1px solid ${T.border}`,
@@ -262,7 +262,7 @@ function AIBriefing({ company, onClose }: { company: Company; onClose: () => voi
               width: 36, height: 36, borderRadius: 8,
               background: `linear-gradient(135deg, ${T.accent}, ${T.accentLight})`,
               display: "flex", alignItems: "center", justifyContent: "center",
-              fontSize: 18, boxShadow: `0 0 20px color-mix(in srgb, ${T.accent} 40.0%, transparent)`,
+              fontSize: 18, boxShadow: "none",
             }}>⚡</div>
             <div>
               <div style={{ color: T.textPrimary, fontWeight: 800, fontSize: 14, fontFamily: "'Inter', sans-serif", letterSpacing: 1 }}>
@@ -321,7 +321,7 @@ function AIBriefing({ company, onClose }: { company: Company; onClose: () => voi
             border: "none", borderRadius: 10, color: "var(--text)", fontWeight: 700,
             cursor: loading ? "not-allowed" : "pointer", fontSize: 13,
             fontFamily: "'Inter', sans-serif", opacity: loading || !input.trim() ? 0.5 : 1,
-            boxShadow: `0 0 20px color-mix(in srgb, ${T.accent} 26.7%, transparent)`,
+            boxShadow: "none",
           }}>→</button>
         </div>
       </div>
@@ -521,7 +521,7 @@ function InteractionRegistry({
             <div style={{
               background: T.card, border: `1px solid ${T.border}`, borderRadius: 12,
               padding: "24px 28px", maxWidth: 360, width: "90%",
-              boxShadow: "0 16px 48px rgba(0,0,0,0.4)",
+              boxShadow: "none",
             }}>
               <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, color: T.textPrimary, letterSpacing: 1, marginBottom: 10 }}>
                 ¿Eliminar esta nota?
@@ -1346,7 +1346,7 @@ function DetailPanel({
             background: `linear-gradient(135deg, ${T.accent}, ${T.accentDark})`,
             border: "none", color: "var(--text)", cursor: "pointer",
             fontFamily: "'Inter', sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: 2,
-            transition: "all 0.2s", boxShadow: `0 0 30px color-mix(in srgb, ${T.accent} 26.7%, transparent)`,
+            transition: "all 0.2s", boxShadow: "none",
           }}>⚡ BRIEFING IA — PREPARAR VISITA</button>
           <button className="nexus-action-btn" onClick={() => onOpenArcGIS(selected)} style={{
             padding: "11px", borderRadius: 10, background: T.cardAlt, border: `1px solid ${T.border}`,

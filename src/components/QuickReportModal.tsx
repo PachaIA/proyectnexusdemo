@@ -408,7 +408,7 @@ ${pendientes.length
           border: `1px solid ${T.border}`,
           borderRadius: 16,
           overflow: 'hidden',
-          boxShadow: '0 30px 80px rgba(0,0,0,0.6)',
+          boxShadow: "none",
         }}
       >
         {/* Header */}

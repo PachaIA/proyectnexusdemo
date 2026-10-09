@@ -261,7 +261,7 @@ export function ActivitySection({ companyId, onNextActionDate }: Props) {
         }}>
           <div style={{
             background: T.card, border: `1px solid ${T.border}`, borderRadius: 12,
-            padding: '24px 28px', maxWidth: 360, width: '90%', boxShadow: '0 16px 48px rgba(0,0,0,0.4)',
+            padding: '24px 28px', maxWidth: 360, width: '90%', boxShadow: "none",
           }}>
             <div style={{ ...mono, fontSize: 11, fontWeight: 700, color: T.textPrimary, letterSpacing: 1, marginBottom: 10 }}>
               ¿Eliminar esta actividad?
