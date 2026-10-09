@@ -27,7 +27,7 @@ const Auth = () => {
       window.location.href = next;
       return;
     }
-    navigate('/', { replace: true });
+    navigate('/hoy', { replace: true });
   };
 
   // Redirect if already logged in, and listen for auth changes

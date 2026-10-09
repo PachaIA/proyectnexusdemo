@@ -37,7 +37,7 @@ const ResetPassword = () => {
       return;
     }
     toast.success('Contraseña actualizada');
-    navigate('/', { replace: true });
+    navigate('/hoy', { replace: true });
   };
 
   return (

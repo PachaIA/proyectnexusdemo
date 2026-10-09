@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, NavLink } from 'react-router-dom';
 import { NEXUS_VIEW_PATHS, nexusViewFromPath } from '@/lib/nexusViews';
 import { cn } from '@/lib/utils';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -149,86 +149,30 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
       {/* Center Section - Nav + Search */}
       <div className="flex-1 flex items-center gap-4 max-w-2xl">
         <nav className="hidden md:flex items-center gap-1 bg-muted/50 rounded-full p-1 border border-border shrink-0">
-          <button
-            onClick={() => navigate(NEXUS_VIEW_PATHS.hoy)}
-            className={cn(
-              'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
-              dashboardView === 'hoy'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            📋 Hoy
-          </button>
-          <button
-            onClick={() => navigate('/hoy')}
-            className={cn(
-              'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap inline-flex items-center gap-1.5',
-              location.pathname === '/hoy'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            🔔 Pendientes
-            {urgentCount > 0 && (
-              <span aria-label={`${urgentCount} pendientes`} className="min-w-4 h-4 px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold leading-4 text-center">{urgentCount}</span>
-            )}
-          </button>
-          <button
-            onClick={() => navigate(NEXUS_VIEW_PATHS.clientes)}
-            className={cn(
-              'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
-              dashboardView === 'clientes'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            👥 Clientes
-          </button>
-          <button
-            onClick={() => navigate('/map')}
-            className={cn(
-              'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
-              location.pathname === '/map'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            🗺️ Mapa
-          </button>
-          <button
-            onClick={() => navigate('/my-leads')}
-            className={cn(
-              'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
-              location.pathname === '/my-leads'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            📊 Pipeline
-          </button>
-          <button
-            onClick={() => navigate(NEXUS_VIEW_PATHS.informes)}
-            className={cn(
-              'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
-              dashboardView === 'informes'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            📑 Informes
-          </button>
-          <button
-            onClick={() => navigate(NEXUS_VIEW_PATHS.agenda)}
-            className={cn(
-              'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap',
-              dashboardView === 'agenda'
-                ? 'bg-primary text-primary-foreground'
-                : 'text-muted-foreground hover:text-foreground'
-            )}
-          >
-            🗓️ Agenda
-          </button>
+          {[
+            { to: '/hoy', label: '📋 Hoy' },
+            { to: '/pendientes', label: '🔔 Pendientes', badge: true },
+            { to: '/clientes', label: '👥 Clientes' },
+            { to: '/mapa', label: '🗺️ Mapa' },
+            { to: '/pipeline', label: '📊 Pipeline' },
+            { to: '/informes', label: '📑 Informes' },
+            { to: '/agenda', label: '🗓️ Agenda' },
+            { to: '/simulador', label: '🧮 Simulador' },
+          ].map(item => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              className={({ isActive }) => cn(
+                'px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap inline-flex items-center gap-1.5',
+                isActive ? 'bg-primary text-primary-foreground' : 'text-muted-foreground hover:text-foreground'
+              )}
+            >
+              {item.label}
+              {item.badge && urgentCount > 0 && (
+                <span aria-label={`${urgentCount} pendientes`} className="min-w-4 h-4 px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold leading-4 text-center">{urgentCount}</span>
+              )}
+            </NavLink>
+          ))}
           <div className="relative" ref={moreRef}>
             <button
               onClick={() => setMoreOpen(!moreOpen)}

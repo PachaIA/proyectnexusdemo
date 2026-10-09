@@ -129,7 +129,7 @@ function ObjetivoConEsquema({ scheme }: { scheme: CompScheme }) {
   return (
     <div className="min-h-screen bg-background text-foreground pb-24 md:pb-8">
       <header className="h-14 px-4 border-b border-border bg-card flex items-center gap-3 sticky top-0 z-10">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/')} className="-ml-2" aria-label="Volver">
+        <Button variant="ghost" size="icon" onClick={() => navigate('/hoy')} className="-ml-2" aria-label="Volver">
           <ArrowLeft className="w-5 h-5" />
         </Button>
         <div>

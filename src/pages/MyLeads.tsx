@@ -457,7 +457,7 @@ const MyLeads = () => {
               background: `color-mix(in srgb, ${T.accent} 6.7%, transparent)`, border: `1px solid color-mix(in srgb, ${T.accent} 26.7%, transparent)`, color: T.accentLight, cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 6,
             }}><Download size={13} /> EXPORTAR PDF</button>
-            <button onClick={() => navigate('/map')} style={{
+            <button onClick={() => navigate('/mapa')} style={{
               ...mono, fontSize: 10, letterSpacing: 1, padding: '6px 14px', borderRadius: 8,
               background: 'transparent', border: `1px solid ${T.border}`, color: T.textTertiary, cursor: 'pointer',
             }}>← MAPA</button>

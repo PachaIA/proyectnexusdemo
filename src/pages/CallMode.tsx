@@ -141,11 +141,11 @@ const CallMode = () => {
         }
       }
       if (nextCall) navigate(`/llamada/${nextCall.company_id}`, { replace: true });
-      else navigate('/', { replace: true });
+      else navigate('/hoy', { replace: true });
     } catch (e) {
       if (isNetworkError(e)) {
         queueLocally();
-        navigate(nextCall ? `/llamada/${nextCall.company_id}` : '/', { replace: true });
+        navigate(nextCall ? `/llamada/${nextCall.company_id}` : '/hoy', { replace: true });
         return;
       }
       toast.error('No se pudo guardar el resultado');
