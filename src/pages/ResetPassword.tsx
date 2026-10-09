@@ -14,11 +14,12 @@ const ResetPassword = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const hasRecoveryToken = new URLSearchParams(window.location.hash.slice(1)).get('type') === 'recovery';
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'PASSWORD_RECOVERY' || session?.user) setReady(true);
+      if (event === 'PASSWORD_RECOVERY' || (hasRecoveryToken && session?.user)) setReady(true);
     });
     supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session?.user) setReady(true);
+      if (hasRecoveryToken && session?.user) setReady(true);
     });
     return () => subscription.unsubscribe();
   }, []);

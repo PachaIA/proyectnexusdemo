@@ -18,11 +18,8 @@ import ClientDetailPage from "./pages/ClientDetailPage";
 import { MobileBottomNav } from "./components/MobileBottomNav";
 import { OpportunityDialog } from './components/OpportunityDialog';
 import { FloatingChatWidget } from "./components/FloatingChatWidget";
-import { DailyIntro } from "./components/DailyIntro";
-
-// Auth desactivada temporalmente: la app abre directo sin login.
-// Para reactivarla, volver a envolver las rutas con un guard de sesión.
-const ProtectedRoute = ({ children }: { children: React.ReactNode }) => <>{children}</>;
+import { ProtectedRoute } from "./components/ProtectedRoute";
+import { AuthSessionProvider, useAuthSession } from "./contexts/AuthSessionContext";
 
 // Antiguas direcciones: conservan ?company= y el estado de navegación.
 const LegacyRedirect = ({ to }: { to: string }) => {
@@ -31,6 +28,10 @@ const LegacyRedirect = ({ to }: { to: string }) => {
 };
 
 const AppRoutes = () => {
+  const location = useLocation();
+  const { user } = useAuthSession();
+  const isPublicRoute = location.pathname === '/auth' || location.pathname === '/reset-password' || location.pathname === '/.lovable/oauth/consent';
+
   return (
     <>
       <Routes>
@@ -46,16 +47,15 @@ const AppRoutes = () => {
         <Route path="/pipeline" element={<ProtectedRoute><MyLeads /></ProtectedRoute>} />
         <Route path="/map" element={<LegacyRedirect to="/mapa" />} />
         <Route path="/my-leads" element={<Navigate to="/pipeline" replace />} />
-        <Route path="/llamada/:companyId" element={<CallMode />} />
+        <Route path="/llamada/:companyId" element={<ProtectedRoute><CallMode /></ProtectedRoute>} />
         <Route path="/trimestre" element={<ProtectedRoute><ObjetivoTrimestre /></ProtectedRoute>} />
         <Route path="/leads" element={<ProtectedRoute><LeadsTable /></ProtectedRoute>} />
         <Route path="/chat" element={<Navigate to="/hoy" replace />} />
         <Route path="/nexus" element={<Navigate to="/hoy" replace />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
-      <DailyIntro />
-      <MobileBottomNav />
-      <FloatingChatWidget />
+      {user && !isPublicRoute && <MobileBottomNav />}
+      {user && !isPublicRoute && <FloatingChatWidget />}
     </>
   );
 };
@@ -67,7 +67,9 @@ const App = () => (
       <OpportunityDialog />
       <Sonner />
       <BrowserRouter>
-        <AppRoutes />
+        <AuthSessionProvider>
+          <AppRoutes />
+        </AuthSessionProvider>
       </BrowserRouter>
     </TooltipProvider>
   </PersistQueryClientProvider>

@@ -1,5 +1,5 @@
 
-- Auth is temporarily disabled: routes are unguarded, `getEffectiveUser()` falls back to a shared open user ID, and "TEMP open" anon RLS policies grant access — remove all three together when login returns. Why: owner wants the app usable without login for now.
+- Authentication uses email/password with confirmed accounts; all CRM routes and commercial tables require a validated user session, while authenticated users share the existing CRM dataset. Why: the app is a private shared commercial workspace without user profiles.
 - Map tiles use keyless Esri basemaps. Why: CARTO tiles now require an API key.
 - Primary navigation has exactly four destinations: /hoy, /clientes, /pipeline and /trimestre; every client or opportunity detail opens at /clientes/:id. Why: one durable, shareable client workspace replaces competing modal detail surfaces.
 - Cross-component data refresh uses the shared queryClient helpers (refreshCompanies/refreshLeads) and router state, not window CustomEvents. Why: no lost events or mount races.
@@ -11,5 +11,5 @@
 - Compensation calculations require the active read-only comp_schemes row via useCompScheme and pure compScheme/salesKpis helpers, with no numeric fallback; legacy lookup brackets remain explicit in its config. Why: schemes can change without restructuring the application or silently altering historical calculation behaviour.
 - Quarter scenarios derive exclusively from real proposal, negotiation, and won opportunity stages; scenario actions update the lead stage and never keep a parallel selection state. Why: Pipeline and Quarter must always show the same commercial truth.
 - Theme initialization and switching use src/lib/theme.ts; html data-theme is authoritative with synchronized dark class for legacy maps, and financial values use Money/--money-foreground. Why: the entire app shares one preference and readable financial treatment without changing calculations.
-- The daily intro is a non-blocking overlay mounted alongside routes and keyed by the user's local calendar date. Why: branding must never delay application data loading.
+- The Nexus lockup is the first screen within the email/password access flow; do not add a second daily intro before or after it. Why: one branded entry avoids duplicate gates.
 - Client detail surfaces share ClientDetailOverview for read-only summary, in-place notes and chronology; existing editors live under its collapsed Datos section. Why: all entry points use the same summary and history without discarding legacy notes or changing sales rules.
