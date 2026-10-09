@@ -141,7 +141,7 @@ const CallMode = () => {
         }
       }
       if (nextCall) navigate(`/llamada/${nextCall.company_id}`, { replace: true });
-      else navigate('/', { replace: true });
+      else navigate('/hoy', { replace: true });
     } catch (e) {
       if (isNetworkError(e)) {
         queueLocally();

@@ -2,7 +2,7 @@
 export type NexusView = 'hoy' | 'clientes' | 'briefing' | 'archivo' | 'informes' | 'agenda';
 
 export const NEXUS_VIEW_PATHS: Record<NexusView, string> = {
-  hoy: '/',
+  hoy: '/hoy',
   clientes: '/clientes',
   briefing: '/briefing',
   archivo: '/archivo',
