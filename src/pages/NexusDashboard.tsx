@@ -1,3 +1,4 @@
+import { ArchiveCompanyButton } from '@/components/ArchiveCompanyButton';
 import { ClientDetailOverview } from '@/components/ClientDetailOverview';
 import { fmtEur } from '@/hooks/useOpportunityLines';
 import { Money } from '@/components/Money';
@@ -694,7 +695,7 @@ export default function NexusDashboard() {
               <DetailPanel company={selected} interactions={interactions} onUpdate={handleInteractionUpdate} onShowAI={() => setShowAI(true)} onOpenArcGIS={openArcGIS} />
             </div>
           ) : (
-            <BriefingCompanyPicker companies={companies} onPick={(c) => setSelected(c)} />
+            <BriefingCompanyPicker companies={companies.filter(c => !c.archivedAt)} onPick={(c) => setSelected(c)} />
           )}
 
         </div>
@@ -900,6 +901,12 @@ export function DetailPanel({
         )}
 
         {routeDetail && <section className="border-y border-border py-4"><div className="text-xs font-semibold text-muted-foreground mb-2">BRIEFING DIARIO</div><p className="text-sm text-foreground">{selected.nextBestAction?.reason || 'Sin recomendación disponible'}</p></section>}
+
+        {selected.archivedAt ? (
+          <p className="text-sm text-muted-foreground">Cliente archivado: {selected.archiveReason || 'Sin motivo'}. Puedes restaurarlo desde Archivo.</p>
+        ) : (
+          <div className="flex justify-end"><ArchiveCompanyButton companyId={selected.id} companyName={selected.name} /></div>
+        )}
 
         {/* Recommended action */}
         <div style={{

@@ -262,6 +262,39 @@ export type Database = {
           },
         ]
       }
+      deleted_companies: {
+        Row: {
+          archive_reason: string | null
+          cif: string | null
+          company_id: string
+          delete_reason: string
+          deleted_at: string
+          deleted_by: string | null
+          id: string
+          name: string
+        }
+        Insert: {
+          archive_reason?: string | null
+          cif?: string | null
+          company_id: string
+          delete_reason: string
+          deleted_at?: string
+          deleted_by?: string | null
+          id?: string
+          name: string
+        }
+        Update: {
+          archive_reason?: string | null
+          cif?: string | null
+          company_id?: string
+          delete_reason?: string
+          deleted_at?: string
+          deleted_by?: string | null
+          id?: string
+          name?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           archived_at: string | null
@@ -566,6 +599,11 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      delete_company_permanently: {
+        Args: { _company_id: string; _reason: string }
+        Returns: undefined
+      }
+      is_owner: { Args: never; Returns: boolean }
       unaccent: { Args: { "": string }; Returns: string }
     }
     Enums: {

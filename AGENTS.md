@@ -14,3 +14,4 @@
 - The Nexus lockup is the first screen within the email/password access flow; do not add a second daily intro before or after it. Why: one branded entry avoids duplicate gates.
 - The access screen imports an isolated derivative of the existing emblem from src/assets, preserving the original public brand files. Why: the access layout can integrate the emblem across themes without altering social and favicon assets.
 - Client detail surfaces share ClientDetailOverview for read-only summary, in-place notes and chronology; existing editors live under its collapsed Datos section. Why: all entry points use the same summary and history without discarding legacy notes or changing sales rules.
+- Permanent client deletion goes only through the security-definer RPC delete_company_permanently (owner check, archived-only, writes deleted_companies trace first). Why: atomic cascade without adding delete policies to companies.
