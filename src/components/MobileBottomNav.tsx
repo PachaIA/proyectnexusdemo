@@ -1,5 +1,5 @@
 import { NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Users, Kanban, Target } from 'lucide-react';
+import { LayoutDashboard, Users, Kanban, Target, Archive } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { NEXUS_VIEW_PATHS } from '@/lib/nexusViews';
 
@@ -9,6 +9,7 @@ const tabs = [
   { path: NEXUS_VIEW_PATHS.clientes, icon: Users, label: 'Clientes' },
   { path: '/pipeline', icon: Kanban, label: 'Pipeline' },
   { path: '/trimestre', icon: Target, label: 'Trimestre' },
+  { path: NEXUS_VIEW_PATHS.archivo, icon: Archive, label: 'Archivo' },
 ];
 
 export const MobileBottomNav = () => {

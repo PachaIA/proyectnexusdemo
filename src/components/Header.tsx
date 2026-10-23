@@ -139,6 +139,7 @@ export const Header = ({ onMobileMenuToggle, searchQuery = '', onSearchChange, o
             { to: '/clientes', label: 'Clientes' },
             { to: '/pipeline', label: 'Pipeline' },
             { to: '/trimestre', label: 'Trimestre' },
+            { to: '/archivo', label: 'Archivo' },
           ].map(item => (
             <NavLink
               key={item.to}
