@@ -566,6 +566,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      is_owner: { Args: never; Returns: boolean }
       unaccent: { Args: { "": string }; Returns: string }
     }
     Enums: {
