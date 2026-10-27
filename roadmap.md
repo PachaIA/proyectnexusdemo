@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Actualizar geocode-companies con estados persistentes, filtros idénticos y aviso de aproximados; verificar y desplegar sin cambiar autenticación ni RLS
 
 - [x] Sustituir la animación diaria por una pantalla Nexus de acceso, registro y recuperación antes del CRM
 - [x] Unificar Trimestre con el layout principal y hacer que el escenario lea y actualice la etapa real de las oportunidades

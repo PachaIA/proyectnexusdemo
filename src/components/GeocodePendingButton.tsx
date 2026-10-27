@@ -13,17 +13,19 @@ export const GeocodePendingButton = () => {
     setRunning(true);
     setProgress(null);
     let totalActualizados = 0;
+    let totalAproximados = 0;
     try {
       for (let i = 0; i < 200; i++) {
         const { data, error } = await supabase.functions.invoke('geocode-companies', { body: {} });
         if (error) throw error;
         if (!data) break;
         totalActualizados += data.actualizados ?? 0;
+        totalAproximados += data.aproximados ?? 0;
         setProgress({ actualizados: totalActualizados, restantes: data.restantes ?? 0 });
         if ((data.restantes ?? 0) === 0 || (data.procesados ?? 0) === 0) break;
         await new Promise((r) => setTimeout(r, 300));
       }
-      toast.success(`Geocodificación completada: ${totalActualizados} actualizados`);
+      toast.success(`Geocodificación completada: ${totalActualizados} actualizados, ${totalAproximados} aproximados`);
       refreshCompanies();
     } catch (e: any) {
       console.error(e);
