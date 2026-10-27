@@ -66,6 +66,8 @@ export type Database = {
           employees: number
           enrichment_attempted: boolean | null
           estimated_arpu: number | null
+          geocode_status: string | null
+          geocoded_at: string | null
           growth_signals: string[] | null
           id: string
           id_wasp: string | null
@@ -121,6 +123,8 @@ export type Database = {
           employees?: number
           enrichment_attempted?: boolean | null
           estimated_arpu?: number | null
+          geocode_status?: string | null
+          geocoded_at?: string | null
           growth_signals?: string[] | null
           id: string
           id_wasp?: string | null
@@ -176,6 +180,8 @@ export type Database = {
           employees?: number
           enrichment_attempted?: boolean | null
           estimated_arpu?: number | null
+          geocode_status?: string | null
+          geocoded_at?: string | null
           growth_signals?: string[] | null
           id?: string
           id_wasp?: string | null
