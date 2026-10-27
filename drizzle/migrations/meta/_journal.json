@@ -29,6 +29,13 @@
       "when": 1792759354703,
       "tag": "0003_deleted_companies_trace",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793126203001,
+      "tag": "0004_companies_geocode_status",
+      "breakpoints": true
     }
   ]
 }

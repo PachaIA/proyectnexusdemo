@@ -1,4 +1,5 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
+import { BATCH_SIZE, geocodeUpdate, pendingCompanies, type GeocodeResult } from './logic.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -8,14 +9,20 @@ const corsHeaders = {
 
 const GOOGLE_KEY = Deno.env.get('GOOGLE_GEOCODING_API_KEY');
 
-async function geocode(address: string): Promise<{ lat: number; lng: number } | null> {
+async function geocode(address: string): Promise<GeocodeResult | null> {
   const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GOOGLE_KEY}&region=es`;
   try {
     const res = await fetch(url);
+    if (!res.ok) return null;
     const data = await res.json();
     if (data.status === 'OK' && data.results?.[0]?.geometry?.location) {
       const { lat, lng } = data.results[0].geometry.location;
-      return { lat, lng };
+      if (!Number.isFinite(lat) || !Number.isFinite(lng)) return null;
+      return {
+        lat, lng,
+        location_type: data.results[0].geometry.location_type,
+        formatted_address: data.results[0].formatted_address,
+      };
     }
   } catch (e) {
     console.error('geocode error', e);
@@ -58,44 +65,41 @@ Deno.serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!,
     );
 
-    const batchSize = 100;
-    const { data: rows, error } = await admin
+    const { data: rows, error } = await pendingCompanies(admin
       .from('companies')
-      .select('id, address, cp, localidad, provincia')
-      .or('lat.eq.0,lng.eq.0')
-      .not('address', 'is', null)
-      .neq('address', '')
-      .limit(batchSize);
+      .select('id, address, cp, localidad, provincia'))
+      .limit(BATCH_SIZE);
 
     if (error) throw error;
 
     let actualizados = 0;
+    let aproximados = 0;
     let sin_resultado = 0;
 
     for (const r of rows ?? []) {
       const parts = [r.address, r.cp, r.localidad, r.provincia].filter(Boolean).join(', ');
       const full = parts ? `${parts}, España` : 'España';
-      if (!parts) { sin_resultado++; continue; }
-      const result = await geocode(full);
-      if (!result) { sin_resultado++; continue; }
+      const result = parts ? await geocode(full) : null;
+      const update = geocodeUpdate(result, new Date().toISOString());
       const { error: updErr } = await admin
         .from('companies')
-        .update({ lat: result.lat, lng: result.lng })
+        .update(update)
         .eq('id', r.id);
-      if (updErr) { console.error('update fail', r.id, updErr); sin_resultado++; continue; }
-      actualizados++;
+      if (updErr) throw updErr;
+      if (update.geocode_status === 'ok') actualizados++;
+      else if (update.geocode_status === 'aproximado') aproximados++;
+      else sin_resultado++;
     }
 
-    const { count: restantes } = await admin
+    const { count: restantes, error: countError } = await pendingCompanies(admin
       .from('companies')
-      .select('id', { count: 'exact', head: true })
-      .or('lat.eq.0,lng.eq.0')
-      .not('address', 'is', null)
-      .neq('address', '');
+      .select('id', { count: 'exact', head: true }));
+    if (countError) throw countError;
 
     return new Response(JSON.stringify({
       procesados: rows?.length ?? 0,
       actualizados,
+      aproximados,
       sin_resultado,
       restantes: restantes ?? 0,
     }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
