@@ -1,5 +1,5 @@
 # Roadmap
-- [ ] Actualizar geocode-companies con estados persistentes, filtros idénticos y aviso de aproximados; verificar y desplegar sin cambiar autenticación ni RLS
+- [x] Actualizar y desplegar geocode-companies con estados persistentes, filtros idénticos y aviso de aproximados; siete pruebas pasan, columnas verificadas y autenticación intacta; llamadas reales a Google no verificadas en el entorno de pruebas
 
 - [x] Sustituir la animación diaria por una pantalla Nexus de acceso, registro y recuperación antes del CRM
 - [x] Unificar Trimestre con el layout principal y hacer que el escenario lea y actualice la etapa real de las oportunidades
